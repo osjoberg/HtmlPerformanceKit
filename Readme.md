@@ -11,7 +11,7 @@ PM> Install-Package HtmlSpeedPack
 
 ## Performance
 -----------
-HtmlSpeedPack It is currently about 7x faster than HtmlAgilityPack in my benchmarks. This is probably because HtmlSpeedPack is streaming the HTML document tokens as they are read while HtmlAgilityPack constructs a DOM for the entire document in memory. However HtmlAgilityPack has a much more user-friendly API and is more battle-tested. If you are not concerned about performance, you should probably use HtmlAgilityPack instead.
+HtmlSpeedPack is currently about 7x faster than HtmlAgilityPack in my benchmarks. This is probably because HtmlSpeedPack is streaming the HTML document tokens as they are read while HtmlAgilityPack constructs a full DOM for the document in memory. HtmlAgilityPack has a much more user-friendly API and is more battle-tested. If you are not concerned about performance, you should probably use HtmlAgilityPack instead.
 
 Please note that all states are not implemented yet, so it is not sutiable for production yet.
 

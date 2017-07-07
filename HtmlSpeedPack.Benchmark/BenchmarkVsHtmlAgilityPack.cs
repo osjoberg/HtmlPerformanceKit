@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Web;
 
 using BenchmarkDotNet.Attributes;
 
@@ -8,18 +9,18 @@ using HtmlAgilityPack;
 
 namespace HtmlSpeedPack.Benchmark
 {
-    public class BenchmarkExtractLinks
+    public class BenchmarkVsHtmlAgilityPack
     {
         private readonly Stream stream;
 
-        public BenchmarkExtractLinks()
+        public BenchmarkVsHtmlAgilityPack()
         {
             var executingAssembly = Assembly.GetExecutingAssembly();
             stream = executingAssembly.GetManifestResourceStream("HtmlSpeedPack.Benchmark.en.wikipedia.org_wiki_List_of_Australian_treaties.html");
         }
 
         [Benchmark]
-        public List<string> ThisLib()
+        public List<string> ExtractExtractLink()
         {
             stream.Seek(0, SeekOrigin.Begin);
 
@@ -41,8 +42,8 @@ namespace HtmlSpeedPack.Benchmark
             return links;
         }
 
-        [Benchmark(OperationsPerInvoke = 1)]
-        public List<string> HtmlAgilityPack()
+        [Benchmark]
+        public List<string> ExtractLinkHtmlAgilityPack()
         {
             stream.Seek(0, SeekOrigin.Begin);
 
@@ -52,7 +53,7 @@ namespace HtmlSpeedPack.Benchmark
 
             foreach (HtmlNode node in htmlDocument.DocumentNode.Descendants())
             {
-                if (node.NodeType == global::HtmlAgilityPack.HtmlNodeType.Element && node.Name == "a")
+                if (node.NodeType == HtmlAgilityPack.HtmlNodeType.Element && node.Name == "a")
                 {
                     var hrefAttributeValue = node.Attributes["href"];
                     if (hrefAttributeValue != null)
@@ -65,5 +66,43 @@ namespace HtmlSpeedPack.Benchmark
             return links;
         }
 
+        [Benchmark]
+        public List<string> ExtractText()
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+
+            var htmlReader = new HtmlReader(new StreamReader(stream));
+            var texts = new List<string>();
+
+            while (htmlReader.Read())
+            {
+                if (htmlReader.NodeType == HtmlNodeType.Text)
+                {
+                    texts.Add(htmlReader.Text);
+                }
+            }
+
+            return texts;
+        }
+
+        [Benchmark]
+        public List<string> ExtractTextHtmlAgilityPack()
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+
+            var htmlDocument = new HtmlDocument();
+            htmlDocument.Load(stream);
+            var texts = new List<string>();
+
+            foreach (var node in htmlDocument.DocumentNode.Descendants())
+            {
+                if (node.NodeType == HtmlAgilityPack.HtmlNodeType.Text)
+                {
+                    texts.Add(HttpUtility.HtmlDecode(node.InnerText));
+                }
+            }
+
+            return texts;
+        }
     }
 }
