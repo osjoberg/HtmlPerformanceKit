@@ -19,7 +19,6 @@ HtmlSpeedPack is currently about 7x faster than HtmlAgilityPack in my benchmarks
 Benchmarks are extracting links and texts from a large Wikipedia article, List of Australian treaties, https://en.wikipedia.org/wiki/List_of_Australian_treaties (1.7MB)
 
 ``` ini
-
 BenchmarkDotNet=v0.10.0
 OS=Microsoft Windows NT 6.2.9200.0
 Processor=Intel(R) Core(TM) i7-6600U CPU 2.60GHz, ProcessorCount=4
@@ -29,15 +28,13 @@ GC=Concurrent Workstation
 JitModules=clrjit-v4.6.1648.0
 Job Runtime(s):
 	Clr 4.0.30319.42000, Arch=32-bit RELEASE
-
-
 ```
-                      Method |        Mean |    StdDev |      Median |
----------------------------- |------------ |---------- |------------ |
-                ExtractLinks |  29.2549 ms | 0.7443 ms |  29.2327 ms |
- ExtractLinksHtmlAgilityPack | 249.1747 ms | 6.6903 ms | 249.3893 ms |
-                ExtractTexts |  35.2610 ms | 1.0202 ms |  35.5725 ms |
- ExtractTextsHtmlAgilityPack | 261.6217 ms | 7.8588 ms | 258.0977 ms |
+|                      Method |        Mean |    StdDev |      Median |
+|---------------------------- |------------ |---------- |------------ |
+|                ExtractLinks |  29.2549 ms | 0.7443 ms |  29.2327 ms |
+| ExtractLinksHtmlAgilityPack | 249.1747 ms | 6.6903 ms | 249.3893 ms |
+| ExtractTexts                |  35.2610 ms | 1.0202 ms |  35.5725 ms |
+| ExtractTextsHtmlAgilityPack | 261.6217 ms | 7.8588 ms | 258.0977 ms |
 
 
 ## Implemented states
