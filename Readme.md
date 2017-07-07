@@ -33,7 +33,7 @@ Job Runtime(s):
 |---------------------------- |------------ |---------- |------------ |
 |                ExtractLinks |  29.2549 ms | 0.7443 ms |  29.2327 ms |
 | ExtractLinksHtmlAgilityPack | 249.1747 ms | 6.6903 ms | 249.3893 ms |
-| ExtractTexts                |  35.2610 ms | 1.0202 ms |  35.5725 ms |
+|                ExtractTexts |  35.2610 ms | 1.0202 ms |  35.5725 ms |
 | ExtractTextsHtmlAgilityPack | 261.6217 ms | 7.8588 ms | 258.0977 ms |
 
 
