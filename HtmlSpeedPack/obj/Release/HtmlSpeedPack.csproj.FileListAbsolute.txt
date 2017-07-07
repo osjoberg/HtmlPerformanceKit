@@ -1,4 +1,0 @@
-D:\Work\Projects\HtmlSpeedPack\HtmlSpeedPack\bin\Release\HtmlSpeedPack.dll
-D:\Work\Projects\HtmlSpeedPack\HtmlSpeedPack\bin\Release\HtmlSpeedPack.pdb
-D:\Work\Projects\HtmlSpeedPack\HtmlSpeedPack\obj\Release\HtmlSpeedPack.dll
-D:\Work\Projects\HtmlSpeedPack\HtmlSpeedPack\obj\Release\HtmlSpeedPack.pdb

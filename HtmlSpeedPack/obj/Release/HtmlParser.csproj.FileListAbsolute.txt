@@ -1,5 +1,0 @@
-D:\Work\Projects\HtmlParser\bin\Release\HtmlParser.dll
-D:\Work\Projects\HtmlParser\bin\Release\HtmlParser.pdb
-D:\Work\Projects\HtmlParser\obj\Release\HtmlParser.dll
-D:\Work\Projects\HtmlParser\obj\Release\HtmlParser.pdb
-D:\Work\Projects\HtmlParser\obj\Release\HtmlParser.csprojResolveAssemblyReference.cache
