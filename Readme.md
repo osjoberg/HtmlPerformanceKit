@@ -1,16 +1,23 @@
-HtmlSpeedPack
-=============
-HtmlSpeedPack is a fast HTML tokenizer whith similar API as XmlReader. HtmlSpeedPack tries to follow the HTML 5 tokenization specification:
+# HtmlSpeedPack
+HtmlSpeedPack is a fast HTML parser whith a similar API as XmlReader. HtmlSpeedPack tries to follow the HTML 5 tokenization specification:
 https://www.w3.org/TR/html5/syntax.html#tokenization
 
-Performance
+## Install via NuGet
+To install HtmlSpeedPack, run the following command in the Package Manager Console:
+
+```cmd
+PM> Install-Package HtmlSpeedPack
+```
+
+## Performance
 -----------
-HtmlSpeedPack It is currently about 7x in my benchmarks compared to HtmlAgilityPack. However HtmlAgilityPack has a much more user-friendly API and is more battle-tested. If you are not concerned about performance, you should probably use HtmlAgilityPack instead.
+HtmlSpeedPack It is currently about 7x faster than HtmlAgilityPack in my benchmarks. This is probably because HtmlSpeedPack is streaming the HTML document tokens as they are read while HtmlAgilityPack constructs a DOM for the entire document in memory. However HtmlAgilityPack has a much more user-friendly API and is more battle-tested. If you are not concerned about performance, you should probably use HtmlAgilityPack instead.
 
 Please note that all states are not implemented yet, so it is not sutiable for production yet.
 
-Implemented states
+## Implemented states
 ------------------
+```
 [X] 8.2.4.1 Data state
 [X] 8.2.4.2 Character reference in data state
 [ ] 8.2.4.3 RCDATA state
@@ -80,3 +87,4 @@ Implemented states
 [X] 8.2.4.67 Bogus DOCTYPE state
 [X] 8.2.4.68 CDATA section state
 [/] 8.2.4.69 Tokenizing character references (Using HttpUtility.HtmlDecode when a character reference is found)
+```

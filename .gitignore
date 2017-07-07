@@ -10,3 +10,6 @@
 /HtmlSpeedPack.Test/bin
 /HtmlSpeedPack.Test/obj
 /packages
+/nuget
+*.user
+/HtmlSpeedPack/obj/Release
