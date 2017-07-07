@@ -3,3 +3,10 @@
 ################################################################################
 
 /.vs/HtmlSpeedPack/v14
+/HtmlSpeedPack/.vs/HtmlParser/v14
+/HtmlSpeedPack/bin
+/HtmlSpeedPack.Benchmark/bin
+/HtmlSpeedPack.Benchmark/obj
+/HtmlSpeedPack.Test/bin
+/HtmlSpeedPack.Test/obj
+/packages

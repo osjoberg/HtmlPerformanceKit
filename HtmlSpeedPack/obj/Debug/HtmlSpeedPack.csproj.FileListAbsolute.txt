@@ -1,0 +1,4 @@
+D:\Work\Projects\HtmlSpeedPack\HtmlSpeedPack\bin\Debug\HtmlSpeedPack.dll
+D:\Work\Projects\HtmlSpeedPack\HtmlSpeedPack\bin\Debug\HtmlSpeedPack.pdb
+D:\Work\Projects\HtmlSpeedPack\HtmlSpeedPack\obj\Debug\HtmlSpeedPack.dll
+D:\Work\Projects\HtmlSpeedPack\HtmlSpeedPack\obj\Debug\HtmlSpeedPack.pdb

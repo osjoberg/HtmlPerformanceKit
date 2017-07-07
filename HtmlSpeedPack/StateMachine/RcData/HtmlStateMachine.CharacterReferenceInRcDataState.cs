@@ -1,0 +1,24 @@
+﻿namespace HtmlSpeedPack.StateMachine
+{
+    /// <summary>
+    /// 8.2.4.4 Character reference in RCDATA state
+    ///
+    /// Switch to the RCDATA state.
+    /// 
+    /// Attempt to consume a character reference, with no additional allowed character.
+    /// 
+    /// If nothing is returned, emit a U+0026 AMPERSAND character (&amp;) token.
+    /// 
+    /// Otherwise, emit the character tokens that were returned.
+    /// </summary>
+    internal partial class HtmlStateMachine
+    {
+        private void CharacterReferenceInRcDataState()
+        {
+            State = RcDataState;
+
+            currentDataBuffer.Append('&');
+            currentDataBuffer.MayHaveCharacterReference();
+        }
+    }
+}

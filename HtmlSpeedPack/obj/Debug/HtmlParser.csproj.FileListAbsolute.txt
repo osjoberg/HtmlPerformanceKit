@@ -1,0 +1,8 @@
+D:\Work\Projects\HtmlParser\bin\Debug\HtmlParser.dll
+D:\Work\Projects\HtmlParser\bin\Debug\HtmlParser.pdb
+D:\Work\Projects\HtmlParser\obj\Debug\HtmlParser.dll
+D:\Work\Projects\HtmlParser\obj\Debug\HtmlParser.pdb
+D:\Work\Projects\HtmlSpeedPack\HtmlSpeedPack\bin\Debug\HtmlParser.dll
+D:\Work\Projects\HtmlSpeedPack\HtmlSpeedPack\bin\Debug\HtmlParser.pdb
+D:\Work\Projects\HtmlSpeedPack\HtmlSpeedPack\obj\Debug\HtmlParser.dll
+D:\Work\Projects\HtmlSpeedPack\HtmlSpeedPack\obj\Debug\HtmlParser.pdb

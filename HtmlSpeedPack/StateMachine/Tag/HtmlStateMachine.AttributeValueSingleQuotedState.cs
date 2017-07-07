@@ -1,0 +1,60 @@
+﻿using HtmlSpeedPack.Infrastructure;
+
+namespace HtmlSpeedPack.StateMachine
+{
+    internal partial class HtmlStateMachine
+    {
+        /// <summary>
+        /// 8.2.4.39 Attribute value (single-quoted) state
+        ///
+        /// Consume the next input character:
+        /// 
+        /// "'" (U+0027)
+        /// Switch to the after attribute value (quoted) state.
+        /// 
+        /// U+0026 AMPERSAND (&amp;)
+        /// Switch to the character reference in attribute value state, with the additional allowed character being "'" (U+0027).
+        /// 
+        /// U+0000 NULL
+        /// Parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current attribute's value.
+        /// 
+        /// EOF
+        /// Parse error. Switch to the data state. Reconsume the EOF character.
+        /// 
+        /// Anything else
+        /// Append the current input character to the current attribute's value.
+        /// </summary>
+        private void AttributeValueSingleQuotedState()
+        {
+            var currentInputCharacter = bufferReader.Consume();
+
+            switch (currentInputCharacter)
+            {
+                case '\'':
+                    State = AfterAttributeValueQuotedState;
+                    return;
+
+                case '&':
+                    State = CharacterReferenceInAttributeValueState;
+                    additionalAllowedCharacter = '\'';
+                    returnToState = AttributeValueDoubleQuotedState;
+                    return;
+
+                case HtmlChar.Null:
+                    ParseError = ParseErrorMessage.UnexpectedNullCharacterInStream;
+                    currentTagToken.Attributes.Current.Value.Append(HtmlChar.ReplacementCharacter);
+                    return;
+
+                case EofMarker:
+                    ParseError = ParseErrorMessage.UnexpectedEndOfFile;
+                    State = DataState;
+                    bufferReader.Reconsume(EofMarker);
+                    return;
+
+                default:
+                    currentTagToken.Attributes.Current.Value.Append((char)currentInputCharacter);
+                    return;
+            }
+        }
+    }
+}
