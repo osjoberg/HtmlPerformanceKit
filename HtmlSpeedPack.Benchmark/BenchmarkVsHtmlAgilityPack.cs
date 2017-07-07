@@ -20,7 +20,7 @@ namespace HtmlSpeedPack.Benchmark
         }
 
         [Benchmark]
-        public List<string> ExtractExtractLink()
+        public List<string> ExtractLinks()
         {
             stream.Seek(0, SeekOrigin.Begin);
 
@@ -43,7 +43,7 @@ namespace HtmlSpeedPack.Benchmark
         }
 
         [Benchmark]
-        public List<string> ExtractLinkHtmlAgilityPack()
+        public List<string> ExtractLinksHtmlAgilityPack()
         {
             stream.Seek(0, SeekOrigin.Begin);
 
@@ -67,7 +67,7 @@ namespace HtmlSpeedPack.Benchmark
         }
 
         [Benchmark]
-        public List<string> ExtractText()
+        public List<string> ExtractTexts()
         {
             stream.Seek(0, SeekOrigin.Begin);
 
@@ -86,7 +86,7 @@ namespace HtmlSpeedPack.Benchmark
         }
 
         [Benchmark]
-        public List<string> ExtractTextHtmlAgilityPack()
+        public List<string> ExtractTextsHtmlAgilityPack()
         {
             stream.Seek(0, SeekOrigin.Begin);
 
