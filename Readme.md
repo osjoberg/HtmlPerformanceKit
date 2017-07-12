@@ -41,20 +41,20 @@ Job Runtime(s):
 ```
 [X] 8.2.4.1 Data state
 [X] 8.2.4.2 Character reference in data state
-[ ] 8.2.4.3 RCDATA state
-[ ] 8.2.4.4 Character reference in RCDATA state
-[ ] 8.2.4.5 RAWTEXT state
+[X] 8.2.4.3 RCDATA state
+[X] 8.2.4.4 Character reference in RCDATA state
+[X] 8.2.4.5 RAWTEXT state
 [ ] 8.2.4.6 Script data state
-[ ] 8.2.4.7 PLAINTEXT state
+[X] 8.2.4.7 PLAINTEXT state
 [X] 8.2.4.8 Tag open state
 [X] 8.2.4.9 End tag open state
 [X] 8.2.4.10 Tag name state
-[ ] 8.2.4.11 RCDATA less-than sign state
-[ ] 8.2.4.12 RCDATA end tag open state
-[ ] 8.2.4.13 RCDATA end tag name state
-[ ] 8.2.4.14 RAWTEXT less-than sign state
-[ ] 8.2.4.15 RAWTEXT end tag open state
-[ ] 8.2.4.16 RAWTEXT end tag name state
+[X] 8.2.4.11 RCDATA less-than sign state
+[X] 8.2.4.12 RCDATA end tag open state
+[X] 8.2.4.13 RCDATA end tag name state
+[X] 8.2.4.14 RAWTEXT less-than sign state
+[X] 8.2.4.15 RAWTEXT end tag open state
+[X] 8.2.4.16 RAWTEXT end tag name state
 [ ] 8.2.4.17 Script data less-than sign state
 [ ] 8.2.4.18 Script data end tag open state
 [ ] 8.2.4.19 Script data end tag name state

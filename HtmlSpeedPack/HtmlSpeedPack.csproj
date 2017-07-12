@@ -44,6 +44,10 @@
     <Compile Include="Infrastructure\HtmlChar.cs" />
     <Compile Include="HtmlNodeType.cs" />
     <Compile Include="HtmlReader.cs" />
+    <Compile Include="StateMachine\RawText\HtmlStateMachine.RawTextState.cs" />
+    <Compile Include="StateMachine\RawText\HtmlStateMachine.RawTextLessThanSignState.cs" />
+    <Compile Include="StateMachine\RawText\HtmlStateMachine.RawTextEndTagOpenState.cs" />
+    <Compile Include="StateMachine\RawText\HtmlStateMachine.RawTextEndTagNameState.cs" />
     <Compile Include="StateMachine\RcData\HtmlStateMachine.RcDataLessThanSignState.cs" />
     <Compile Include="StateMachine\RcData\HtmlStateMachine.RcDataEndTagOpenState.cs" />
     <Compile Include="StateMachine\RcData\HtmlStateMachine.RcDataEndTagNameState.cs" />
@@ -98,7 +102,12 @@
   <ItemGroup>
     <Compile Include="StateMachine\Doctype\HtmlStateMachine.AfterDoctypePublicIdentifierState.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="StateMachine\HtmlStateMachine.SetNextStateFromTagName.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="StateMachine\PlainText\HtmlStateMachine.PlainTextState.cs" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

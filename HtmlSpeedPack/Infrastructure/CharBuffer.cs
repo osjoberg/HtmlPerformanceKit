@@ -8,20 +8,27 @@ namespace HtmlSpeedPack.Infrastructure
         private bool htmlDecode;
         private char[] buffer;
 
-        public CharBuffer(int initialSize)
+        internal CharBuffer(int initialSize)
         {
             buffer = new char[initialSize];
         }
 
-        public int Length { get; private set; }
+        internal char[] Buffer => buffer;
 
-        public void Clear()
+        internal int Length { get; private set; }
+
+        public override string ToString()
+        {
+            return htmlDecode == false ? new string(buffer, 0, Length) : HttpUtility.HtmlDecode(new string(buffer, 0, Length));
+        }
+
+        internal void Clear()
         {
             Length = 0;
             htmlDecode = false;
         }
 
-        public void Append(char @char)
+        internal void Append(char @char)
         {
             if (Length == buffer.Length)
             {
@@ -31,22 +38,28 @@ namespace HtmlSpeedPack.Infrastructure
             buffer[Length++] = @char;
         }
 
-        public void MayHaveCharacterReference()
+        internal void MayHaveCharacterReference()
         {
             htmlDecode = true;
         }
 
         internal void Append(string @string)
         {
-            while (Length + @string.Length > buffer.Length)
+            Append(@string.ToCharArray(), @string.Length);
+        }
+
+        internal void Append(char[] array, int length)
+        {
+            while (Length + length > buffer.Length)
             {
                 Array.Resize(ref buffer, buffer.Length * 2);
             }
-            
-            Array.Copy(@string.ToCharArray(), 0, buffer, Length, @string.Length);
+
+            Array.Copy(array, 0, buffer, Length, length);
+            Length += length;
         }
 
-        public bool Equals(string @string)
+        internal bool Equals(string @string)
         {
             if (Length != @string.Length)
             {
@@ -62,11 +75,6 @@ namespace HtmlSpeedPack.Infrastructure
             }
 
             return true;
-        }
-
-        public override string ToString()
-        {           
-            return htmlDecode == false ? new string(buffer, 0, Length) : HttpUtility.HtmlDecode(new string(buffer, 0, Length));
         }
     }
 }

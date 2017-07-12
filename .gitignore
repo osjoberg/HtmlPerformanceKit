@@ -13,3 +13,4 @@
 /nuget
 *.user
 /HtmlSpeedPack/obj/Release
+/HtmlSpeedPack/obj/Debug

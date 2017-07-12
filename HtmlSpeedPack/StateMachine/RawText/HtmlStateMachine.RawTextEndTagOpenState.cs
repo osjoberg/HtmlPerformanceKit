@@ -3,20 +3,20 @@
     internal partial class HtmlStateMachine
     {
         /// <summary>
-        /// 8.2.4.12 RCDATA end tag open state
+        /// 8.2.4.15 RAWTEXT end tag open state
         ///
         /// Consume the next input character:
         /// 
         /// Uppercase ASCII letter
-        /// Create a new end tag token, and set its tag name to the lowercase version of the current input character (add 0x0020 to the character's code point). Append the current input character to the temporary buffer. Finally, switch to the RCDATA end tag name state. (Don't emit the token yet; further details will be filled in before it is emitted.)
+        /// Create a new end tag token, and set its tag name to the lowercase version of the current input character (add 0x0020 to the character's code point). Append the current input character to the temporary buffer. Finally, switch to the RAWTEXT end tag name state. (Don't emit the token yet; further details will be filled in before it is emitted.)
         /// 
         /// Lowercase ASCII letter
-        /// Create a new end tag token, and set its tag name to the current input character. Append the current input character to the temporary buffer. Finally, switch to the RCDATA end tag name state. (Don't emit the token yet; further details will be filled in before it is emitted.)
+        /// Create a new end tag token, and set its tag name to the current input character. Append the current input character to the temporary buffer. Finally, switch to the RAWTEXT end tag name state. (Don't emit the token yet; further details will be filled in before it is emitted.)
         /// 
         /// Anything else
-        /// Switch to the RCDATA state. Emit a U+003C LESS-THAN SIGN character token and a U+002F SOLIDUS character token. Reconsume the current input character.
-        /// </summary>        
-        private void RcDataEndTagOpenState()
+        /// Switch to the RAWTEXT state. Emit a U+003C LESS-THAN SIGN character token and a U+002F SOLIDUS character token. Reconsume the current input character.
+        /// </summary>
+        private void RawTextEndTagOpenState()
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -52,7 +52,7 @@
                     currentTagToken.EndTag = true;
                     currentTagToken.Name.Append((char)(currentInputCharacter + 0x20));
                     temporaryBuffer.Append((char)currentInputCharacter);
-                    State = RcDataEndTagNameState;
+                    State = RawTextEndTagNameState;
                     return;
 
                 case 'a':
@@ -85,11 +85,11 @@
                     currentTagToken.EndTag = true;
                     currentTagToken.Name.Append((char)currentInputCharacter);
                     temporaryBuffer.Append((char)currentInputCharacter);
-                    State = RcDataEndTagNameState;
+                    State = RawTextEndTagNameState;
                     return;
 
                 default:
-                    State = RcDataState;
+                    State = RawTextState;
                     currentDataBuffer.Append('<');
                     currentDataBuffer.Append('/');
                     bufferReader.Reconsume(currentInputCharacter);

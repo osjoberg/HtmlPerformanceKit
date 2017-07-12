@@ -3,7 +3,7 @@
     internal partial class HtmlStateMachine
     {
         /// <summary>
-        /// 8.2.4.13 RCDATA end tag name state
+        /// 8.2.4.16 RAWTEXT end tag name state
         ///
         /// Consume the next input character:
         /// 
@@ -26,9 +26,9 @@
         /// Append the current input character to the current tag token's tag name. Append the current input character to the temporary buffer.
         /// 
         /// Anything else
-        /// Switch to the RCDATA state. Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume the current input character.
+        /// Switch to the RAWTEXT state. Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume the current input character.
         /// </summary>
-        private void RcDataEndTagNameState()
+        private void RawTextEndTagNameState()
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -69,6 +69,7 @@
                         EmitTagToken = currentTagToken;
                         return;
                     }
+
                     goto default;
 
                 case 'A':
@@ -132,7 +133,7 @@
                     return;
 
                 default:
-                    State = RcDataState;
+                    State = RawTextState;
                     currentDataBuffer.Append('<');
                     currentDataBuffer.Append('/');
                     currentDataBuffer.Append(temporaryBuffer.ToString());

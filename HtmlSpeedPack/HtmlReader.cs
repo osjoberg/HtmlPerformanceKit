@@ -1,4 +1,5 @@
 ﻿using System.IO;
+
 using HtmlSpeedPack.StateMachine;
 
 namespace HtmlSpeedPack
@@ -33,6 +34,14 @@ namespace HtmlSpeedPack
                 if (stateMachine.EmitTagToken != null)
                 {
                     NodeType = HtmlNodeType.Tag;
+
+                    stateMachine.SetNextStateFromTagName();
+
+                    if (stateMachine.EmitTagToken.EndTag == false)
+                    {
+                        stateMachine.RememberLastStartTagName();
+                    }
+
                     return true;
                 }
 

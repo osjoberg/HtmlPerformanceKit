@@ -58,7 +58,7 @@ namespace HtmlSpeedPack.Benchmark
                     var hrefAttributeValue = node.Attributes["href"];
                     if (hrefAttributeValue != null)
                     {
-                        links.Add(hrefAttributeValue.Value);
+                        links.Add(HttpUtility.HtmlDecode(hrefAttributeValue.Value));
                     }
                 }
             }
@@ -98,7 +98,7 @@ namespace HtmlSpeedPack.Benchmark
             {
                 if (node.NodeType == HtmlAgilityPack.HtmlNodeType.Text)
                 {
-                    texts.Add(HttpUtility.HtmlDecode(node.InnerText));
+                    texts.Add(node.InnerText);
                 }
             }
 

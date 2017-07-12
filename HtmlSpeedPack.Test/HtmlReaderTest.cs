@@ -261,7 +261,6 @@ namespace HtmlSpeedPack.Test
             Assert.IsFalse(reader.Read());
         }
 
-
         [TestMethod]
         public void DataDecimalCharacterReference()
         {
@@ -301,7 +300,6 @@ namespace HtmlSpeedPack.Test
             Assert.IsFalse(reader.Read());
         }
 
-
         [TestMethod]
         public void AttributeValueDecimalCharacterReference()
         {
@@ -334,6 +332,128 @@ namespace HtmlSpeedPack.Test
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual("<", reader.GetAttribute("title"));
+
+            Assert.IsFalse(reader.Read());
+        }
+
+        [TestMethod]
+        public void RcDataEmpty()
+        {
+            var stream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("<title></title>")));
+            var reader = new HtmlReader(stream);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual("title", reader.Name);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual("title", reader.Name);
+
+            Assert.IsFalse(reader.Read());
+        }
+
+        [TestMethod]
+        public void RcDataWithStartTag()
+        {
+            var stream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("<title><p></title>")));
+            var reader = new HtmlReader(stream);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual("title", reader.Name);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual("<p>", reader.Text);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual("title", reader.Name);
+
+            Assert.IsFalse(reader.Read());
+        }
+
+        [TestMethod]
+        public void RcDataWithStartAndEndTag()
+        {
+            var stream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("<title><p></p></title>")));
+            var reader = new HtmlReader(stream);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual("title", reader.Name);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual("<p></p>", reader.Text);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual("title", reader.Name);
+
+            Assert.IsFalse(reader.Read());
+        }
+
+        [TestMethod]
+        public void RcDataWithSelfClosingTag()
+        {
+            var stream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("<title><br /></title>")));
+            var reader = new HtmlReader(stream);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual("title", reader.Name);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual("<br />", reader.Text);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual("title", reader.Name);
+
+            Assert.IsFalse(reader.Read());
+        }
+
+        [TestMethod]
+        public void RcDataWithText()
+        {
+            var stream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("<title>hello</title>")));
+            var reader = new HtmlReader(stream);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual("title", reader.Name);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual("hello", reader.Text);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual("title", reader.Name);
+
+            Assert.IsFalse(reader.Read());
+        }
+
+        [TestMethod]
+        public void RcDataWithTag()
+        {
+            var stream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("<title></title><p>")));
+            var reader = new HtmlReader(stream);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual("title", reader.Name);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual("title", reader.Name);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual("p", reader.Name);
 
             Assert.IsFalse(reader.Read());
         }

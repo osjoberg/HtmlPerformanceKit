@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Web;
 
 using HtmlAgilityPack;
 
@@ -24,32 +25,9 @@ namespace HtmlSpeedPack.Test
         {
             stream.Seek(0, SeekOrigin.Begin);
 
-            var htmlReader = new HtmlReader(new StreamReader(stream));
-            var links = new List<string>();
-
-            while (htmlReader.Read())
-            {
-                if (htmlReader.NodeType == HtmlNodeType.Tag && htmlReader.Name == "a")
-                {
-                    var hrefAttributeValue = htmlReader.GetAttribute("href");
-                    if (hrefAttributeValue != null)
-                    {
-                        links.Add(hrefAttributeValue);
-                    }
-                }
-            }
-
-            Assert.AreEqual(7376, links.Count);
-        }
-
-        [TestMethod]
-        public void ExtractLinksFromWikipediaListOfAustralianTreatiesHtmlAgilityPack()
-        {
-            stream.Seek(0, SeekOrigin.Begin);
-
             var htmlDocument = new HtmlDocument();
             htmlDocument.Load(stream);
-            var links = new List<string>();
+            var htmlAgilityPackLinks = new List<string>();
 
             foreach (var node in htmlDocument.DocumentNode.Descendants())
             {
@@ -58,12 +36,29 @@ namespace HtmlSpeedPack.Test
                     var hrefAttributeValue = node.Attributes["href"];
                     if (hrefAttributeValue != null)
                     {
-                        links.Add(hrefAttributeValue.Value);
+                        htmlAgilityPackLinks.Add(HttpUtility.HtmlDecode(hrefAttributeValue.Value));
                     }
                 }
             }
 
-            Assert.AreEqual(7376, links.Count);
+            stream.Seek(0, SeekOrigin.Begin);
+
+            var htmlReader = new HtmlReader(new StreamReader(stream));
+            var htmlSpeedPackLinks = new List<string>();
+
+            while (htmlReader.Read())
+            {
+                if (htmlReader.NodeType == HtmlNodeType.Tag && htmlReader.Name == "a")
+                {
+                    var hrefAttributeValue = htmlReader.GetAttribute("href");
+                    if (hrefAttributeValue != null)
+                    {
+                        htmlSpeedPackLinks.Add(hrefAttributeValue);
+                    }
+                }
+            }
+
+            CollectionAssert.AreEqual(htmlAgilityPackLinks, htmlSpeedPackLinks);
         }
 
         [TestMethod]
@@ -71,38 +66,32 @@ namespace HtmlSpeedPack.Test
         {
             stream.Seek(0, SeekOrigin.Begin);
 
+            var htmlDocument = new HtmlDocument();
+            htmlDocument.Load(stream);
+            var htmlAgilityPackTexts = new List<string>();
+
+            foreach (var node in htmlDocument.DocumentNode.Descendants())
+            {
+                if (node.NodeType == HtmlAgilityPack.HtmlNodeType.Text && node.InnerText != "</form>" && node.InnerText != "")
+                {
+                    htmlAgilityPackTexts.Add(node.InnerText);
+                }
+            }
+
+            stream.Seek(0, SeekOrigin.Begin);
+
             var htmlReader = new HtmlReader(new StreamReader(stream));
-            var texts = new List<string>();
+            var htmlSpeedPackTexts = new List<string>();
 
             while (htmlReader.Read())
             {
                 if (htmlReader.NodeType == HtmlNodeType.Text)
                 {
-                    texts.Add(htmlReader.Text);
+                    htmlSpeedPackTexts.Add(htmlReader.Text);
                 }
             }
 
-            Assert.AreEqual(18618, texts.Count);
-        }
-
-        [TestMethod]
-        public void ExtractTextFromWikipediaListOfAustralianTreatiesHtmlAgilityPack()
-        {
-            stream.Seek(0, SeekOrigin.Begin);
-
-            var htmlDocument = new HtmlDocument();
-            htmlDocument.Load(stream);
-            var texts = new List<string>();
-
-            foreach (var node in htmlDocument.DocumentNode.Descendants())
-            {
-                if (node.NodeType == HtmlAgilityPack.HtmlNodeType.Text)
-                {
-                    texts.Add(node.InnerText);
-                }
-            }
-
-            Assert.AreEqual(18620, texts.Count);
+            CollectionAssert.AreEqual(htmlAgilityPackTexts, htmlSpeedPackTexts);
         }
     }
 }

@@ -7,22 +7,14 @@ namespace HtmlSpeedPack.StateMachine
     internal partial class HtmlStateMachine
     {
         private const int EofMarker = -1;
-
         private readonly HtmlTagToken currentTagToken = new HtmlTagToken();
-
         private readonly HtmlTagToken currentDoctypeToken = new HtmlTagToken();
-
         private readonly CharBuffer currentDataBuffer = new CharBuffer(1024 * 10);
-
         private readonly CharBuffer currentCommentBuffer = new CharBuffer(1024 * 10);
-
         private readonly CharBuffer temporaryBuffer = new CharBuffer(1024);
-
-
+        private readonly CharBuffer appropriateTagName = new CharBuffer(100);
         private readonly BufferReader bufferReader;
-
         private CurrentState returnToState;
-
         private char additionalAllowedCharacter;
 
         public HtmlStateMachine(StreamReader streamReader)
@@ -36,9 +28,6 @@ namespace HtmlSpeedPack.StateMachine
         public string ParseError { get; private set; }
 
         public CurrentState State { get; private set; }
-
-
-
 
         public bool Eof { get; private set; }
 
@@ -60,6 +49,12 @@ namespace HtmlSpeedPack.StateMachine
             currentDataBuffer.Clear();
 
             ParseError = null;
+        }
+
+        internal void RememberLastStartTagName()
+        {
+            appropriateTagName.Clear();
+            appropriateTagName.Append(EmitTagToken.Name.Buffer, EmitTagToken.Name.Length);
         }
     }
 }
