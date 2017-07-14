@@ -1,6 +1,6 @@
 ﻿namespace HtmlPerformanceKit.Infrastructure
 {
-    internal class ParseErrorMessage
+    internal static class ParseErrorMessage
     {
         public const string UnexpectedEndOfFile = "Unexpected end of file.";
         public const string UnexpectedNullCharacterInStream = "Unexpected null character in stream.";

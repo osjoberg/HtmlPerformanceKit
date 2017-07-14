@@ -14,7 +14,7 @@
 
         internal AttributeBufferList Attributes { get; set; }
 
-        public bool EndTag { get; set; }
+        internal bool EndTag { get; set; }
 
         internal void Clear()
         {

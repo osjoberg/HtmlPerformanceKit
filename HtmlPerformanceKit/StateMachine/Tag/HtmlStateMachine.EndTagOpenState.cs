@@ -90,7 +90,7 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'z':
                     currentTagToken.Clear();
                     currentTagToken.EndTag = true;
-                    currentTagToken.Name.Append((char)(currentInputCharacter));
+                    currentTagToken.Name.Append((char)currentInputCharacter);
                     State = TagNameState;
                     return;
 

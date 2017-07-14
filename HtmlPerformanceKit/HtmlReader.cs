@@ -1,30 +1,74 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
+using HtmlPerformanceKit.Infrastructure;
 using HtmlPerformanceKit.StateMachine;
 
 namespace HtmlPerformanceKit
 {
-    public class HtmlReader
+    /// <summary>
+    /// HtmlReader is a streaming reader for HTML documents.
+    /// </summary>
+    public class HtmlReader : IDisposable
     {
+        private readonly StreamReader streamReader;
         private readonly HtmlStateMachine stateMachine;
+        private CharBuffer textBuffer;
+        private HtmlTagToken tagToken;
 
-        public HtmlReader(StreamReader textReader)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HtmlReader" /> class.
+        /// </summary>
+        /// <param name="streamReader">StreamReader instance to read from.</param>
+        public HtmlReader(StreamReader streamReader)
         {
-            stateMachine = new HtmlStateMachine(textReader);
+            if (streamReader == null)
+            {
+                throw new ArgumentNullException(nameof(streamReader));
+            }
+
+            this.streamReader = streamReader;
+            stateMachine = new HtmlStateMachine(streamReader);
         }
 
+        /// <summary>
+        /// Gets last read node type.
+        /// </summary>
         public HtmlNodeType NodeType { get; private set; }
 
-        public bool SelfClosingElement => stateMachine.EmitTagToken?.SelfClosing ?? false;
+        /// <summary>
+        /// Gets if last read tag is a self closing element.
+        /// <returns>True if last read node was <see cref="HtmlNodeType.Tag"/> or <see cref="HtmlNodeType.Doctype"/> and it was a self closing element, otherwise False.</returns>
+        /// </summary>
+        public bool SelfClosingElement => tagToken?.SelfClosing ?? false;
 
-        public string Name => stateMachine.EmitTagToken?.Name.ToString();
+        /// <summary>
+        /// Gets the last read tag name.
+        /// <returns>Lowercased tag name if last read node was <see cref="HtmlNodeType.Tag"/> or <see cref="HtmlNodeType.Doctype"/>, otherwise Null.</returns>
+        /// </summary>
+        public string Name => tagToken?.Name.ToString();
 
-        public string Text => stateMachine.EmitDataBuffer.ToString();
+        /// <summary>
+        /// Gets the last read text.
+        /// <returns>Text if last read node was <see cref="HtmlNodeType.Text"/> or <see cref="HtmlNodeType.Comment"/>, otherwise Null.</returns>
+        /// </summary>
+        public string Text => textBuffer?.ToString();
 
-        public string Comment => stateMachine.EmitCommentBuffer.ToString();
+        /// <summary>
+        /// Gets the last read attribute count.
+        /// <returns>Number of attributes if last read node was <see cref="HtmlNodeType.Text"/> or <see cref="HtmlNodeType.Comment"/>, otherwise 0.</returns>
+        /// </summary>
+        public int AttributeCount => tagToken?.Attributes.Count ?? 0;
 
+        /// <summary>
+        /// Reads one more token from the stream.
+        /// </summary>
+        /// <returns>True if one node was read, False if end of stream is reached.</returns>
         public bool Read()
         {
+            textBuffer = null;
+            tagToken = null;
+
             stateMachine.ResetEmit();
 
             while (true)
@@ -33,7 +77,7 @@ namespace HtmlPerformanceKit
 
                 if (stateMachine.EmitTagToken != null)
                 {
-                    NodeType = HtmlNodeType.Tag;
+                    NodeType = stateMachine.EmitTagToken.EndTag ? HtmlNodeType.EndTag  : HtmlNodeType.Tag;
 
                     stateMachine.SetNextStateFromTagName();
 
@@ -42,24 +86,29 @@ namespace HtmlPerformanceKit
                         stateMachine.RememberLastStartTagName();
                     }
 
+                    tagToken = stateMachine.EmitTagToken;
+
                     return true;
                 }
 
                 if (stateMachine.EmitDataBuffer != null)
                 {
                     NodeType = HtmlNodeType.Text;
+                    textBuffer = stateMachine.EmitDataBuffer;
                     return true;
                 }
 
                 if (stateMachine.EmitCommentBuffer != null)
                 {
                     NodeType = HtmlNodeType.Comment;
+                    textBuffer = stateMachine.EmitCommentBuffer;
                     return true;
                 }
 
                 if (stateMachine.EmitDoctypeToken != null)
                 {
                     NodeType = HtmlNodeType.Doctype;
+                    tagToken = stateMachine.EmitDoctypeToken;
                     return true;
                 }
 
@@ -70,9 +119,62 @@ namespace HtmlPerformanceKit
             }
         }
 
+        /// <summary>
+        /// Get attribute value by attribute name.
+        /// </summary>
+        /// <param name="name">Name of attribute value to get.</param>
+        /// <returns>Attribute value of first specified attribute name if last read node was <see cref="HtmlNodeType.Text"/> or <see cref="HtmlNodeType.Comment"/>, otherwise Null.</returns>
         public string GetAttribute(string name)
         {
-            return stateMachine.EmitTagToken?.Attributes[name]?.ToString();
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            if (name.Length == 0)
+            {
+                throw new ArgumentException("Invalid attribute name, \"\".", nameof(name));
+            }
+
+            return tagToken?.Attributes[name]?.ToString();
+        }
+
+        /// <summary>
+        /// Get attribute value by attribute index.
+        /// </summary>
+        /// <param name="index">Index of attribute value to get.</param>
+        /// <returns>Attribute value of specified index if last read node was <see cref="HtmlNodeType.Text"/> or <see cref="HtmlNodeType.Comment"/>, otherwise Null.</returns>
+        public string GetAttribute(int index)
+        {
+            if (index < 0 || index >= AttributeCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            return tagToken?.Attributes[index]?.Value.ToString();
+        }
+
+        /// <summary>
+        /// Get attribute name by attribute index.
+        /// </summary>
+        /// <param name="index">Index of attribute name to get.</param>
+        /// <returns>Attribute name of specified index if last read node was <see cref="HtmlNodeType.Text"/> or <see cref="HtmlNodeType.Comment"/>, otherwise Null.</returns>
+        public string GetAttributeName(int index)
+        {
+            if (index < 0 || index >= AttributeCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            return tagToken?.Attributes[index]?.Name.ToString();
+        }
+
+        /// <summary>
+        /// Disposes the instance and it's associated StreamReader.
+        /// </summary>
+        public void Dispose()
+        {
+            streamReader.Dispose();
         }
     }
 }

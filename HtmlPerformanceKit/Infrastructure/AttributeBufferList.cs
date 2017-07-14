@@ -6,15 +6,15 @@ namespace HtmlPerformanceKit.Infrastructure
     {
         private readonly List<AttributeBuffer> attributes = new List<AttributeBuffer>();
 
-        public int Count { get; private set; }
+        internal int Count { get; private set; }
 
-        public AttributeBuffer Current { get; private set; }
+        internal AttributeBuffer Current { get; private set; }
 
-        public CharBuffer this[string name] => GetItem(name)?.Value;
-        
-        public AttributeBuffer this[int index] => index < Count ? attributes[index] : null;
+        internal CharBuffer this[string name] => GetItem(name)?.Value;
 
-        public void Add()
+        internal AttributeBuffer this[int index] => index < Count ? attributes[index] : null;
+
+        internal void Add()
         {
             if (attributes.Count > Count)
             {
@@ -34,15 +34,10 @@ namespace HtmlPerformanceKit.Infrastructure
             }
         }
 
-        public void Clear()
+        internal void Clear()
         {
             Count = 0;
             Current = null;
-        }
-
-        public bool Contains(string name)
-        {
-            return GetItem(name) != null;
         }
 
         private AttributeBuffer GetItem(string name)

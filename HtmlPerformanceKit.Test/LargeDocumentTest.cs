@@ -44,7 +44,7 @@ namespace HtmlPerformanceKit.Test
             stream.Seek(0, SeekOrigin.Begin);
 
             var htmlReader = new HtmlReader(new StreamReader(stream));
-            var HtmlPerformanceKitLinks = new List<string>();
+            var htmlPerformanceKitLinks = new List<string>();
 
             while (htmlReader.Read())
             {
@@ -53,12 +53,12 @@ namespace HtmlPerformanceKit.Test
                     var hrefAttributeValue = htmlReader.GetAttribute("href");
                     if (hrefAttributeValue != null)
                     {
-                        HtmlPerformanceKitLinks.Add(hrefAttributeValue);
+                        htmlPerformanceKitLinks.Add(hrefAttributeValue);
                     }
                 }
             }
 
-            CollectionAssert.AreEqual(htmlAgilityPackLinks, HtmlPerformanceKitLinks);
+            CollectionAssert.AreEqual(htmlAgilityPackLinks, htmlPerformanceKitLinks);
         }
 
         [TestMethod]
@@ -81,17 +81,17 @@ namespace HtmlPerformanceKit.Test
             stream.Seek(0, SeekOrigin.Begin);
 
             var htmlReader = new HtmlReader(new StreamReader(stream));
-            var HtmlPerformanceKitTexts = new List<string>();
+            var htmlPerformanceKitTexts = new List<string>();
 
             while (htmlReader.Read())
             {
                 if (htmlReader.NodeType == HtmlNodeType.Text)
                 {
-                    HtmlPerformanceKitTexts.Add(htmlReader.Text);
+                    htmlPerformanceKitTexts.Add(htmlReader.Text);
                 }
             }
 
-            CollectionAssert.AreEqual(htmlAgilityPackTexts, HtmlPerformanceKitTexts);
+            CollectionAssert.AreEqual(htmlAgilityPackTexts, htmlPerformanceKitTexts);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace HtmlPerformanceKit.Infrastructure
 {
-    internal class HtmlChar
+    internal static class HtmlChar
     {
         internal const char Null = '\0';
         internal const char ReplacementCharacter = '\uFFFD';
@@ -2246,31 +2246,6 @@ namespace HtmlPerformanceKit.Infrastructure
         {
             char[] result;
             return HtmlCharacterReferences.TryGetValue(characterReference, out result) ? result : null;
-        }
-
-        internal static int ParseDecimalDigit(int @char)
-        {
-            return @char >= '0' && @char <= '9' ? @char - '0' : -1;
-        }
-
-        internal static int ParseHexDigit(int @char)
-        {
-            if (@char >= '0' && @char <= '9')
-            {
-                return @char - '0';
-            }
-
-            if (@char >= 'a' && @char <= 'f')
-            {
-                return @char - 'a' + 10;
-            }
-
-            if (@char >= 'A' && @char <= 'F')
-            {
-                return @char - 'A' + 10;
-            }
-
-            return -1;
         }
 
         internal static char? GetReplacementCharacterReference(int codepoint)

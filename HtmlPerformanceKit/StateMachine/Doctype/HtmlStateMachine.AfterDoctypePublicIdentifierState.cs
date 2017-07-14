@@ -2,7 +2,7 @@
 
 namespace HtmlPerformanceKit.StateMachine
 {
-    partial class HtmlStateMachine
+    internal partial class HtmlStateMachine
     {
         /// <summary>
         /// 8.2.4.60 After DOCTYPE public identifier state

@@ -31,7 +31,7 @@ namespace HtmlPerformanceKit.StateMachine
                     var comment = bufferReader.Peek(CommentMarker.Length);
                     if (comment[1] != CommentMarker[1])
                     {
-                        break;
+                        goto default;
                     }
 
                     bufferReader.Consume(CommentMarker.Length);
@@ -41,9 +41,9 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case 'd':
                 case 'D':
-                    if (bufferReader.Peek(DoctypeMarker.Length).Equals(DoctypeMarker, StringComparison.InvariantCultureIgnoreCase) == false)
+                    if (bufferReader.Peek(DoctypeMarker.Length).Equals(DoctypeMarker, StringComparison.OrdinalIgnoreCase) == false)
                     {
-                        break;
+                        goto default;
                     }
 
                     bufferReader.Consume(DoctypeMarker.Length);
@@ -53,17 +53,18 @@ namespace HtmlPerformanceKit.StateMachine
                 case '[':
                     if (bufferReader.Peek(CDataMarker.Length) != CDataMarker)
                     {
-                        break;
+                        goto default;
                     }
 
                     bufferReader.Consume(CDataMarker.Length);
                     State = CDataSectionState;
+                    return;
 
+                default:
+                    ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                    State = BogusCommentState;
                     return;
             }
-
-            ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
-            State = BogusCommentState;
         }
     }
 }

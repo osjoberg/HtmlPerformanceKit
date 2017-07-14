@@ -42,7 +42,7 @@
                         return;
                     }
 
-                    break;
+                    goto default;
 
                 case 5:
                     if (buffer[0] == 't' && buffer[1] == 'i' && buffer[2] == 't' && buffer[3] == 'l' && buffer[4] == 'e')
@@ -57,7 +57,7 @@
                         return;
                     }
 
-                    break;
+                    goto default;
 
                 case 6:
                     if (buffer[0] == 'i' && buffer[1] == 'f' && buffer[2] == 'r' && buffer[3] == 'a' && buffer[4] == 'm' && buffer[5] == 'e')
@@ -72,7 +72,7 @@
                         return;
                     }
 
-                    break;
+                    goto default;
 
                 case 7:
                     if (buffer[0] == 'n' && buffer[1] == 'o' && buffer[2] == 'e' && buffer[3] == 'm' && buffer[4] == 'b' && buffer[5] == 'e' && buffer[5] == 'd')
@@ -81,7 +81,7 @@
                         return;
                     }
 
-                    break;
+                    goto default;
 
                 case 8:
                     if (buffer[0] == 't' && buffer[1] == 'e' && buffer[2] == 'x' && buffer[3] == 't' && buffer[4] == 'a' && buffer[5] == 'r' && buffer[6] == 'e' && buffer[7] == 'a')
@@ -97,7 +97,7 @@
                     }
 
                     // noscript is not handled according to spec, always allowing noscript tags to be tokenized in case someone wants to tokenize noscript.
-                    break;
+                    goto default;
                 case 9:
 
                     if (buffer[0] == 'p' && buffer[1] == 'l' && buffer[2] == 'a' && buffer[3] == 'i' && buffer[4] == 'n' && buffer[5] == 't' && buffer[6] == 'e' && buffer[7] == 'x' && buffer[8] == 't')
@@ -106,10 +106,12 @@
                         return;
                     }
 
-                    break;
-            }
+                    goto default;
 
-            State = DataState;
+                default:
+                    State = DataState;
+                    return;
+            }
         }
     }
 }

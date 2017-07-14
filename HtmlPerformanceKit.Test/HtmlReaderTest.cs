@@ -217,7 +217,7 @@ namespace HtmlPerformanceKit.Test
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlNodeType.Comment, reader.NodeType);
-            Assert.AreEqual("", reader.Comment);
+            Assert.AreEqual("", reader.Text);
 
             Assert.IsFalse(reader.Read());
         }
@@ -230,7 +230,7 @@ namespace HtmlPerformanceKit.Test
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlNodeType.Comment, reader.NodeType);
-            Assert.AreEqual("", reader.Comment);
+            Assert.AreEqual("", reader.Text);
 
             Assert.IsFalse(reader.Read());
         }
@@ -243,7 +243,7 @@ namespace HtmlPerformanceKit.Test
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlNodeType.Comment, reader.NodeType);
-            Assert.AreEqual("div displayed", reader.Comment);
+            Assert.AreEqual("div displayed", reader.Text);
 
             Assert.IsFalse(reader.Read());
         }
@@ -256,7 +256,7 @@ namespace HtmlPerformanceKit.Test
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlNodeType.Comment, reader.NodeType);
-            Assert.AreEqual("/div", reader.Comment);
+            Assert.AreEqual("/div", reader.Text);
 
             Assert.IsFalse(reader.Read());
         }
@@ -373,7 +373,7 @@ namespace HtmlPerformanceKit.Test
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlNodeType.EndTag, reader.NodeType);
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsFalse(reader.Read());
@@ -394,7 +394,7 @@ namespace HtmlPerformanceKit.Test
             Assert.AreEqual("<p>", reader.Text);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlNodeType.EndTag, reader.NodeType);
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsFalse(reader.Read());
@@ -415,7 +415,7 @@ namespace HtmlPerformanceKit.Test
             Assert.AreEqual("<p></p>", reader.Text);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlNodeType.EndTag, reader.NodeType);
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsFalse(reader.Read());
@@ -436,7 +436,7 @@ namespace HtmlPerformanceKit.Test
             Assert.AreEqual("<br />", reader.Text);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlNodeType.EndTag, reader.NodeType);
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsFalse(reader.Read());
@@ -457,7 +457,7 @@ namespace HtmlPerformanceKit.Test
             Assert.AreEqual("hello", reader.Text);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlNodeType.EndTag, reader.NodeType);
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsFalse(reader.Read());
@@ -474,12 +474,28 @@ namespace HtmlPerformanceKit.Test
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlNodeType.EndTag, reader.NodeType);
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
             Assert.AreEqual("p", reader.Name);
+
+            Assert.IsFalse(reader.Read());
+        }
+
+        [TestMethod]
+        public void GetAttributeReturnsFirstAttributeValue()
+        {
+            var stream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("<img src=\"a\" src=\"b\" />")));
+            var reader = new HtmlReader(stream);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual("img", reader.Name);
+
+            Assert.AreEqual(2, reader.AttributeCount);
+            Assert.AreEqual("a", reader.GetAttribute("src"));
 
             Assert.IsFalse(reader.Read());
         }

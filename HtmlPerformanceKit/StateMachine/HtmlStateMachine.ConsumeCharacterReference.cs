@@ -92,33 +92,34 @@ namespace HtmlPerformanceKit.StateMachine
                     for (var i = startIndex; i > 0; i--)
                     {
                         var characterReferenceAttempt = characterReferenceBuffer.Substring(0, i);
-                        var characterReferenceResult =
-                            HtmlChar.GetCharactersByCharacterReference(characterReferenceAttempt);
-                        if (characterReferenceResult != null)
+                        var characterReferenceResult = HtmlChar.GetCharactersByCharacterReference(characterReferenceAttempt);
+                        if (characterReferenceResult == null)
                         {
-                            if ((additionalAllowedCharacter == '"' || additionalAllowedCharacter == '\'')
-                                && characterReferenceBuffer[i - 1] != ';' && characterReferenceBuffer.Length > i
-                                && (characterReferenceBuffer[i] == '='
-                                    || (characterReferenceBuffer[i] >= 'A' && characterReferenceBuffer[i] <= 'Z')
-                                    || (characterReferenceBuffer[i] >= 'a' && characterReferenceBuffer[i] <= 'z')
-                                    || (characterReferenceBuffer[i] >= '0' && characterReferenceBuffer[i] <= '9')))
-                            {
-                                if (characterReferenceBuffer[i] == '=')
-                                {
-                                    ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
-                                }
+                            continue;
+                        }
 
-                                return Nothing;
-                            }
-
-                            if (characterReferenceBuffer[i - 1] != ';')
+                        if ((additionalAllowedCharacter == '"' || additionalAllowedCharacter == '\'')
+                            && characterReferenceBuffer[i - 1] != ';' && characterReferenceBuffer.Length > i
+                            && (characterReferenceBuffer[i] == '='
+                                || (characterReferenceBuffer[i] >= 'A' && characterReferenceBuffer[i] <= 'Z')
+                                || (characterReferenceBuffer[i] >= 'a' && characterReferenceBuffer[i] <= 'z')
+                                || (characterReferenceBuffer[i] >= '0' && characterReferenceBuffer[i] <= '9')))
+                        {
+                            if (characterReferenceBuffer[i] == '=')
                             {
                                 ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
                             }
 
-                            bufferReader.Consume(characterReferenceAttempt.Length);
-                            return characterReferenceResult;
+                            return Nothing;
                         }
+
+                        if (characterReferenceBuffer[i - 1] != ';')
+                        {
+                            ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                        }
+
+                        bufferReader.Consume(characterReferenceAttempt.Length);
+                        return characterReferenceResult;
                     }
 
                     for (var i = 0; i < characterReferenceBuffer.Length; i++)
@@ -130,14 +131,14 @@ namespace HtmlPerformanceKit.StateMachine
                             continue;
                         }
 
-                        if (characterReferenceBuffer[i] == ';')
+                        if (characterReferenceBuffer[i] != ';')
                         {
-                            if (i > 0)
-                            {
-                                ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
-                            }
-
                             return Nothing;
+                        }
+                            
+                        if (i > 0)
+                        {
+                            ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
                         }
 
                         return Nothing;

@@ -58,14 +58,14 @@ namespace HtmlPerformanceKit.StateMachine
                     bufferReader.Reconsume(currentInputCharacter);
                     var peek = bufferReader.Peek(6);
 
-                    if (Public.Equals(peek, StringComparison.InvariantCultureIgnoreCase))
+                    if (Public.Equals(peek, StringComparison.OrdinalIgnoreCase))
                     {
                         bufferReader.Consume(Public.Length);
                         State = AfterDoctypePublicKeywordState;
                         return;
                     }
 
-                    if (System.Equals(peek, StringComparison.InvariantCultureIgnoreCase))
+                    if (System.Equals(peek, StringComparison.OrdinalIgnoreCase))
                     {
                         bufferReader.Consume(System.Length);
                         State = AfterDoctypeSystemKeywordState;
