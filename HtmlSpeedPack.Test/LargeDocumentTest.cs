@@ -74,7 +74,7 @@ namespace HtmlSpeedPack.Test
             {
                 if (node.NodeType == HtmlAgilityPack.HtmlNodeType.Text && node.InnerText != "</form>" && node.InnerText != "")
                 {
-                    htmlAgilityPackTexts.Add(node.InnerText);
+                    htmlAgilityPackTexts.Add(HttpUtility.HtmlDecode(node.InnerText));
                 }
             }
 

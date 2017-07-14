@@ -32,8 +32,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -53,6 +51,24 @@
     <Compile Include="StateMachine\RcData\HtmlStateMachine.RcDataEndTagNameState.cs" />
     <Compile Include="StateMachine\RcData\HtmlStateMachine.RcDataState.cs" />
     <Compile Include="StateMachine\RcData\HtmlStateMachine.CharacterReferenceInRcDataState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataDoubleEscapedLessThanSignState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataDoubleEscapedDashDashState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataDoubleEscapedDashState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataDoubleEscapeEndState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEndTagNameState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEndTagOpenState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataDoubleEscapedState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEscapedDashState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEscapedDashDashState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataDoubleEscapeStartState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEscapedEndTagOpenState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEscapedEndTagNameState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEscapedState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEscapeStartDashState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEscapeStartState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEscapedLessThanSignState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataLessThanSignState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataState.cs" />
     <Compile Include="StateMachine\Tag\HtmlStateMachine.AfterAttributeValueQuotedState.cs" />
     <Compile Include="StateMachine\Doctype\HtmlStateMachine.AfterDoctypeSystemIdentifierState.cs" />
     <Compile Include="StateMachine\Doctype\HtmlStateMachine.AfterDoctypePublicKeywordState.cs" />
@@ -107,6 +123,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="StateMachine\PlainText\HtmlStateMachine.PlainTextState.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="StateMachine\HtmlStateMachine.ConsumeCharacterReference.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

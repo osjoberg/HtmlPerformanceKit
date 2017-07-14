@@ -16,9 +16,17 @@
         private void CharacterReferenceInRcDataState()
         {
             State = RcDataState;
+            additionalAllowedCharacter = '\t'; // Works as no additional character since '\t' is always allowed.
 
-            currentDataBuffer.Append('&');
-            currentDataBuffer.MayHaveCharacterReference();
+            var characters = ConsumeCharacterReference();
+            if (characters == null)
+            {
+                currentDataBuffer.Append('&');
+            }
+            else
+            {
+                currentDataBuffer.Append(characters, characters.Length);
+            }
         }
     }
 }

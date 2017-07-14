@@ -68,7 +68,7 @@
 
                     if (buffer[0] == 's' && buffer[1] == 'c' && buffer[2] == 'r' && buffer[3] == 'i' && buffer[4] == 'p' && buffer[5] == 't')
                     {
-                        // TODO: State = ScriptDataState;
+                        State = ScriptDataState;
                         return;
                     }
 

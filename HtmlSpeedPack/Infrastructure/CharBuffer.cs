@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Web;
 
 namespace HtmlSpeedPack.Infrastructure
 {
     internal class CharBuffer
     {
-        private bool htmlDecode;
         private char[] buffer;
 
         internal CharBuffer(int initialSize)
@@ -19,13 +17,12 @@ namespace HtmlSpeedPack.Infrastructure
 
         public override string ToString()
         {
-            return htmlDecode == false ? new string(buffer, 0, Length) : HttpUtility.HtmlDecode(new string(buffer, 0, Length));
+            return new string(buffer, 0, Length);
         }
 
         internal void Clear()
         {
             Length = 0;
-            htmlDecode = false;
         }
 
         internal void Append(char @char)
@@ -36,11 +33,6 @@ namespace HtmlSpeedPack.Infrastructure
             }
 
             buffer[Length++] = @char;
-        }
-
-        internal void MayHaveCharacterReference()
-        {
-            htmlDecode = true;
         }
 
         internal void Append(string @string)

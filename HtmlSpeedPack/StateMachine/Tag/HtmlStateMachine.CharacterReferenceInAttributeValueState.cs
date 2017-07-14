@@ -15,8 +15,16 @@
     {
         private void CharacterReferenceInAttributeValueState()
         {
-            currentTagToken.Attributes.Current.Value.Append('&');
-            currentTagToken.Attributes.Current.Value.MayHaveCharacterReference();
+            var characters = ConsumeCharacterReference();
+            if (characters == null)
+            {
+                currentTagToken.Attributes.Current.Value.Append('&');
+            }
+            else
+            {
+                currentTagToken.Attributes.Current.Value.Append(characters, characters.Length);
+            }
+
             State = returnToState;
         }
     }

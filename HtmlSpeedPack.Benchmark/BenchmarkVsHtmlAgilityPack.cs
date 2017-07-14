@@ -98,7 +98,7 @@ namespace HtmlSpeedPack.Benchmark
             {
                 if (node.NodeType == HtmlAgilityPack.HtmlNodeType.Text)
                 {
-                    texts.Add(node.InnerText);
+                    texts.Add(HttpUtility.HtmlDecode(node.InnerText));
                 }
             }
 

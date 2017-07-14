@@ -301,6 +301,32 @@ namespace HtmlSpeedPack.Test
         }
 
         [TestMethod]
+        public void DataNamedCharacterReference2()
+        {
+            var stream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("I'm &notit; I tell you")));
+            var reader = new HtmlReader(stream);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual("I'm ¬it; I tell you", reader.Text);
+
+            Assert.IsFalse(reader.Read());
+        }
+
+        [TestMethod]
+        public void DataNamedCharacterReference3()
+        {
+            var stream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("I'm &notin; I tell you")));
+            var reader = new HtmlReader(stream);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual("I'm ∉ I tell you", reader.Text);
+
+            Assert.IsFalse(reader.Read());
+        }
+
+        [TestMethod]
         public void AttributeValueDecimalCharacterReference()
         {
             var stream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("<a title=\"&#65;\">")));
