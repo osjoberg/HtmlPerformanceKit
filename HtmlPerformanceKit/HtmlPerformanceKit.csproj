@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{30A4A51C-7F3F-4BDE-9D77-69DC44D7E1FE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HtmlPerformanceKit</RootNamespace>
+    <AssemblyName>HtmlPerformanceKit</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Infrastructure\AttributeBuffer.cs" />
+    <Compile Include="Infrastructure\AttributeBufferList.cs" />
+    <Compile Include="Infrastructure\BufferReader.cs" />
+    <Compile Include="Infrastructure\CharBuffer.cs" />
+    <Compile Include="Infrastructure\HtmlChar.cs" />
+    <Compile Include="HtmlNodeType.cs" />
+    <Compile Include="HtmlReader.cs" />
+    <Compile Include="StateMachine\RawText\HtmlStateMachine.RawTextState.cs" />
+    <Compile Include="StateMachine\RawText\HtmlStateMachine.RawTextLessThanSignState.cs" />
+    <Compile Include="StateMachine\RawText\HtmlStateMachine.RawTextEndTagOpenState.cs" />
+    <Compile Include="StateMachine\RawText\HtmlStateMachine.RawTextEndTagNameState.cs" />
+    <Compile Include="StateMachine\RcData\HtmlStateMachine.RcDataLessThanSignState.cs" />
+    <Compile Include="StateMachine\RcData\HtmlStateMachine.RcDataEndTagOpenState.cs" />
+    <Compile Include="StateMachine\RcData\HtmlStateMachine.RcDataEndTagNameState.cs" />
+    <Compile Include="StateMachine\RcData\HtmlStateMachine.RcDataState.cs" />
+    <Compile Include="StateMachine\RcData\HtmlStateMachine.CharacterReferenceInRcDataState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataDoubleEscapedLessThanSignState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataDoubleEscapedDashDashState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataDoubleEscapedDashState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataDoubleEscapeEndState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEndTagNameState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEndTagOpenState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataDoubleEscapedState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEscapedDashState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEscapedDashDashState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataDoubleEscapeStartState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEscapedEndTagOpenState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEscapedEndTagNameState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEscapedState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEscapeStartDashState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEscapeStartState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataEscapedLessThanSignState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataLessThanSignState.cs" />
+    <Compile Include="StateMachine\Script\HtmlStateMachine.ScriptDataState.cs" />
+    <Compile Include="StateMachine\Tag\HtmlStateMachine.AfterAttributeValueQuotedState.cs" />
+    <Compile Include="StateMachine\Doctype\HtmlStateMachine.AfterDoctypeSystemIdentifierState.cs" />
+    <Compile Include="StateMachine\Doctype\HtmlStateMachine.AfterDoctypePublicKeywordState.cs" />
+    <Compile Include="StateMachine\Tag\HtmlStateMachine.AttributeValueSingleQuotedState.cs" />
+    <Compile Include="StateMachine\Tag\HtmlStateMachine.AttributeValueUnquotedState.cs" />
+    <Compile Include="StateMachine\Tag\HtmlStateMachine.AttributeValueDoubleQuotedState.cs" />
+    <Compile Include="StateMachine\Tag\HtmlStateMachine.BeforeAttributeValueState.cs" />
+    <Compile Include="StateMachine\Tag\HtmlStateMachine.BeforeAttributeNameState.cs" />
+    <Compile Include="StateMachine\Tag\HtmlStateMachine.AfterAttributeNameState.cs" />
+    <Compile Include="StateMachine\Doctype\HtmlStateMachine.AfterDoctypeNameState.cs" />
+    <Compile Include="StateMachine\Doctype\HtmlStateMachine.AfterDoctypeSystemKeywordState.cs" />
+    <Compile Include="StateMachine\Doctype\HtmlStateMachine.BeforeDoctypeSystemIdentifierState.cs" />
+    <Compile Include="StateMachine\Doctype\HtmlStateMachine.BetweenDoctypePublicAndSystemIdentifiersState.cs" />
+    <Compile Include="StateMachine\Doctype\HtmlStateMachine.BogusDoctypeState.cs" />
+    <Compile Include="StateMachine\Doctype\HtmlStateMachine.BeforeDoctypePublicIdentifierState.cs" />
+    <Compile Include="StateMachine\Comment\HtmlStateMachine.CommentEndBangState.cs" />
+    <Compile Include="StateMachine\Comment\HtmlStateMachine.CommentEndState.cs" />
+    <Compile Include="StateMachine\Comment\HtmlStateMachine.CommentStartDashState.cs" />
+    <Compile Include="StateMachine\Comment\HtmlStateMachine.CommentEndDashState.cs" />
+    <Compile Include="StateMachine\Comment\HtmlStateMachine.CommentState.cs" />
+    <Compile Include="StateMachine\Doctype\HtmlStateMachine.DoctypePublicIdentiferDoubleQuotedState.cs" />
+    <Compile Include="StateMachine\Doctype\HtmlStateMachine.DoctypePublicIdentiferSingleQuotedState.cs" />
+    <Compile Include="StateMachine\Doctype\HtmlStateMachine.DoctypeNameState.cs" />
+    <Compile Include="StateMachine\Comment\HtmlStateMachine.CommentStartState.cs" />
+    <Compile Include="StateMachine\Data\HtmlStateMachine.CDataSectionState.cs" />
+    <Compile Include="StateMachine\Doctype\HtmlStateMachine.BeforeDoctypeNameState.cs" />
+    <Compile Include="StateMachine\Doctype\HtmlStateMachine.DoctypeState.cs" />
+    <Compile Include="StateMachine\Comment\HtmlStateMachine.BogusCommentState.cs" />
+    <Compile Include="StateMachine\Tag\HtmlStateMachine.CharacterReferenceInAttributeValueState.cs" />
+    <Compile Include="StateMachine\Data\HtmlStateMachine.CharacterReferenceInDataState.cs" />
+    <Compile Include="StateMachine\Doctype\HtmlStateMachine.DoctypeSystemIdentifierSingleQuotedState.cs" />
+    <Compile Include="StateMachine\Doctype\HtmlStateMachine.DoctypeSystemIdentifierDoubleQuotedState.cs" />
+    <Compile Include="StateMachine\Tag\HtmlStateMachine.EndTagOpenState.cs" />
+    <Compile Include="StateMachine\Tag\HtmlStateMachine.MarkupDeclarationOpenState.cs" />
+    <Compile Include="StateMachine\Tag\HtmlStateMachine.TagOpenState.cs" />
+    <Compile Include="StateMachine\Data\HtmlStateMachine.DataState.cs" />
+    <Compile Include="StateMachine\Tag\HtmlStateMachine.TagNameState.cs" />
+    <Compile Include="StateMachine\Tag\HtmlStateMachine.SelfClosingStartTagState.cs" />
+    <Compile Include="StateMachine\HtmlStateMachine.cs" />
+    <Compile Include="Infrastructure\ParseErrorMessage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Infrastructure\HtmlTagToken.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="StateMachine\Tag\HtmlStateMachine.AttributeNameState.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="StateMachine\Doctype\HtmlStateMachine.AfterDoctypePublicIdentifierState.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="StateMachine\HtmlStateMachine.SetNextStateFromTagName.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="StateMachine\PlainText\HtmlStateMachine.PlainTextState.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="StateMachine\HtmlStateMachine.ConsumeCharacterReference.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

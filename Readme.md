@@ -1,16 +1,16 @@
-# HtmlSpeedPack
-HtmlSpeedPack is a fast HTML parser whith a similar API as XmlReader. HtmlSpeedPack tries to follow the HTML 5 tokenization specification:
+# HtmlPerformanceKit
+HtmlPerformanceKit is a fast HTML parser whith a similar API as XmlReader. HtmlPerformanceKit tries to follow the HTML 5 tokenization specification:
 https://www.w3.org/TR/html5/syntax.html#tokenization
 
 ## Install via NuGet
-To install HtmlSpeedPack, run the following command in the Package Manager Console:
+To install HtmlPerformanceKit, run the following command in the Package Manager Console:
 
 ```cmd
-PM> Install-Package HtmlSpeedPack
+PM> Install-Package HtmlPerformanceKit
 ```
 
 ## Performance
-HtmlSpeedPack is currently about 7x faster than HtmlAgilityPack in my benchmarks. This is probably because HtmlSpeedPack is streaming the HTML document tokens as they are read while HtmlAgilityPack constructs a full DOM for the document in memory. HtmlAgilityPack has a much more user-friendly API and is more battle-tested. If you are not concerned about performance, you should probably use HtmlAgilityPack instead.
+HtmlPerformanceKit is currently about 7x faster than HtmlAgilityPack in my benchmarks. This is probably because HtmlPerformanceKit is streaming the HTML document tokens as they are read while HtmlAgilityPack constructs a full DOM for the document in memory. HtmlAgilityPack has a much more user-friendly API and is more battle-tested. If you are not concerned about performance, you should probably use HtmlAgilityPack instead.
 
 ## Benchmarks
 Benchmarks are extracting links and texts from a large Wikipedia article, List of Australian treaties, https://en.wikipedia.org/wiki/List_of_Australian_treaties (1.7MB)

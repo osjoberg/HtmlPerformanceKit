@@ -14,3 +14,12 @@
 *.user
 /HtmlSpeedPack/obj/Release
 /HtmlSpeedPack/obj/Debug
+/.vs/HtmlPerformanceKit/v14
+/HtmlPerformanceKit/.vs/HtmlParser/v14
+/HtmlPerformanceKit/bin
+/HtmlPerformanceKit/obj
+/HtmlPerformanceKit/HtmlPerformanceKit.csproj.DotSettings
+/HtmlPerformanceKit.Benchmark/bin
+/HtmlPerformanceKit.Benchmark/obj
+/HtmlPerformanceKit.Test/bin
+/HtmlPerformanceKit.Test/obj
