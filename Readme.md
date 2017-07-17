@@ -13,24 +13,24 @@ PM> Install-Package HtmlPerformanceKit
 HtmlPerformanceKit is currently about 7x faster than HtmlAgilityPack in my benchmarks. This is probably because HtmlPerformanceKit is streaming the HTML document tokens as they are read while HtmlAgilityPack constructs a DOM for the entire document in memory. HtmlAgilityPack has a much more user-friendly API and is more battle-tested. If you are not concerned about performance, you should probably use HtmlAgilityPack instead.
 
 ## Example usage
-```
-	public IEnumerable<string> ExtractLinks()
-	{
-        using (var htmlReader = new HtmlReader(File.OpenRead("test.html")))
-		{
-			while (htmlReader.Read())
-			{
-				if (htmlReader.NodeType == HtmlNodeType.Tag && htmlReader.Name == "a")
-				{
-					var hrefAttributeValue = htmlReader.GetAttribute("href");
-					if (hrefAttributeValue != null)
-					{
-						yield return hrefAttributeValue;
-					}
-				}
-			}
-		}
-	}
+```c#
+public IEnumerable<string> ExtractLinks(string filename)
+{
+    using (var htmlReader = new HtmlReader(File.OpenRead(filename)))
+    {
+        while (htmlReader.Read())
+        {
+            if (htmlReader.NodeType == HtmlNodeType.Tag && htmlReader.Name == "a")
+            {
+                var hrefAttributeValue = htmlReader.GetAttribute("href");
+                if (hrefAttributeValue != null)
+                {
+                    yield return hrefAttributeValue;
+                }
+            }
+        }
+    }
+}
 ```
 
 ## Benchmarks
