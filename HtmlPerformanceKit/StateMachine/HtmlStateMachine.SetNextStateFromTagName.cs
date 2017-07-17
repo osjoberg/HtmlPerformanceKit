@@ -36,7 +36,7 @@
             switch (name.Length)
             {
                 case 3:
-                    if (buffer[0] == 'x' && buffer[1] == 'm' && buffer[2] == 'p')
+                    if (name.Equals("xmp"))
                     {
                         State = RawTextState;
                         return;
@@ -45,13 +45,13 @@
                     goto default;
 
                 case 5:
-                    if (buffer[0] == 't' && buffer[1] == 'i' && buffer[2] == 't' && buffer[3] == 'l' && buffer[4] == 'e')
+                    if (name.Equals("title"))
                     {
                         State = RcDataState;
                         return;
                     }
 
-                    if (buffer[0] == 's' && buffer[1] == 't' && buffer[2] == 'y' && buffer[3] == 'l' && buffer[4] == 'e')
+                    if (name.Equals("style"))
                     {
                         State = RawTextState;
                         return;
@@ -60,13 +60,13 @@
                     goto default;
 
                 case 6:
-                    if (buffer[0] == 'i' && buffer[1] == 'f' && buffer[2] == 'r' && buffer[3] == 'a' && buffer[4] == 'm' && buffer[5] == 'e')
+                    if (name.Equals("iframe"))
                     {
                         State = RawTextState;
                         return;
                     }
 
-                    if (buffer[0] == 's' && buffer[1] == 'c' && buffer[2] == 'r' && buffer[3] == 'i' && buffer[4] == 'p' && buffer[5] == 't')
+                    if (name.Equals("script"))
                     {
                         State = ScriptDataState;
                         return;
@@ -75,7 +75,7 @@
                     goto default;
 
                 case 7:
-                    if (buffer[0] == 'n' && buffer[1] == 'o' && buffer[2] == 'e' && buffer[3] == 'm' && buffer[4] == 'b' && buffer[5] == 'e' && buffer[5] == 'd')
+                    if (name.Equals("noembed"))
                     {
                         State = RawTextState;
                         return;
@@ -84,13 +84,13 @@
                     goto default;
 
                 case 8:
-                    if (buffer[0] == 't' && buffer[1] == 'e' && buffer[2] == 'x' && buffer[3] == 't' && buffer[4] == 'a' && buffer[5] == 'r' && buffer[6] == 'e' && buffer[7] == 'a')
+                    if (name.Equals("textarea"))
                     {
                         State = RcDataState;
                         return;
                     }
 
-                    if (buffer[0] == 'n' && buffer[1] == 'o' && buffer[2] == 'f' && buffer[3] == 'r' && buffer[4] == 'a' && buffer[5] == 'm' && buffer[6] == 'e' && buffer[7] == 's')
+                    if (name.Equals("noframes"))
                     {
                         State = RawTextState;
                         return;
@@ -100,7 +100,7 @@
                     goto default;
                 case 9:
 
-                    if (buffer[0] == 'p' && buffer[1] == 'l' && buffer[2] == 'a' && buffer[3] == 'i' && buffer[4] == 'n' && buffer[5] == 't' && buffer[6] == 'e' && buffer[7] == 'x' && buffer[8] == 't')
+                    if (name.Equals("plaintext"))
                     {
                         State = PlainTextState;
                         return;

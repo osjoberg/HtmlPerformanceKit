@@ -56,9 +56,13 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CommentTest.cs" />
+    <Compile Include="DataTest.cs" />
+    <Compile Include="HtmlReaderFactory.cs" />
     <Compile Include="LargeDocumentTest.cs" />
-    <Compile Include="HtmlReaderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RcDataTest.cs" />
+    <Compile Include="TagTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HtmlPerformanceKit\HtmlPerformanceKit.csproj">

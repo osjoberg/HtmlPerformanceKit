@@ -28,8 +28,28 @@ namespace HtmlPerformanceKit
             }
 
             this.streamReader = streamReader;
-            stateMachine = new HtmlStateMachine(streamReader);
+            stateMachine = new HtmlStateMachine(streamReader, message => OnParseError(this, new HtmlParseErrorEventArgs(message)));
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HtmlReader" /> class.
+        /// </summary>
+        /// <param name="stream">Stream instance to read from.</param>
+        public HtmlReader(Stream stream)
+        {
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+
+            streamReader = new StreamReader(stream);
+            stateMachine = new HtmlStateMachine(streamReader, message => OnParseError(this, new HtmlParseErrorEventArgs(message)));
+        }
+
+        /// <summary>
+        /// Event that occurs whenever there is a parse error while parsing the Html.
+        /// </summary>
+        public event EventHandler<HtmlParseErrorEventArgs> ParseError;
 
         /// <summary>
         /// Gets last read node type.
@@ -175,6 +195,16 @@ namespace HtmlPerformanceKit
         public void Dispose()
         {
             streamReader.Dispose();
+        }
+
+        /// <summary>
+        /// Calls the ParseError event.
+        /// </summary>
+        /// <param name="sender">Sender argument.</param>
+        /// <param name="args">Args argument.</param>
+        protected void OnParseError(object sender, HtmlParseErrorEventArgs args)
+        {
+            ParseError?.Invoke(sender, args);
         }
     }
 }

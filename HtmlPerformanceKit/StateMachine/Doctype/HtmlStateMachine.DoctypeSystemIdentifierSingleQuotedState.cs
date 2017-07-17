@@ -35,18 +35,18 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case HtmlChar.Null:
-                    ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     currentDoctypeToken.Attributes.Current.Value.Append(HtmlChar.ReplacementCharacter);
                     return;
 
                 case '>':
-                    ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = DataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     return;
 
                 case EofMarker:
-                    ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = DataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);

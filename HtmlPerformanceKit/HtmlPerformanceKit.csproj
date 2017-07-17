@@ -29,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -36,6 +37,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HtmlParseErrorEventArgs.cs" />
     <Compile Include="Infrastructure\AttributeBuffer.cs" />
     <Compile Include="Infrastructure\AttributeBufferList.cs" />
     <Compile Include="Infrastructure\BufferReader.cs" />

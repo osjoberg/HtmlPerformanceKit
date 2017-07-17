@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 using HtmlPerformanceKit.Infrastructure;
 
@@ -14,30 +15,35 @@ namespace HtmlPerformanceKit.StateMachine
         private readonly CharBuffer temporaryBuffer = new CharBuffer(1024);
         private readonly CharBuffer appropriateTagName = new CharBuffer(100);
         private readonly BufferReader bufferReader;
+        private readonly Action<string> parseError;
         private CurrentState returnToState;
         private char additionalAllowedCharacter;
 
-        public HtmlStateMachine(StreamReader streamReader)
+        internal HtmlStateMachine(StreamReader streamReader, Action<string> parseError)
         {
-            this.bufferReader = new BufferReader(streamReader);
+            bufferReader = new BufferReader(streamReader);
+            this.parseError = parseError;
             State = DataState;
         }
 
-        public delegate void CurrentState();
+        internal delegate void CurrentState();
 
-        public string ParseError { get; private set; }
+        internal CurrentState State { get; private set; }
 
-        public CurrentState State { get; private set; }
+        internal bool Eof { get; private set; }
 
-        public bool Eof { get; private set; }
+        internal HtmlTagToken EmitTagToken { get; private set; }
 
-        public HtmlTagToken EmitTagToken { get; private set; }
+        internal CharBuffer EmitDataBuffer { get; private set; }
 
-        public CharBuffer EmitDataBuffer { get; private set; }
+        internal HtmlTagToken EmitDoctypeToken { get; private set; }
 
-        public HtmlTagToken EmitDoctypeToken { get; private set; }
+        internal CharBuffer EmitCommentBuffer { get; private set; }
 
-        public CharBuffer EmitCommentBuffer { get; private set; }
+        internal void ParseError(string message)
+        {
+            parseError(message);
+        }
 
         internal void ResetEmit()
         {
@@ -47,8 +53,6 @@ namespace HtmlPerformanceKit.StateMachine
             EmitCommentBuffer = null;
 
             currentDataBuffer.Clear();
-
-            ParseError = null;
         }
 
         internal void RememberLastStartTagName()

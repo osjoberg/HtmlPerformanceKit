@@ -12,6 +12,7 @@ namespace HtmlPerformanceKit.Test
     [TestClass]
     public class LargeDocumentTest
     {
+        private readonly List<string> parseErrors = new List<string>();
         private readonly Stream stream;
 
         public LargeDocumentTest()
@@ -43,7 +44,7 @@ namespace HtmlPerformanceKit.Test
 
             stream.Seek(0, SeekOrigin.Begin);
 
-            var htmlReader = new HtmlReader(new StreamReader(stream));
+            var htmlReader = HtmlReaderFactory.FromStream(stream, parseErrors);
             var htmlPerformanceKitLinks = new List<string>();
 
             while (htmlReader.Read())
@@ -59,6 +60,7 @@ namespace HtmlPerformanceKit.Test
             }
 
             CollectionAssert.AreEqual(htmlAgilityPackLinks, htmlPerformanceKitLinks);
+            Assert.AreEqual(0, parseErrors.Count);
         }
 
         [TestMethod]
@@ -80,7 +82,7 @@ namespace HtmlPerformanceKit.Test
 
             stream.Seek(0, SeekOrigin.Begin);
 
-            var htmlReader = new HtmlReader(new StreamReader(stream));
+            var htmlReader = HtmlReaderFactory.FromStream(stream, parseErrors);
             var htmlPerformanceKitTexts = new List<string>();
 
             while (htmlReader.Read())
@@ -92,6 +94,7 @@ namespace HtmlPerformanceKit.Test
             }
 
             CollectionAssert.AreEqual(htmlAgilityPackTexts, htmlPerformanceKitTexts);
+            Assert.AreEqual(0, parseErrors.Count);
         }
     }
 }

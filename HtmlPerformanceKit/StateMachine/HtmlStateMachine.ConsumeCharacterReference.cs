@@ -36,7 +36,7 @@ namespace HtmlPerformanceKit.StateMachine
                             {
                                 bufferReader.Reconsume('#');
                                 bufferReader.Reconsume(afterNumberSignCharacter);
-                                ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                                ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                                 return Nothing;
                             }
 
@@ -47,7 +47,7 @@ namespace HtmlPerformanceKit.StateMachine
                             if (codepoint == int.MinValue)
                             {
                                 bufferReader.Reconsume('#');
-                                ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                                ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                                 return Nothing;
                             }
 
@@ -56,13 +56,13 @@ namespace HtmlPerformanceKit.StateMachine
 
                     if (bufferReader.Consume() != ';')
                     {
-                        ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                        ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     }
 
                     var replacementCharacter = HtmlChar.GetReplacementCharacterReference(codepoint);
                     if (replacementCharacter.HasValue)
                     {
-                        ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                        ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                         return new[] { replacementCharacter.Value };
                     }
 
@@ -73,7 +73,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                     if (HtmlChar.IsCharacterReferenceParseError(codepoint))
                     {
-                        ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                        ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                         return Nothing;
                     }
 
@@ -107,7 +107,7 @@ namespace HtmlPerformanceKit.StateMachine
                         {
                             if (characterReferenceBuffer[i] == '=')
                             {
-                                ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                                ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                             }
 
                             return Nothing;
@@ -115,7 +115,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                         if (characterReferenceBuffer[i - 1] != ';')
                         {
-                            ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                            ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                         }
 
                         bufferReader.Consume(characterReferenceAttempt.Length);
@@ -138,7 +138,7 @@ namespace HtmlPerformanceKit.StateMachine
                             
                         if (i > 0)
                         {
-                            ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                            ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                         }
 
                         return Nothing;

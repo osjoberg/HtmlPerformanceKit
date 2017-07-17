@@ -25,7 +25,7 @@ namespace HtmlPerformanceKit.StateMachine
             switch (currentInputCharacter)
             {
                 case HtmlChar.Null:
-                    ParseError = ParseErrorMessage.UnexpectedNullCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
 					currentDataBuffer.Append(HtmlChar.ReplacementCharacter);
 					break;
 

@@ -95,12 +95,12 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case '>':
-                    ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = DataState;
                     return;
 
                 case EofMarker:
-                    ParseError = ParseErrorMessage.UnexpectedEndOfFile;
+                    ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
                     currentDataBuffer.Append('<');
                     currentDataBuffer.Append('/');
@@ -108,7 +108,7 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 default:
-                    ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = BogusCommentState;
                     return;
             }

@@ -104,12 +104,12 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case '?':
-                    ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = BogusCommentState;
                     return;
 
                 default:
-                    ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = DataState;
                     currentDataBuffer.Append('<');
                     bufferReader.Reconsume(currentInputCharacter);

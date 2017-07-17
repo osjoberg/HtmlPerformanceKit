@@ -87,12 +87,12 @@ namespace HtmlPerformanceKit.StateMachine
                         break;
 
                     case HtmlChar.Null:
-                        ParseError = ParseErrorMessage.UnexpectedNullCharacterInStream;
+                        ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
                         currentTagToken.Name.Append(HtmlChar.ReplacementCharacter);
                         break;
 
                     case EofMarker:
-                        ParseError = ParseErrorMessage.UnexpectedEndOfFile;
+                        ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                         State = DataState;
                         bufferReader.Reconsume(EofMarker);
                         return;

@@ -50,13 +50,13 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case EofMarker:
-                    ParseError = ParseErrorMessage.UnexpectedEndOfFile;
+                    ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
-                    ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = BeforeAttributeNameState;
                     bufferReader.Reconsume(currentInputCharacter);
                     return;

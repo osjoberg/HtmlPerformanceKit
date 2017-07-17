@@ -55,20 +55,20 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case '>':
-                    ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = DataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     return;
 
                 case EofMarker:
-                    ParseError = ParseErrorMessage.UnexpectedEndOfFile;
+                    ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
-                    ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = BogusDoctypeState;
                     return;
             }

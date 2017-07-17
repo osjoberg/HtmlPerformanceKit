@@ -39,7 +39,7 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case HtmlChar.Null:
-                    ParseError = ParseErrorMessage.UnexpectedNullCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
                     currentCommentBuffer.Append('-');
                     currentCommentBuffer.Append('-');
                     currentCommentBuffer.Append(HtmlChar.ReplacementCharacter);
@@ -47,24 +47,24 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case '!':
-                    ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = CommentEndBangState;
                     return;
 
                 case '-':
-                    ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     currentCommentBuffer.Append('-');
                     return;
 
                 case EofMarker:
-                    ParseError = ParseErrorMessage.UnexpectedEndOfFile;
+                    ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
                     EmitCommentBuffer = currentCommentBuffer;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
-                    ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     currentCommentBuffer.Append('-');
                     currentCommentBuffer.Append('-');
                     currentCommentBuffer.Append((char)currentInputCharacter);

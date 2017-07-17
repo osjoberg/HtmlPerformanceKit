@@ -10,7 +10,28 @@ PM> Install-Package HtmlPerformanceKit
 ```
 
 ## Performance
-HtmlPerformanceKit is currently about 7x faster than HtmlAgilityPack in my benchmarks. This is probably because HtmlPerformanceKit is streaming the HTML document tokens as they are read while HtmlAgilityPack constructs a full DOM for the document in memory. HtmlAgilityPack has a much more user-friendly API and is more battle-tested. If you are not concerned about performance, you should probably use HtmlAgilityPack instead.
+HtmlPerformanceKit is currently about 7x faster than HtmlAgilityPack in my benchmarks. This is probably because HtmlPerformanceKit is streaming the HTML document tokens as they are read while HtmlAgilityPack constructs a DOM for the entire document in memory. HtmlAgilityPack has a much more user-friendly API and is more battle-tested. If you are not concerned about performance, you should probably use HtmlAgilityPack instead.
+
+## Example usage
+```
+	public IEnumerable<string> ExtractLinks()
+	{
+        using (var htmlReader = new HtmlReader(File.OpenRead("test.html")))
+		{
+			while (htmlReader.Read())
+			{
+				if (htmlReader.NodeType == HtmlNodeType.Tag && htmlReader.Name == "a")
+				{
+					var hrefAttributeValue = htmlReader.GetAttribute("href");
+					if (hrefAttributeValue != null)
+					{
+						yield return hrefAttributeValue;
+					}
+				}
+			}
+		}
+	}
+```
 
 ## Benchmarks
 Benchmarks are extracting links and texts from a large Wikipedia article, List of Australian treaties, https://en.wikipedia.org/wiki/List_of_Australian_treaties (1.7MB)

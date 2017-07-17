@@ -73,21 +73,21 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case HtmlChar.Null:
-                    ParseError = ParseErrorMessage.UnexpectedNullCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
                     currentDoctypeToken.Clear();
                     currentDoctypeToken.Name.Append(HtmlChar.ReplacementCharacter);
                     State = DoctypeNameState;
                     return;
 
                 case '>':
-                    ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     currentDoctypeToken.Clear();
                     State = DataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     return;
 
                 case EofMarker:
-                    ParseError = ParseErrorMessage.UnexpectedEndOfFile;
+                    ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
                     currentDoctypeToken.Clear();
                     EmitDoctypeToken = currentDoctypeToken;

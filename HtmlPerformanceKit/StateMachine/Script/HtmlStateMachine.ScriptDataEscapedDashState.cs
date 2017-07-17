@@ -40,13 +40,13 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case HtmlChar.Null:
-                    ParseError = ParseErrorMessage.UnexpectedNullCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
                     State = ScriptDataEscapedState;
                     currentDataBuffer.Append(HtmlChar.ReplacementCharacter);
                     return;
 
                 case EofMarker:
-                    ParseError = ParseErrorMessage.UnexpectedEndOfFile;
+                    ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
                     bufferReader.Reconsume(EofMarker);
                     return;

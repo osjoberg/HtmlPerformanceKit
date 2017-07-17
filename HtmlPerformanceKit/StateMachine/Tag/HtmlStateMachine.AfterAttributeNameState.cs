@@ -98,7 +98,7 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case HtmlChar.Null:
-                    ParseError = ParseErrorMessage.UnexpectedNullCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
                     currentTagToken.Attributes.Add();
                     currentTagToken.Attributes.Current.Name.Append(HtmlChar.ReplacementCharacter);
                     State = AttributeNameState;
@@ -107,11 +107,11 @@ namespace HtmlPerformanceKit.StateMachine
                 case '"':
                 case '\'':
                 case '<':
-                    ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     goto default;
 
                 case EofMarker:
-                    ParseError = ParseErrorMessage.UnexpectedEndOfFile;
+                    ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
                     bufferReader.Reconsume(EofMarker);
                     return;

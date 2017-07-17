@@ -48,7 +48,7 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case EofMarker:
-                    ParseError = ParseErrorMessage.UnexpectedEndOfFile;
+                    ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
@@ -72,7 +72,7 @@ namespace HtmlPerformanceKit.StateMachine
                         return;
                     }
 
-                    ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = BogusDoctypeState;
                     return;
             }

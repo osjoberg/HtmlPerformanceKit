@@ -43,7 +43,7 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case HtmlChar.Null:
-                    ParseError = ParseErrorMessage.UnexpectedNullCharacterInStream;
+                    ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
                     currentCommentBuffer.Append('-');
                     currentCommentBuffer.Append('-');
                     currentCommentBuffer.Append('!');
@@ -52,7 +52,7 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case EofMarker:
-                    ParseError = ParseErrorMessage.UnexpectedEndOfFile;
+                    ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
                     EmitCommentBuffer = currentCommentBuffer;
                     bufferReader.Reconsume(EofMarker);

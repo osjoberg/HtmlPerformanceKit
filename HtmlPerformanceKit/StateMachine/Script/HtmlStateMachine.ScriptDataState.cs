@@ -34,7 +34,7 @@ namespace HtmlPerformanceKit.StateMachine
                         return;
 
                     case HtmlChar.Null:
-                        ParseError = ParseErrorMessage.UnexpectedCharacterInStream;
+                        ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                         currentDataBuffer.Append(HtmlChar.ReplacementCharacter);
                         continue;
 
