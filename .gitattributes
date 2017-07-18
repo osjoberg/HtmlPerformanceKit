@@ -1,1 +1,4 @@
+HtmlPerformanceKit.Benchmark/* linguist-vendored
+*.html linguist-vendored=false
+HtmlPerformanceKit.Test/* linguist-vendored
 *.html linguist-vendored=false
