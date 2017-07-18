@@ -7,7 +7,7 @@ namespace HtmlPerformanceKit.Test
     [TestClass]
     public class DataTest
     {
-        private readonly List<string> parseErrors = new List<string>();
+        private readonly List<HtmlParseErrorEventArgs> parseErrors = new List<HtmlParseErrorEventArgs>();
         private HtmlReader reader;
 
         [TestMethod]
@@ -82,6 +82,8 @@ namespace HtmlPerformanceKit.Test
 
             Assert.IsFalse(reader.Read());
             Assert.AreEqual(1, parseErrors.Count);
+            Assert.AreEqual(1, parseErrors[0].LineNumber);
+            Assert.AreEqual(6, parseErrors[0].LinePosition);
         }
 
         [TestMethod]

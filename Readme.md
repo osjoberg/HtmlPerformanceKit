@@ -1,5 +1,5 @@
 # HtmlPerformanceKit
-HtmlPerformanceKit is a fast HTML parser whith a similar API as XmlReader. HtmlPerformanceKit tries to follow the HTML 5 tokenization specification:
+HtmlPerformanceKit is a fast HTML parser whith a similar API as XmlReader. HtmlPerformanceKit is implemented according to the HTML5 tokenization specification:
 https://www.w3.org/TR/html5/syntax.html#tokenization
 
 ## Install via NuGet
@@ -13,7 +13,7 @@ PM> Install-Package HtmlPerformanceKit
 HtmlPerformanceKit is currently about 7x faster than HtmlAgilityPack in my benchmarks. This is probably because HtmlPerformanceKit is streaming the HTML document tokens as they are read while HtmlAgilityPack constructs a DOM for the entire document in memory. HtmlAgilityPack has a much more user-friendly API and is more battle-tested. If you are not concerned about performance, you should probably use HtmlAgilityPack instead.
 
 ## Example usage
-```c#
+```csharp
 public IEnumerable<string> ExtractLinks(string filename)
 {
     using (var htmlReader = new HtmlReader(File.OpenRead(filename)))
@@ -36,7 +36,7 @@ public IEnumerable<string> ExtractLinks(string filename)
 ## Benchmarks
 Benchmarks are extracting links and texts from a large Wikipedia article, List of Australian treaties, https://en.wikipedia.org/wiki/List_of_Australian_treaties (1.7MB)
 
-``` ini
+```ini
 BenchmarkDotNet=v0.10.0
 OS=Microsoft Windows NT 6.2.9200.0
 Processor=Intel(R) Core(TM) i7-6600U CPU 2.60GHz, ProcessorCount=4

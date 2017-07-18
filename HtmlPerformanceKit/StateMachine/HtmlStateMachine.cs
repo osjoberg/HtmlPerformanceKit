@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 using HtmlPerformanceKit.Infrastructure;
 
@@ -19,9 +18,9 @@ namespace HtmlPerformanceKit.StateMachine
         private CurrentState returnToState;
         private char additionalAllowedCharacter;
 
-        internal HtmlStateMachine(StreamReader streamReader, Action<string> parseError)
+        internal HtmlStateMachine(BufferReader bufferReader, Action<string> parseError)
         {
-            bufferReader = new BufferReader(streamReader);
+            this.bufferReader = bufferReader;
             this.parseError = parseError;
             State = DataState;
         }

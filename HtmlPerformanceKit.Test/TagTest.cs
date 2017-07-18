@@ -7,7 +7,7 @@ namespace HtmlPerformanceKit.Test
     [TestClass]
     public class TagTest
     {
-        private readonly List<string> parseErrors = new List<string>();
+        private readonly List<HtmlParseErrorEventArgs> parseErrors = new List<HtmlParseErrorEventArgs>();
         private HtmlReader reader;
 
         [TestMethod]

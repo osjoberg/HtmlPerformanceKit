@@ -11,8 +11,9 @@ namespace HtmlPerformanceKit
     /// </summary>
     public class HtmlReader : IDisposable
     {
-        private readonly StreamReader streamReader;
+        private readonly BufferReader bufferReader;
         private readonly HtmlStateMachine stateMachine;
+
         private CharBuffer textBuffer;
         private HtmlTagToken tagToken;
 
@@ -27,8 +28,8 @@ namespace HtmlPerformanceKit
                 throw new ArgumentNullException(nameof(streamReader));
             }
 
-            this.streamReader = streamReader;
-            stateMachine = new HtmlStateMachine(streamReader, message => OnParseError(this, new HtmlParseErrorEventArgs(message)));
+            bufferReader = new BufferReader(streamReader);
+            stateMachine = new HtmlStateMachine(bufferReader, message => OnParseError(this, new HtmlParseErrorEventArgs(message, bufferReader.LineNumber, bufferReader.LinePosition)));
         }
 
         /// <summary>
@@ -42,8 +43,8 @@ namespace HtmlPerformanceKit
                 throw new ArgumentNullException(nameof(stream));
             }
 
-            streamReader = new StreamReader(stream);
-            stateMachine = new HtmlStateMachine(streamReader, message => OnParseError(this, new HtmlParseErrorEventArgs(message)));
+            bufferReader = new BufferReader(new StreamReader(stream));
+            stateMachine = new HtmlStateMachine(bufferReader, message => OnParseError(this, new HtmlParseErrorEventArgs(message, bufferReader.LineNumber, bufferReader.LinePosition)));
         }
 
         /// <summary>
@@ -81,6 +82,16 @@ namespace HtmlPerformanceKit
         public int AttributeCount => tagToken?.Attributes.Count ?? 0;
 
         /// <summary>
+        /// Gets the current line number.
+        /// </summary>
+        public int LineNumber => bufferReader.LineNumber;
+
+        /// <summary>
+        /// Gets the current line position.
+        /// </summary>
+        public int LinePosition => bufferReader.LinePosition;
+
+        /// <summary>
         /// Reads one more token from the stream.
         /// </summary>
         /// <returns>True if one node was read, False if end of stream is reached.</returns>
@@ -107,7 +118,6 @@ namespace HtmlPerformanceKit
                     }
 
                     tagToken = stateMachine.EmitTagToken;
-
                     return true;
                 }
 
@@ -194,7 +204,7 @@ namespace HtmlPerformanceKit
         /// </summary>
         public void Dispose()
         {
-            streamReader.Dispose();
+            bufferReader.Dispose();
         }
 
         /// <summary>

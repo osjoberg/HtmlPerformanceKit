@@ -7,7 +7,7 @@ namespace HtmlPerformanceKit.Test
     [TestClass]
     public class CommentTest
     {
-        private readonly List<string> parseErrors = new List<string>();
+        private readonly List<HtmlParseErrorEventArgs> parseErrors = new List<HtmlParseErrorEventArgs>();
         private HtmlReader reader;
 
         [TestMethod]

@@ -113,12 +113,12 @@ namespace HtmlPerformanceKit.StateMachine
                             return Nothing;
                         }
 
+                        bufferReader.Consume(characterReferenceAttempt.Length);
                         if (characterReferenceBuffer[i - 1] != ';')
                         {
                             ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                         }
 
-                        bufferReader.Consume(characterReferenceAttempt.Length);
                         return characterReferenceResult;
                     }
 

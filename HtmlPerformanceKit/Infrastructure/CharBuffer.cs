@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace HtmlPerformanceKit.Infrastructure
 {
@@ -15,16 +16,19 @@ namespace HtmlPerformanceKit.Infrastructure
 
         internal int Length { get; private set; }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string ToString()
         {
             return new string(buffer, 0, Length);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Clear()
         {
             Length = 0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Append(char @char)
         {
             if (Length == buffer.Length)
@@ -35,11 +39,13 @@ namespace HtmlPerformanceKit.Infrastructure
             buffer[Length++] = @char;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Append(string @string)
         {
             Append(@string.ToCharArray(), @string.Length);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Append(char[] array, int length)
         {
             while (Length + length > buffer.Length)
@@ -51,6 +57,7 @@ namespace HtmlPerformanceKit.Infrastructure
             Length += length;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal bool Equals(string @string)
         {
             if (Length != @string.Length)

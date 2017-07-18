@@ -1,26 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace HtmlPerformanceKit.Infrastructure
 {
-    internal class BufferReader
+    internal class BufferReader : IDisposable
     {
         private readonly StreamReader streamReader;
         private readonly Queue<int> peekBuffer = new Queue<int>(8);
 
-        public BufferReader(StreamReader streamReader)
+        internal BufferReader(StreamReader streamReader)
         {
             this.streamReader = streamReader;
         }
 
-        public string Peek(int length)
+        internal int LineNumber { get; private set; }
+
+        internal int LinePosition { get; private set; }
+
+        public void Dispose()
+        {
+            streamReader?.Dispose();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal string Peek(int length)
         {
             var outputLength = Math.Min(peekBuffer.Count, length);
 
             while (peekBuffer.Count < length)
             {
                 var currentInputCharacter = streamReader.Read();
+
                 peekBuffer.Enqueue(currentInputCharacter);
                 outputLength++;
 
@@ -45,23 +57,46 @@ namespace HtmlPerformanceKit.Infrastructure
             return new string(charBuffer, 0, outputLength);
         }
 
-        public void Consume(int length)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void Consume(int length)
         {
-            while (peekBuffer.Count > 0 && length > 0)
+            while (length > 0)
             {
-                peekBuffer.Dequeue();
+                Consume();
                 length--;
             }
-
-            streamReader.ReadBlock(new char[length], 0, length);
         }
 
-        public int Consume()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal int Consume()
         {
-            return peekBuffer.Count == 0 ? streamReader.Read() : peekBuffer.Dequeue();
+            if (peekBuffer.Count != 0)
+            {
+                return peekBuffer.Dequeue();
+            }
+
+            var result = streamReader.Read();
+            if (LineNumber == 0)
+            {
+                LineNumber = 1;
+                LinePosition = 1;
+            }
+
+            if (result == '\n')
+            {
+                LineNumber++;
+                LinePosition = 1;
+            }
+            else
+            {
+                LinePosition++;
+            }
+
+            return result;
         }
 
-        public int ConsumeDigits()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal int ConsumeDigits()
         {
             long number = 0;
             var digitConsumed = false;
@@ -108,7 +143,8 @@ namespace HtmlPerformanceKit.Infrastructure
             }
         }
 
-        public int ConsumeHexDigits()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal int ConsumeHexDigits()
         {
             long number = 0;
             var digitConsumed = false;
@@ -174,12 +210,14 @@ namespace HtmlPerformanceKit.Infrastructure
             }
         }
 
-        public void Reconsume(int data)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void Reconsume(int data)
         {
             peekBuffer.Enqueue(data);
         }
 
-        public int Peek()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal int Peek()
         {
             return peekBuffer.Count == 0 ? streamReader.Peek() : peekBuffer.Peek();
         }

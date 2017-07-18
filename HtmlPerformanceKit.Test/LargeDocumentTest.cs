@@ -12,7 +12,7 @@ namespace HtmlPerformanceKit.Test
     [TestClass]
     public class LargeDocumentTest
     {
-        private readonly List<string> parseErrors = new List<string>();
+        private readonly List<HtmlParseErrorEventArgs> parseErrors = new List<HtmlParseErrorEventArgs>();
         private readonly Stream stream;
 
         public LargeDocumentTest()
@@ -95,6 +95,44 @@ namespace HtmlPerformanceKit.Test
 
             CollectionAssert.AreEqual(htmlAgilityPackTexts, htmlPerformanceKitTexts);
             Assert.AreEqual(0, parseErrors.Count);
+        }
+
+        [TestMethod]
+        public void ExtractLinksFromWikipediaListOfAustralianTreatiesHtmlPerformanceKit()
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+
+            var htmlReader = HtmlReaderFactory.FromStream(stream, parseErrors);
+            var htmlPerformanceKitLinks = new List<string>();
+
+            while (htmlReader.Read())
+            {
+                if (htmlReader.NodeType == HtmlNodeType.Tag && htmlReader.Name == "a")
+                {
+                    var hrefAttributeValue = htmlReader.GetAttribute("href");
+                    if (hrefAttributeValue != null)
+                    {
+                        htmlPerformanceKitLinks.Add(hrefAttributeValue);
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ExtractTextFromWikipediaListOfAustralianTreatiesHtmlPerformanceKit()
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+
+            var htmlReader = HtmlReaderFactory.FromStream(stream, parseErrors);
+            var htmlPerformanceKitTexts = new List<string>();
+
+            while (htmlReader.Read())
+            {
+                if (htmlReader.NodeType == HtmlNodeType.Text)
+                {
+                    htmlPerformanceKitTexts.Add(htmlReader.Text);
+                }
+            }
         }
     }
 }
