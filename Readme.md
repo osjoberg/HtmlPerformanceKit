@@ -8,6 +8,7 @@ To install HtmlPerformanceKit, run the following command in the Package Manager 
 ```cmd
 PM> Install-Package HtmlPerformanceKit
 ```
+You can also view the package page on [Nuget](https://www.nuget.org/packages/HtmlPerformanceKit/).
 
 ## Performance
 HtmlPerformanceKit is currently about 7x faster than HtmlAgilityPack in my benchmarks. This is probably because HtmlPerformanceKit is streaming the HTML document tokens as they are read while HtmlAgilityPack constructs a DOM for the entire document in memory. HtmlAgilityPack has a much more user-friendly API and is more battle-tested. If you are not concerned about performance, you should probably use HtmlAgilityPack instead.
