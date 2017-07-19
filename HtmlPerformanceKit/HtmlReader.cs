@@ -9,7 +9,7 @@ namespace HtmlPerformanceKit
     /// <summary>
     /// HtmlReader is a streaming reader for HTML documents.
     /// </summary>
-    public class HtmlReader : IDisposable
+    public sealed class HtmlReader : IDisposable
     {
         private readonly BufferReader bufferReader;
         private readonly HtmlStateMachine stateMachine;
@@ -207,12 +207,7 @@ namespace HtmlPerformanceKit
             bufferReader.Dispose();
         }
 
-        /// <summary>
-        /// Calls the ParseError event.
-        /// </summary>
-        /// <param name="sender">Sender argument.</param>
-        /// <param name="args">Args argument.</param>
-        protected void OnParseError(object sender, HtmlParseErrorEventArgs args)
+        private void OnParseError(object sender, HtmlParseErrorEventArgs args)
         {
             ParseError?.Invoke(sender, args);
         }

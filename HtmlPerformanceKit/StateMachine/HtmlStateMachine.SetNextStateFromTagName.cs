@@ -31,7 +31,6 @@
             }
                 
             var name = EmitTagToken.Name;
-            var buffer = name.Buffer;
 
             switch (name.Length)
             {
