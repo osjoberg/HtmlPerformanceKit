@@ -16,7 +16,7 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<!>", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Comment, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Comment, reader.TokenKind);
             Assert.AreEqual("", reader.Text);
 
             Assert.IsFalse(reader.Read());
@@ -29,7 +29,7 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<!", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Comment, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Comment, reader.TokenKind);
             Assert.AreEqual("", reader.Text);
 
             Assert.IsFalse(reader.Read());
@@ -42,7 +42,7 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<!div displayed>", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Comment, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Comment, reader.TokenKind);
             Assert.AreEqual("div displayed", reader.Text);
 
             Assert.IsFalse(reader.Read());
@@ -55,7 +55,7 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<!/div>", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Comment, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Comment, reader.TokenKind);
             Assert.AreEqual("/div", reader.Text);
 
             Assert.IsFalse(reader.Read());

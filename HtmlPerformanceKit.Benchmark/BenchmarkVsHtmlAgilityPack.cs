@@ -29,7 +29,7 @@ namespace HtmlPerformanceKit.Benchmark
 
             while (htmlReader.Read())
             {
-                if (htmlReader.NodeType == HtmlNodeType.Tag && htmlReader.Name == "a")
+                if (htmlReader.TokenKind == HtmlTokenKind.Tag && htmlReader.Name == "a")
                 {
                     var hrefAttributeValue = htmlReader.GetAttribute("href");
                     if (hrefAttributeValue != null)
@@ -51,9 +51,9 @@ namespace HtmlPerformanceKit.Benchmark
             htmlDocument.Load(stream);
             var links = new List<string>();
 
-            foreach (HtmlNode node in htmlDocument.DocumentNode.Descendants())
+            foreach (var node in htmlDocument.DocumentNode.Descendants())
             {
-                if (node.NodeType == HtmlAgilityPack.HtmlNodeType.Element && node.Name == "a")
+                if (node.NodeType == HtmlNodeType.Element && node.Name == "a")
                 {
                     var hrefAttributeValue = node.Attributes["href"];
                     if (hrefAttributeValue != null)
@@ -76,7 +76,7 @@ namespace HtmlPerformanceKit.Benchmark
 
             while (htmlReader.Read())
             {
-                if (htmlReader.NodeType == HtmlNodeType.Text)
+                if (htmlReader.TokenKind == HtmlTokenKind.Text)
                 {
                     texts.Add(htmlReader.Text);
                 }
@@ -96,7 +96,7 @@ namespace HtmlPerformanceKit.Benchmark
 
             foreach (var node in htmlDocument.DocumentNode.Descendants())
             {
-                if (node.NodeType == HtmlAgilityPack.HtmlNodeType.Text)
+                if (node.NodeType == HtmlNodeType.Text)
                 {
                     texts.Add(HttpUtility.HtmlDecode(node.InnerText));
                 }

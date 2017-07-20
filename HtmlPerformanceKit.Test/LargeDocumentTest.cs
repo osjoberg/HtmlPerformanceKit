@@ -32,7 +32,7 @@ namespace HtmlPerformanceKit.Test
 
             foreach (var node in htmlDocument.DocumentNode.Descendants())
             {
-                if (node.NodeType == HtmlAgilityPack.HtmlNodeType.Element && node.Name == "a")
+                if (node.NodeType == HtmlNodeType.Element && node.Name == "a")
                 {
                     var hrefAttributeValue = node.Attributes["href"];
                     if (hrefAttributeValue != null)
@@ -49,7 +49,7 @@ namespace HtmlPerformanceKit.Test
 
             while (htmlReader.Read())
             {
-                if (htmlReader.NodeType == HtmlNodeType.Tag && htmlReader.Name == "a")
+                if (htmlReader.TokenKind == HtmlTokenKind.Tag && htmlReader.Name == "a")
                 {
                     var hrefAttributeValue = htmlReader.GetAttribute("href");
                     if (hrefAttributeValue != null)
@@ -74,7 +74,7 @@ namespace HtmlPerformanceKit.Test
 
             foreach (var node in htmlDocument.DocumentNode.Descendants())
             {
-                if (node.NodeType == HtmlAgilityPack.HtmlNodeType.Text && node.InnerText != "</form>" && node.InnerText != "")
+                if (node.NodeType == HtmlNodeType.Text && node.InnerText != "</form>" && node.InnerText != "")
                 {
                     htmlAgilityPackTexts.Add(HttpUtility.HtmlDecode(node.InnerText));
                 }
@@ -87,7 +87,7 @@ namespace HtmlPerformanceKit.Test
 
             while (htmlReader.Read())
             {
-                if (htmlReader.NodeType == HtmlNodeType.Text)
+                if (htmlReader.TokenKind == HtmlTokenKind.Text)
                 {
                     htmlPerformanceKitTexts.Add(htmlReader.Text);
                 }
@@ -107,7 +107,7 @@ namespace HtmlPerformanceKit.Test
 
             while (htmlReader.Read())
             {
-                if (htmlReader.NodeType == HtmlNodeType.Tag && htmlReader.Name == "a")
+                if (htmlReader.TokenKind == HtmlTokenKind.Tag && htmlReader.Name == "a")
                 {
                     var hrefAttributeValue = htmlReader.GetAttribute("href");
                     if (hrefAttributeValue != null)
@@ -128,7 +128,7 @@ namespace HtmlPerformanceKit.Test
 
             while (htmlReader.Read())
             {
-                if (htmlReader.NodeType == HtmlNodeType.Text)
+                if (htmlReader.TokenKind == HtmlTokenKind.Text)
                 {
                     htmlPerformanceKitTexts.Add(htmlReader.Text);
                 }

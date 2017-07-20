@@ -16,11 +16,11 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<title></title>", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.EndTag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.EndTag, reader.TokenKind);
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsFalse(reader.Read());
@@ -33,15 +33,15 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<title><p></title>", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
             Assert.AreEqual("<p>", reader.Text);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.EndTag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.EndTag, reader.TokenKind);
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsFalse(reader.Read());
@@ -54,15 +54,15 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<title><p></p></title>", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
             Assert.AreEqual("<p></p>", reader.Text);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.EndTag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.EndTag, reader.TokenKind);
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsFalse(reader.Read());
@@ -75,15 +75,15 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<title><br /></title>", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
             Assert.AreEqual("<br />", reader.Text);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.EndTag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.EndTag, reader.TokenKind);
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsFalse(reader.Read());
@@ -96,15 +96,15 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<title>hello</title>", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
             Assert.AreEqual("hello", reader.Text);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.EndTag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.EndTag, reader.TokenKind);
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsFalse(reader.Read());
@@ -117,15 +117,15 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<title></title><p>", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.EndTag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.EndTag, reader.TokenKind);
             Assert.AreEqual("title", reader.Name);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("p", reader.Name);
 
             Assert.IsFalse(reader.Read());

@@ -53,31 +53,31 @@ namespace HtmlPerformanceKit
         public event EventHandler<HtmlParseErrorEventArgs> ParseError;
 
         /// <summary>
-        /// Gets last read node type.
+        /// Gets last read token kind.
         /// </summary>
-        public HtmlNodeType NodeType { get; private set; }
+        public HtmlTokenKind TokenKind { get; private set; }
 
         /// <summary>
         /// Gets if last read tag is a self closing element.
-        /// <returns>True if last read node was <see cref="HtmlNodeType.Tag"/> or <see cref="HtmlNodeType.Doctype"/> and it was a self closing element, otherwise False.</returns>
+        /// <returns>True if last read token kind was <see cref="HtmlTokenKind.Tag"/> or <see cref="HtmlTokenKind.Doctype"/> and it was a self closing element, otherwise False.</returns>
         /// </summary>
         public bool SelfClosingElement => tagToken?.SelfClosing ?? false;
 
         /// <summary>
         /// Gets the last read tag name.
-        /// <returns>Lowercased tag name if last read node was <see cref="HtmlNodeType.Tag"/> or <see cref="HtmlNodeType.Doctype"/>, otherwise Null.</returns>
+        /// <returns>Lowercased tag name if last read token kind was <see cref="HtmlTokenKind.Tag"/> or <see cref="HtmlTokenKind.Doctype"/>, otherwise Null.</returns>
         /// </summary>
         public string Name => tagToken?.Name.ToString();
 
         /// <summary>
         /// Gets the last read text.
-        /// <returns>Text if last read node was <see cref="HtmlNodeType.Text"/> or <see cref="HtmlNodeType.Comment"/>, otherwise Null.</returns>
+        /// <returns>Text if last read token kind was <see cref="HtmlTokenKind.Text"/> or <see cref="HtmlTokenKind.Comment"/>, otherwise Null.</returns>
         /// </summary>
         public string Text => textBuffer?.ToString();
 
         /// <summary>
         /// Gets the last read attribute count.
-        /// <returns>Number of attributes if last read node was <see cref="HtmlNodeType.Text"/> or <see cref="HtmlNodeType.Comment"/>, otherwise 0.</returns>
+        /// <returns>Number of attributes if last read token kind was <see cref="HtmlTokenKind.Text"/> or <see cref="HtmlTokenKind.Comment"/>, otherwise 0.</returns>
         /// </summary>
         public int AttributeCount => tagToken?.Attributes.Count ?? 0;
 
@@ -92,9 +92,9 @@ namespace HtmlPerformanceKit
         public int LinePosition => bufferReader.LinePosition;
 
         /// <summary>
-        /// Reads one more token from the stream.
+        /// Read one token from the stream.
         /// </summary>
-        /// <returns>True if one node was read, False if end of stream is reached.</returns>
+        /// <returns>True if a token was read, False if end of stream is reached.</returns>
         public bool Read()
         {
             textBuffer = null;
@@ -108,7 +108,7 @@ namespace HtmlPerformanceKit
 
                 if (stateMachine.EmitTagToken != null)
                 {
-                    NodeType = stateMachine.EmitTagToken.EndTag ? HtmlNodeType.EndTag  : HtmlNodeType.Tag;
+                    TokenKind = stateMachine.EmitTagToken.EndTag ? HtmlTokenKind.EndTag  : HtmlTokenKind.Tag;
 
                     stateMachine.SetNextStateFromTagName();
 
@@ -123,21 +123,21 @@ namespace HtmlPerformanceKit
 
                 if (stateMachine.EmitDataBuffer != null)
                 {
-                    NodeType = HtmlNodeType.Text;
+                    TokenKind = HtmlTokenKind.Text;
                     textBuffer = stateMachine.EmitDataBuffer;
                     return true;
                 }
 
                 if (stateMachine.EmitCommentBuffer != null)
                 {
-                    NodeType = HtmlNodeType.Comment;
+                    TokenKind = HtmlTokenKind.Comment;
                     textBuffer = stateMachine.EmitCommentBuffer;
                     return true;
                 }
 
                 if (stateMachine.EmitDoctypeToken != null)
                 {
-                    NodeType = HtmlNodeType.Doctype;
+                    TokenKind = HtmlTokenKind.Doctype;
                     tagToken = stateMachine.EmitDoctypeToken;
                     return true;
                 }
@@ -153,7 +153,7 @@ namespace HtmlPerformanceKit
         /// Get attribute value by attribute name.
         /// </summary>
         /// <param name="name">Name of attribute value to get.</param>
-        /// <returns>Attribute value of first specified attribute name if last read node was <see cref="HtmlNodeType.Text"/> or <see cref="HtmlNodeType.Comment"/>, otherwise Null.</returns>
+        /// <returns>Attribute value of first specified attribute name if last read token kind was <see cref="HtmlTokenKind.Text"/> or <see cref="HtmlTokenKind.Comment"/>, otherwise Null.</returns>
         public string GetAttribute(string name)
         {
             if (name == null)
@@ -173,7 +173,7 @@ namespace HtmlPerformanceKit
         /// Get attribute value by attribute index.
         /// </summary>
         /// <param name="index">Index of attribute value to get.</param>
-        /// <returns>Attribute value of specified index if last read node was <see cref="HtmlNodeType.Text"/> or <see cref="HtmlNodeType.Comment"/>, otherwise Null.</returns>
+        /// <returns>Attribute value of specified index if last read token kind was <see cref="HtmlTokenKind.Text"/> or <see cref="HtmlTokenKind.Comment"/>, otherwise Null.</returns>
         public string GetAttribute(int index)
         {
             if (index < 0 || index >= AttributeCount)
@@ -188,7 +188,7 @@ namespace HtmlPerformanceKit
         /// Get attribute name by attribute index.
         /// </summary>
         /// <param name="index">Index of attribute name to get.</param>
-        /// <returns>Attribute name of specified index if last read node was <see cref="HtmlNodeType.Text"/> or <see cref="HtmlNodeType.Comment"/>, otherwise Null.</returns>
+        /// <returns>Attribute name of specified index if last read token kind was <see cref="HtmlTokenKind.Text"/> or <see cref="HtmlTokenKind.Comment"/>, otherwise Null.</returns>
         public string GetAttributeName(int index)
         {
             if (index < 0 || index >= AttributeCount)

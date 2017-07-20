@@ -21,7 +21,7 @@ public IEnumerable<string> ExtractLinks(string filename)
     {
         while (htmlReader.Read())
         {
-            if (htmlReader.NodeType == HtmlNodeType.Tag && htmlReader.Name == "a")
+            if (htmlReader.TokenKind == HtmlTokenKind.Tag && htmlReader.Name == "a")
             {
                 var hrefAttributeValue = htmlReader.GetAttribute("href");
                 if (hrefAttributeValue != null)

@@ -25,7 +25,7 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("a", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
             Assert.AreEqual("a", reader.Text);
 
             Assert.IsFalse(reader.Read());
@@ -38,7 +38,7 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("&#65;", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
             Assert.AreEqual("A", reader.Text);
 
             Assert.IsFalse(reader.Read());
@@ -51,7 +51,7 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("&#x41;", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
             Assert.AreEqual("A", reader.Text);
 
             Assert.IsFalse(reader.Read());
@@ -64,7 +64,7 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("&lt;", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
             Assert.AreEqual("<", reader.Text);
 
             Assert.IsFalse(reader.Read());
@@ -77,7 +77,7 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("I'm &notit; I tell you", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
             Assert.AreEqual("I'm ¬it; I tell you", reader.Text);
 
             Assert.IsFalse(reader.Read());
@@ -92,7 +92,7 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("I'm &notin; I tell you", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
             Assert.AreEqual("I'm ∉ I tell you", reader.Text);
 
             Assert.IsFalse(reader.Read());

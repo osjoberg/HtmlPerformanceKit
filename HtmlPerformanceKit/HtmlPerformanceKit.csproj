@@ -44,7 +44,7 @@
     <Compile Include="Infrastructure\BufferReader.cs" />
     <Compile Include="Infrastructure\CharBuffer.cs" />
     <Compile Include="Infrastructure\HtmlChar.cs" />
-    <Compile Include="HtmlNodeType.cs" />
+    <Compile Include="HtmlTokenKind.cs" />
     <Compile Include="HtmlReader.cs" />
     <Compile Include="StateMachine\RawText\HtmlStateMachine.RawTextState.cs" />
     <Compile Include="StateMachine\RawText\HtmlStateMachine.RawTextLessThanSignState.cs" />

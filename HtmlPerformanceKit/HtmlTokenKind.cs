@@ -1,9 +1,9 @@
 ﻿namespace HtmlPerformanceKit
 {
     /// <summary>
-    /// Identifies what kind of node that was read from stream.
+    /// Identifies what kind of token that was read from stream.
     /// </summary>
-    public enum HtmlNodeType
+    public enum HtmlTokenKind
     {
         /// <summary>
         /// Nothing has been read from stream yet.

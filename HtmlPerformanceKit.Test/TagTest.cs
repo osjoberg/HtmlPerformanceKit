@@ -16,7 +16,7 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<br/>", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("br", reader.Name);
             Assert.IsTrue(reader.SelfClosingElement);
 
@@ -30,12 +30,12 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<br/>a", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("br", reader.Name);
             Assert.IsTrue(reader.SelfClosingElement);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
             Assert.AreEqual("a", reader.Text);
 
             Assert.IsFalse(reader.Read());
@@ -48,11 +48,11 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("a<br/>", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
             Assert.AreEqual("a", reader.Text);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("br", reader.Name);
             Assert.IsTrue(reader.SelfClosingElement);
 
@@ -66,20 +66,20 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("a<br/>b<p/>", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
             Assert.AreEqual("a", reader.Text);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("br", reader.Name);
             Assert.IsTrue(reader.SelfClosingElement);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
             Assert.AreEqual("b", reader.Text);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("p", reader.Name);
             Assert.IsTrue(reader.SelfClosingElement);
 
@@ -93,21 +93,21 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<br/>a<p/>b", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("br", reader.Name);
             Assert.IsTrue(reader.SelfClosingElement);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
             Assert.AreEqual("a", reader.Text);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("p", reader.Name);
             Assert.IsTrue(reader.SelfClosingElement);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Text, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
             Assert.AreEqual("b", reader.Text);
 
             Assert.IsFalse(reader.Read());
@@ -120,7 +120,7 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<a href=\"javascript:;\">", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("a", reader.Name);
             Assert.AreEqual("javascript:;", reader.GetAttribute("href"));
             Assert.IsFalse(reader.SelfClosingElement);
@@ -135,7 +135,7 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<a href='javascript:;'>", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("a", reader.Name);
             Assert.AreEqual("javascript:;", reader.GetAttribute("href"));
             Assert.IsFalse(reader.SelfClosingElement);
@@ -150,7 +150,7 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<a href=javascript:;>", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("a", reader.Name);
             Assert.AreEqual("javascript:;", reader.GetAttribute("href"));
             Assert.IsFalse(reader.SelfClosingElement);
@@ -165,7 +165,7 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<a href>", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("a", reader.Name);
             Assert.AreEqual("", reader.GetAttribute("href"));
             Assert.IsFalse(reader.SelfClosingElement);
@@ -180,7 +180,7 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<a>", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("a", reader.Name);
             Assert.IsNull(reader.GetAttribute("href"));
             Assert.IsFalse(reader.SelfClosingElement);
@@ -231,7 +231,7 @@ namespace HtmlPerformanceKit.Test
             reader = HtmlReaderFactory.FromString("<img src=\"a\" src=\"b\" />", parseErrors);
 
             Assert.IsTrue(reader.Read());
-            Assert.AreEqual(HtmlNodeType.Tag, reader.NodeType);
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("img", reader.Name);
 
             Assert.AreEqual(2, reader.AttributeCount);

@@ -12,9 +12,20 @@ namespace HtmlPerformanceKit.Infrastructure
             buffer = new char[initialSize];
         }
 
-        internal char[] Buffer => buffer;
+        internal char[] Buffer
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return buffer; }
+        }
 
-        internal int Length { get; private set; }
+        internal int Length
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private set;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string ToString()
