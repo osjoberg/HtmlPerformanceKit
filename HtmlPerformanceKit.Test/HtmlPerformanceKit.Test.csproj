@@ -65,6 +65,10 @@
     <Compile Include="TagTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HtmlPerformanceKit.Benchmark\HtmlPerformanceKit.Benchmark.csproj">
+      <Project>{fda36d48-5011-43ba-b558-b5ed0aafb13f}</Project>
+      <Name>HtmlPerformanceKit.Benchmark</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HtmlPerformanceKit\HtmlPerformanceKit.csproj">
       <Project>{30a4a51c-7f3f-4bde-9d77-69dc44d7e1fe}</Project>
       <Name>HtmlPerformanceKit</Name>
@@ -74,6 +78,7 @@
     <EmbeddedResource Include="en.wikipedia.org_wiki_List_of_Australian_treaties.html" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Choose>

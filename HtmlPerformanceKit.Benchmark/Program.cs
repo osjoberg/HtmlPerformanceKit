@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.Benchmark
     {
         public static void Main(string[] args)
         {
-            BenchmarkRunner.Run<BenchmarkVsHtmlAgilityPack>();
+            BenchmarkRunner.Run<Benchmark>();
         }
     }
 }
