@@ -13,10 +13,12 @@ namespace HtmlPerformanceKit.Test
             var linksHtmlAgilitypack = benchmark.ExtractLinksHtmlAgilityPack();
             var linksAngleSharp = benchmark.ExtractLinksAngleSharp();
             var linksCsQuery = benchmark.ExtractLinksCsQuery();
+            var linksHtmlParserSharp = benchmark.ExtractLinksHtmlParserSharp();
 
             CollectionAssert.AreEqual(links, linksHtmlAgilitypack);
             CollectionAssert.AreEqual(links, linksAngleSharp);
             CollectionAssert.AreEqual(links, linksCsQuery);
+            CollectionAssert.AreEqual(links, linksHtmlParserSharp);
         }
 
         [TestMethod]
@@ -28,10 +30,12 @@ namespace HtmlPerformanceKit.Test
             var textsHtmlAgilitypack = benchmark.ExtractTextsHtmlAgilityPack();
             var textsAngleSharp = benchmark.ExtractTextsAngleSharp();
             var textsCsQuery = benchmark.ExtractTextsCsQuery();
+            var textsHtmlParserSharp = benchmark.ExtractTextsHtmlParserSharp();
 
             CollectionAssert.AreEqual(texts, textsHtmlAgilitypack);
             //CollectionAssert.AreEqual(texts, textsAngleSharp);
-            //CollectionAssert.AreEqual(texts, textsAngleSharp);
+            //CollectionAssert.AreEqual(texts, textsCsQuery);
+            //CollectionAssert.AreEqual(texts, textsHtmlParserSharp);
         }
 
         [TestMethod]
