@@ -13,9 +13,9 @@ You can also view the package page on [Nuget](https://www.nuget.org/packages/Htm
 ## Performance
 HtmlPerformanceKit is currently about 6-11x faster than AngleSharp, HtmlAgilityPack and CsQuery in my benchmarks. 
 This is probably because theese libraries construct a full DOM for the entire document in memory while HtmlPerformanceKit streams tokens as they are read and decoded. 
-Theese libraries features a much more user-friendly API and are more battle-tested. If you are not concerned about performance, you should probably use one of those libraries instead. 
+Theese libraries features a much more user-friendly API and are more battle-tested. If you are not concerned about performance, you should probably use one of those instead. 
 
-HtmlPerformanceKit is currentlly about 3x faster than HtmlParserSharp, which is the closest competitor both in performance and in features.
+HtmlPerformanceKit is currently about 3x faster than HtmlParserSharp, which is the closest competitor both in performance and in features.
 
 ## Example usage
 ```csharp
