@@ -219,7 +219,15 @@ namespace HtmlPerformanceKit.Infrastructure
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal int Peek()
         {
-            return peekBuffer.Count == 0 ? streamReader.Peek() : peekBuffer.Peek();
+            if (peekBuffer.Count > 0)
+            {
+                return peekBuffer.Peek();
+            }
+
+            var currentInputCharacter = streamReader.Read();
+            peekBuffer.Enqueue(currentInputCharacter);
+
+            return currentInputCharacter;
         }
     }
 }
