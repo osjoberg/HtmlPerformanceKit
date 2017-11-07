@@ -16,7 +16,7 @@
         private void CharacterReferenceInAttributeValueState()
         {
             var characters = ConsumeCharacterReference();
-            if (characters == null)
+            if (characters.Length == 0)
             {
                 currentTagToken.Attributes.Current.Value.Append('&');
             }
