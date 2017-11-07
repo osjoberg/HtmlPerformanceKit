@@ -46,25 +46,26 @@ Benchmarks are extracting links and texts from a large Wikipedia article, List o
 BenchmarkDotNet=v0.10.0
 OS=Microsoft Windows NT 6.2.9200.0
 Processor=Intel(R) Core(TM) i7-6600U CPU 2.60GHz, ProcessorCount=4
-Frequency=2742188 Hz, Resolution=364.6723 ns, Timer=TSC
+Frequency=2742190 Hz, Resolution=364.6720 ns, Timer=TSC
 Host Runtime=Clr 4.0.30319.42000, Arch=32-bit RELEASE
 GC=Concurrent Workstation
-JitModules=clrjit-v4.7.2101.1
+JitModules=clrjit-v4.7.2110.0
 Job Runtime(s):
 	Clr 4.0.30319.42000, Arch=32-bit RELEASE
 
 
 ```
-|                      Method |        Mean |    StdErr |     StdDev |      Median |
-|---------------------------- |------------ |---------- |----------- |------------ |
-| ExtractLinks |  30.5040 ms | 0.3022 ms |  2.0936 ms |  29.8002 ms |
-| ExtractLinksHtmlParserSharp |  92.4987 ms | 1.1794 ms |  5.5320 ms |  89.6711 ms |
-| ExtractLinksAngleSharp | 199.8211 ms | 1.9656 ms | 14.5770 ms | 194.6425 ms |
-| ExtractLinksHtmlAgilityPack | 257.5180 ms | 2.5666 ms | 22.0788 ms | 250.6009 ms |
-| ExtractLinksCsQuery | 346.4787 ms | 3.4372 ms | 15.3718 ms | 342.9341 ms |
-| ExtractTexts |  32.6740 ms | 0.0918 ms |  0.3554 ms |  32.6529 ms |
-| ExtractTextsHtmlParserSharp |  94.9927 ms | 0.3013 ms |  1.1669 ms |  95.0740 ms |
-| ExtractTextsAngleSharp | 219.3714 ms | 1.4480 ms |  5.6079 ms | 218.1780 ms |
-| ExtractTextsHtmlAgilityPack | 266.3874 ms | 2.6395 ms | 19.0337 ms | 260.1867 ms |
-| ExtractTextsCsQuery | 344.4637 ms | 3.3692 ms | 14.2943 ms | 336.0718 ms |
+                      Method |        Mean |    StdDev |      Median |
+---------------------------- |------------ |---------- |------------ |
+                ExtractLinks |  25.2016 ms | 0.2778 ms |  25.1799 ms |
+ ExtractLinksHtmlAgilityPack | 190.5365 ms | 4.4316 ms | 189.4746 ms |
+      ExtractLinksAngleSharp | 177.6399 ms | 7.2088 ms | 176.1924 ms |
+         ExtractLinksCsQuery | 312.1999 ms | 4.1638 ms | 310.6307 ms |
+ ExtractLinksHtmlParserSharp |  84.3848 ms | 2.6910 ms |  83.4875 ms |
+                ExtractTexts |  29.5441 ms | 0.2491 ms |  29.4681 ms |
+ ExtractTextsHtmlAgilityPack | 212.3233 ms | 7.4466 ms | 211.2080 ms |
+      ExtractTextsAngleSharp | 206.5462 ms | 5.1078 ms | 206.5650 ms |
+         ExtractTextsCsQuery | 318.1908 ms | 3.7805 ms | 317.8808 ms |
+ ExtractTextsHtmlParserSharp |  88.0808 ms | 0.8588 ms |  87.9277 ms |
+
 
