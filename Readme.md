@@ -55,17 +55,17 @@ Job Runtime(s):
 
 
 ```
-                      Method |        Mean |    StdDev |      Median |
+Method |        Mean |    StdDev |      Median |
 ---------------------------- |------------ |---------- |------------ |
-                ExtractLinks |  25.2016 ms | 0.2778 ms |  25.1799 ms |
- ExtractLinksHtmlAgilityPack | 190.5365 ms | 4.4316 ms | 189.4746 ms |
-      ExtractLinksAngleSharp | 177.6399 ms | 7.2088 ms | 176.1924 ms |
-         ExtractLinksCsQuery | 312.1999 ms | 4.1638 ms | 310.6307 ms |
- ExtractLinksHtmlParserSharp |  84.3848 ms | 2.6910 ms |  83.4875 ms |
-                ExtractTexts |  29.5441 ms | 0.2491 ms |  29.4681 ms |
- ExtractTextsHtmlAgilityPack | 212.3233 ms | 7.4466 ms | 211.2080 ms |
-      ExtractTextsAngleSharp | 206.5462 ms | 5.1078 ms | 206.5650 ms |
-         ExtractTextsCsQuery | 318.1908 ms | 3.7805 ms | 317.8808 ms |
- ExtractTextsHtmlParserSharp |  88.0808 ms | 0.8588 ms |  87.9277 ms |
+ExtractLinks |  25.2016 ms | 0.2778 ms |  25.1799 ms |
+ExtractLinksHtmlAgilityPack | 190.5365 ms | 4.4316 ms | 189.4746 ms |
+ExtractLinksAngleSharp | 177.6399 ms | 7.2088 ms | 176.1924 ms |
+ExtractLinksCsQuery | 312.1999 ms | 4.1638 ms | 310.6307 ms |
+ExtractLinksHtmlParserSharp |  84.3848 ms | 2.6910 ms |  83.4875 ms |
+ExtractTexts |  29.5441 ms | 0.2491 ms |  29.4681 ms |
+ExtractTextsHtmlAgilityPack | 212.3233 ms | 7.4466 ms | 211.2080 ms |
+ExtractTextsAngleSharp | 206.5462 ms | 5.1078 ms | 206.5650 ms |
+ExtractTextsCsQuery | 318.1908 ms | 3.7805 ms | 317.8808 ms |
+ExtractTextsHtmlParserSharp |  88.0808 ms | 0.8588 ms |  87.9277 ms |
 
 
