@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace HtmlPerformanceKit.Infrastructure
@@ -8,7 +9,7 @@ namespace HtmlPerformanceKit.Infrastructure
     internal class BufferReader : IDisposable
     {
         private readonly StreamReader streamReader;
-        private readonly Queue<int> peekBuffer = new Queue<int>(8);
+        private LinkedList<int> peekBuffer = new LinkedList<int>();
 
         internal BufferReader(StreamReader streamReader)
         {
@@ -33,7 +34,7 @@ namespace HtmlPerformanceKit.Infrastructure
             {
                 var currentInputCharacter = streamReader.Read();
 
-                peekBuffer.Enqueue(currentInputCharacter);
+                peekBuffer.AddLast(currentInputCharacter);
                 outputLength++;
 
                 if (currentInputCharacter == -1)
@@ -72,16 +73,18 @@ namespace HtmlPerformanceKit.Infrastructure
         {
             if (peekBuffer.Count != 0)
             {
-                return peekBuffer.Dequeue();
+                var peekResult = peekBuffer.First.Value;
+                peekBuffer.RemoveFirst();
+                return peekResult;
             }
 
-            var result = streamReader.Read();
             if (LineNumber == 0)
             {
                 LineNumber = 1;
                 LinePosition = 1;
             }
 
+            var result = streamReader.Read();
             if (result == '\n')
             {
                 LineNumber++;
@@ -213,7 +216,7 @@ namespace HtmlPerformanceKit.Infrastructure
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Reconsume(int data)
         {
-            peekBuffer.Enqueue(data);
+            peekBuffer.AddFirst(data);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -221,11 +224,11 @@ namespace HtmlPerformanceKit.Infrastructure
         {
             if (peekBuffer.Count > 0)
             {
-                return peekBuffer.Peek();
+                return peekBuffer.First.Value;
             }
 
             var currentInputCharacter = streamReader.Read();
-            peekBuffer.Enqueue(currentInputCharacter);
+            peekBuffer.AddLast(currentInputCharacter);
 
             return currentInputCharacter;
         }
