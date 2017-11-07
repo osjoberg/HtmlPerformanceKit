@@ -131,5 +131,30 @@ namespace HtmlPerformanceKit.Test
             Assert.IsFalse(reader.Read());
             Assert.AreEqual(0, parseErrors.Count);
         }
+
+        [TestMethod]
+        public void RcDataWithCharacterReference()
+        {
+            reader = HtmlReaderFactory.FromString("<title>&amp;</title><p>", parseErrors);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
+            Assert.AreEqual("title", reader.Name);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
+            Assert.AreEqual("&", reader.Text);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlTokenKind.EndTag, reader.TokenKind);
+            Assert.AreEqual("title", reader.Name);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
+            Assert.AreEqual("p", reader.Name);
+
+            Assert.IsFalse(reader.Read());
+            Assert.AreEqual(0, parseErrors.Count);
+        }
     }
 }
