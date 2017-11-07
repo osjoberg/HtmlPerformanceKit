@@ -14,6 +14,8 @@ using CsQuery;
 
 using HtmlAgilityPack;
 
+using HtmlKit;
+
 using HtmlParserSharp;
 
 using NodeType = AngleSharp.Dom.NodeType;
@@ -167,6 +169,43 @@ namespace HtmlPerformanceKit.Benchmark
         }
 
         [Benchmark]
+        public List<string> ExtractLinksHtmlKit()
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+
+            var htmlTokenizer = new HtmlTokenizer(new StreamReader(stream));
+
+            var links = new List<string>();
+
+            while (htmlTokenizer.ReadNextToken(out var token))
+            {
+                if (token.Kind != HtmlKit.HtmlTokenKind.Tag)
+                {
+                    continue;
+                }
+
+                var dataToken = (HtmlTagToken)token;
+                if (dataToken.Name != "a")
+                {
+                    continue;
+                }
+
+                foreach (var attribute in dataToken.Attributes)
+                {
+                    if (attribute.Name != "href")
+                    {
+                        continue;
+                    }
+
+                    links.Add(attribute.Value);
+                    break;
+                }
+            }
+
+            return links;
+        }
+
+        [Benchmark]
         public List<string> ExtractTexts()
         {
             stream.Seek(0, SeekOrigin.Begin);
@@ -277,6 +316,29 @@ namespace HtmlPerformanceKit.Benchmark
                 }
 
                 texts.Add(reader.Value);
+            }
+
+            return texts;
+        }
+
+        [Benchmark]
+        public List<string> ExtractTextsHtmlKit()
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+
+            var htmlTokenizer = new HtmlTokenizer(new StreamReader(stream));
+
+            var texts = new List<string>();
+
+            while (htmlTokenizer.ReadNextToken(out var token))
+            {
+                if (token.Kind != HtmlKit.HtmlTokenKind.Data && token.Kind != HtmlKit.HtmlTokenKind.ScriptData && token.Kind != HtmlKit.HtmlTokenKind.CData)
+                {
+                    continue;
+                }
+
+                var dataToken = (HtmlDataToken)token;
+                texts.Add(dataToken.Data);
             }
 
             return texts;

@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Linq;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HtmlPerformanceKit.Test
 {
@@ -14,11 +16,13 @@ namespace HtmlPerformanceKit.Test
             var linksAngleSharp = benchmark.ExtractLinksAngleSharp();
             var linksCsQuery = benchmark.ExtractLinksCsQuery();
             var linksHtmlParserSharp = benchmark.ExtractLinksHtmlParserSharp();
+            var linksHtmlKit = benchmark.ExtractLinksHtmlKit();
 
             CollectionAssert.AreEqual(links, linksHtmlAgilitypack);
             CollectionAssert.AreEqual(links, linksAngleSharp);
             CollectionAssert.AreEqual(links, linksCsQuery);
             CollectionAssert.AreEqual(links, linksHtmlParserSharp);
+            CollectionAssert.AreEqual(links, linksHtmlKit);
         }
 
         [TestMethod]
@@ -31,11 +35,13 @@ namespace HtmlPerformanceKit.Test
             var textsAngleSharp = benchmark.ExtractTextsAngleSharp();
             var textsCsQuery = benchmark.ExtractTextsCsQuery();
             var textsHtmlParserSharp = benchmark.ExtractTextsHtmlParserSharp();
+            var textsHtmlKit = benchmark.ExtractTextsHtmlKit();
 
             CollectionAssert.AreEqual(texts, textsHtmlAgilitypack);
             //CollectionAssert.AreEqual(texts, textsAngleSharp);
             //CollectionAssert.AreEqual(texts, textsCsQuery);
             //CollectionAssert.AreEqual(texts, textsHtmlParserSharp);
+            //CollectionAssert.AreEqual(texts, textsHtmlKit);
         }
 
         [TestMethod]

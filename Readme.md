@@ -15,7 +15,7 @@ HtmlPerformanceKit is currently about 6-11x faster than AngleSharp, HtmlAgilityP
 This is probably because theese libraries construct a full DOM for the entire document in memory while HtmlPerformanceKit streams tokens as they are read and decoded. 
 Theese libraries features a much more user-friendly API and are more battle-tested. If you are not concerned about performance, you should probably use one of those instead. 
 
-HtmlPerformanceKit is currently about 3x faster than HtmlParserSharp, which is the closest competitor both in performance and in features.
+HtmlPerformanceKit is currently about 0.5-3x faster than HtmlKit and HtmlParserSharp, which are the closest competitors both in performance and in features.
 
 ## Example usage
 ```csharp
@@ -55,17 +55,20 @@ Job Runtime(s):
 
 
 ```
-                      Method |        Mean |    StdDev |      Median |
----------------------------- |------------ |---------- |------------ |
-                ExtractLinks |  25.2016 ms | 0.2778 ms |  25.1799 ms |
- ExtractLinksHtmlAgilityPack | 190.5365 ms | 4.4316 ms | 189.4746 ms |
-      ExtractLinksAngleSharp | 177.6399 ms | 7.2088 ms | 176.1924 ms |
-         ExtractLinksCsQuery | 312.1999 ms | 4.1638 ms | 310.6307 ms |
- ExtractLinksHtmlParserSharp |  84.3848 ms | 2.6910 ms |  83.4875 ms |
-                ExtractTexts |  29.5441 ms | 0.2491 ms |  29.4681 ms |
- ExtractTextsHtmlAgilityPack | 212.3233 ms | 7.4466 ms | 211.2080 ms |
-      ExtractTextsAngleSharp | 206.5462 ms | 5.1078 ms | 206.5650 ms |
-         ExtractTextsCsQuery | 318.1908 ms | 3.7805 ms | 317.8808 ms |
- ExtractTextsHtmlParserSharp |  88.0808 ms | 0.8588 ms |  87.9277 ms |
+Method |        Mean |    StdErr |    StdDev |      Median |
+---------------------------- |------------ |---------- |---------- |------------ |
+ExtractLinks |  25.5086 ms | 0.2582 ms | 1.4140 ms |  24.8393 ms |
+ExtractLinksHtmlAgilityPack | 194.9712 ms | 1.1450 ms | 4.1285 ms | 192.5482 ms |
+ExtractLinksAngleSharp | 174.4118 ms | 1.1617 ms | 4.3465 ms | 176.0270 ms |
+ExtractLinksCsQuery | 314.7059 ms | 0.7754 ms | 2.9013 ms | 313.8183 ms |
+ExtractLinksHtmlParserSharp |  85.0704 ms | 0.7126 ms | 2.5693 ms |  84.5753 ms |
+ExtractLinksHtmlKit |  41.9969 ms | 0.1814 ms | 0.7024 ms |  41.8550 ms |
+ExtractTexts |  30.1057 ms | 0.1060 ms | 0.3966 ms |  30.0275 ms |
+ExtractTextsHtmlAgilityPack | 208.2669 ms | 0.2946 ms | 1.1022 ms | 208.1993 ms |
+ExtractTextsAngleSharp | 204.7175 ms | 1.2844 ms | 4.8058 ms | 203.9816 ms |
+ExtractTextsCsQuery | 313.0944 ms | 0.6130 ms | 2.2936 ms | 312.8229 ms |
+ExtractTextsHtmlParserSharp |  88.8068 ms | 0.2684 ms | 1.0396 ms |  88.3509 ms |
+ExtractTextsHtmlKit |  44.6560 ms | 0.0978 ms | 0.3527 ms |  44.6393 ms |
+
 
 
