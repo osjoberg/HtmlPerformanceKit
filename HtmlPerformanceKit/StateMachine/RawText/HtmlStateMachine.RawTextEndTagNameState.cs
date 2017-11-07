@@ -38,7 +38,7 @@
                 case '\n':
                 case '\r':
                 case ' ':
-                    if (temporaryBuffer.Equals(appropriateTagName.ToString()))
+                    if (currentTagToken.Name.Equals(appropriateTagName.ToString()))
                     {
                         State = BeforeAttributeNameState;
                         return;                        
@@ -47,7 +47,7 @@
                     goto default;
 
                 case '/':
-                    if (temporaryBuffer.Equals(appropriateTagName.ToString()))
+                    if (currentTagToken.Name.Equals(appropriateTagName.ToString()))
                     {
                         State = SelfClosingStartTagState;
                         return;
@@ -56,7 +56,7 @@
                     goto default;
 
                 case '>':
-                    if (temporaryBuffer.Equals(appropriateTagName.ToString()))
+                    if (currentTagToken.Name.Equals(appropriateTagName.ToString()))
                     {
                         if (currentDataBuffer.Length > 0)
                         {
