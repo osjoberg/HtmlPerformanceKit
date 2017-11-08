@@ -6,7 +6,13 @@ namespace HtmlPerformanceKit.Benchmark
     {
         public static void Main(string[] args)
         {
-            BenchmarkRunner.Run<Benchmark>();
+            var switcher = new BenchmarkSwitcher(new[] 
+            {
+                typeof(BenchmarkLibraries),
+                typeof(BenchmarkHtmlPerformanceKit),
+            });
+
+            switcher.Run(args);
         }
     }
 }

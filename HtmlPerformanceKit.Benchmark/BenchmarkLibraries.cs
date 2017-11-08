@@ -22,11 +22,11 @@ using NodeType = AngleSharp.Dom.NodeType;
 
 namespace HtmlPerformanceKit.Benchmark
 {
-    public class Benchmark
+    public class BenchmarkLibraries
     {
         private Stream stream;
 
-        public Benchmark()
+        public BenchmarkLibraries()
         {
             var executingAssembly = Assembly.GetExecutingAssembly();
             stream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Benchmark.en.wikipedia.org_wiki_List_of_Australian_treaties.html");

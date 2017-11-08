@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using HtmlPerformanceKit.Benchmark;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -10,7 +10,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void ExtractLinksFromWikipediaListOfAustralianTreaties()
         {
-            var benchmark = new Benchmark.Benchmark();
+            var benchmark = new BenchmarkLibraries();
             var links = benchmark.ExtractLinks();
             var linksHtmlAgilitypack = benchmark.ExtractLinksHtmlAgilityPack();
             var linksAngleSharp = benchmark.ExtractLinksAngleSharp();
@@ -28,7 +28,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void ExtractTextFromWikipediaListOfAustralianTreaties()
         {
-            var benchmark = new Benchmark.Benchmark();
+            var benchmark = new BenchmarkLibraries();
 
             var texts = benchmark.ExtractTexts();
             var textsHtmlAgilitypack = benchmark.ExtractTextsHtmlAgilityPack();
@@ -47,14 +47,14 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void ExtractLinksFromWikipediaListOfAustralianTreatiesHtmlPerformanceKit()
         {
-            var benchmark = new Benchmark.Benchmark();
+            var benchmark = new BenchmarkLibraries();
             var links = benchmark.ExtractLinks();
         }
 
         [TestMethod]
         public void ExtractTextFromWikipediaListOfAustralianTreatiesHtmlPerformanceKit()
         {
-            var benchmark = new Benchmark.Benchmark();
+            var benchmark = new BenchmarkLibraries();
             var texts = benchmark.ExtractLinks();
         }
     }
