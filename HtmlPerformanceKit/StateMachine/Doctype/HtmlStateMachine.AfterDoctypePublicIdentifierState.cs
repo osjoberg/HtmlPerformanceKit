@@ -51,14 +51,14 @@ namespace HtmlPerformanceKit.StateMachine
                 case '"':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     currentDoctypeToken.Attributes.Add();
-                    currentDoctypeToken.Attributes.Current.Name.Append("system");
+                    currentDoctypeToken.Attributes.Current.Name.AddRange("system");
                     State = DoctypeSystemIdentifierDoubleQuotedState;
                     return;
 
                 case '\'':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     currentDoctypeToken.Attributes.Add();
-                    currentDoctypeToken.Attributes.Current.Name.Append("system");
+                    currentDoctypeToken.Attributes.Current.Name.AddRange("system");
                     State = DoctypeSystemIdentifierSingleQuotedState;
                     return;
 

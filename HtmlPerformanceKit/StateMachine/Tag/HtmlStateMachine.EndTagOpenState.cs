@@ -58,7 +58,7 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'Z':
                     currentTagToken.Clear();
                     currentTagToken.EndTag = true;
-                    currentTagToken.Name.Append((char)(currentInputCharacter + 0x20));
+                    currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
                     State = TagNameState;
                     return;
 
@@ -90,7 +90,7 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'z':
                     currentTagToken.Clear();
                     currentTagToken.EndTag = true;
-                    currentTagToken.Name.Append((char)currentInputCharacter);
+                    currentTagToken.Name.Add((char)currentInputCharacter);
                     State = TagNameState;
                     return;
 
@@ -102,8 +102,8 @@ namespace HtmlPerformanceKit.StateMachine
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    currentDataBuffer.Append('<');
-                    currentDataBuffer.Append('/');
+                    currentDataBuffer.Add('<');
+                    currentDataBuffer.Add('/');
                     bufferReader.Reconsume(EofMarker);
                     return;
 

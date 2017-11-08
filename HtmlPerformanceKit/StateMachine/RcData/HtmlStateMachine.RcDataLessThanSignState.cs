@@ -26,7 +26,7 @@
 
                 default:
                     State = RcDataState;
-                    currentDataBuffer.Append('<');
+                    currentDataBuffer.Add('<');
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }

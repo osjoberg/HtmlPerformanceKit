@@ -22,12 +22,12 @@
                 case '/':
                     temporaryBuffer.Clear();
                     State = ScriptDataDoubleEscapeEndState;
-                    currentDataBuffer.Append('/');
+                    currentDataBuffer.Add('/');
                     return;
 
                 default:
                     State = ScriptDataDoubleEscapedState;
-                    currentDataBuffer.Append((char)currentInputCharacter);
+                    currentDataBuffer.Add((char)currentInputCharacter);
                     return;
             }
         }

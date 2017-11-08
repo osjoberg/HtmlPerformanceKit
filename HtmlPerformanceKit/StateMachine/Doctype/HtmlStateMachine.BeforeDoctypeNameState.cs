@@ -69,13 +69,13 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'Y':
                 case 'Z':
                     currentDoctypeToken.Clear();
-                    currentDoctypeToken.Name.Append((char)(currentInputCharacter + 0x20));
+                    currentDoctypeToken.Name.Add((char)(currentInputCharacter + 0x20));
                     return;
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
                     currentDoctypeToken.Clear();
-                    currentDoctypeToken.Name.Append(HtmlChar.ReplacementCharacter);
+                    currentDoctypeToken.Name.Add(HtmlChar.ReplacementCharacter);
                     State = DoctypeNameState;
                     return;
 
@@ -96,7 +96,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                 default:
                     currentDoctypeToken.Clear();
-                    currentDoctypeToken.Name.Append((char)currentInputCharacter);
+                    currentDoctypeToken.Name.Add((char)currentInputCharacter);
                     State = DoctypeNameState;
                     return;
             }

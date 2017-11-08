@@ -32,7 +32,7 @@ namespace HtmlPerformanceKit.StateMachine
             {
                 case '-':
                     State = ScriptDataEscapedDashState;
-                    currentDataBuffer.Append('-');
+                    currentDataBuffer.Add('-');
                     return;
 
                 case '<':
@@ -41,7 +41,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    currentDataBuffer.Append(HtmlChar.ReplacementCharacter);
+                    currentDataBuffer.Add(HtmlChar.ReplacementCharacter);
                     return;
 
                 case EofMarker:
@@ -51,7 +51,7 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 default:
-                    currentDataBuffer.Append((char)currentInputCharacter);
+                    currentDataBuffer.Add((char)currentInputCharacter);
                     return;
             }
         }

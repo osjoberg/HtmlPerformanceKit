@@ -29,13 +29,13 @@
 
                 case '!':
                     State = ScriptDataEscapeStartState;
-                    currentDataBuffer.Append('<');
-                    currentDataBuffer.Append('!');
+                    currentDataBuffer.Add('<');
+                    currentDataBuffer.Add('!');
                     return;
 
                 default:
                     State = ScriptDataState;
-                    currentDataBuffer.Append('<');
+                    currentDataBuffer.Add('<');
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }

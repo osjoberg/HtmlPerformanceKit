@@ -12,12 +12,6 @@ namespace HtmlPerformanceKit.Infrastructure
             buffer = new char[initialSize];
         }
 
-        internal char[] Buffer
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return buffer; }
-        }
-
         internal int Length
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -40,7 +34,7 @@ namespace HtmlPerformanceKit.Infrastructure
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void Append(char @char)
+        internal void Add(char @char)
         {
             if (Length == buffer.Length)
             {
@@ -51,21 +45,39 @@ namespace HtmlPerformanceKit.Infrastructure
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void Append(string @string)
+        internal void AddRange(string @string)
         {
-            Append(@string.ToCharArray(), @string.Length);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void Append(char[] array, int length)
-        {
-            while (Length + length > buffer.Length)
+            while (Length + @string.Length > buffer.Length)
             {
                 Array.Resize(ref buffer, buffer.Length * 2);
             }
 
-            Array.Copy(array, 0, buffer, Length, length);
-            Length += length;
+            @string.CopyTo(0, buffer, Length,  @string.Length);
+            Length += @string.Length;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void AddRange(char[] array)
+        {
+            while (Length + array.Length > buffer.Length)
+            {
+                Array.Resize(ref buffer, buffer.Length * 2);
+            }
+
+            Array.Copy(array, 0, buffer, Length, array.Length);
+            Length += array.Length;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void AddRange(CharBuffer charBuffer)
+        {
+            while (Length + charBuffer.Length > buffer.Length)
+            {
+                Array.Resize(ref buffer, buffer.Length * 2);
+            }
+
+            Array.Copy(charBuffer.buffer, 0, buffer, Length, charBuffer.Length);
+            Length += charBuffer.Length;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -79,6 +91,25 @@ namespace HtmlPerformanceKit.Infrastructure
             for (var index = 0; index < Length; index++)
             {
                 if (@string[index] != buffer[index])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal bool Equals(CharBuffer charBuffer)
+        {
+            if (Length != charBuffer.Length)
+            {
+                return false;
+            }
+
+            for (var index = 0; index < Length; index++)
+            {
+                if (charBuffer.buffer[index] != buffer[index])
                 {
                     return false;
                 }

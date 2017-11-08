@@ -21,7 +21,7 @@
             {
                 case '-':
                     State = ScriptDataEscapedDashState;
-                    currentDataBuffer.Append('-');
+                    currentDataBuffer.Add('-');
                     return;
 
                 default:

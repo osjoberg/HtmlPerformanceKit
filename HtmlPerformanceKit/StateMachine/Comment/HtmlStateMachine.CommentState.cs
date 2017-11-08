@@ -33,7 +33,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    currentCommentBuffer.Append(HtmlChar.ReplacementCharacter);
+                    currentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
                     return;
 
                 case EofMarker:
@@ -44,7 +44,7 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 default:
-                    currentCommentBuffer.Append((char)currentInputCharacter);
+                    currentCommentBuffer.Add((char)currentInputCharacter);
                     return;
             }
         }

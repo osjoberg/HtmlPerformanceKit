@@ -44,7 +44,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                     case HtmlChar.Null:
                         ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                        currentTagToken.Attributes.Current.Value.Append(HtmlChar.ReplacementCharacter);
+                        currentTagToken.Attributes.Current.Value.Add(HtmlChar.ReplacementCharacter);
                         break;
 
                     case EofMarker:
@@ -54,7 +54,7 @@ namespace HtmlPerformanceKit.StateMachine
                         return;
 
                     default:
-                        currentTagToken.Attributes.Current.Value.Append((char)currentInputCharacter);
+                        currentTagToken.Attributes.Current.Value.Add((char)currentInputCharacter);
                         break;
                 }
             }

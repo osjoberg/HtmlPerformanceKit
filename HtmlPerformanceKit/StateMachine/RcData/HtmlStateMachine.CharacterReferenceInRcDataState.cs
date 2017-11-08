@@ -21,11 +21,11 @@
             var characters = ConsumeCharacterReference();
             if (characters.Length == 0)
             {
-                currentDataBuffer.Append('&');
+                currentDataBuffer.Add('&');
             }
             else
             {
-                currentDataBuffer.Append(characters, characters.Length);
+                currentDataBuffer.AddRange(characters);
             }
         }
     }

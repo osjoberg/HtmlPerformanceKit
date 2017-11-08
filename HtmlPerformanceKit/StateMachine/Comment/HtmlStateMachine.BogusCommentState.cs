@@ -34,11 +34,11 @@ namespace HtmlPerformanceKit.StateMachine
                         return;
 
                     case HtmlChar.Null:
-                        currentCommentBuffer.Append(HtmlChar.ReplacementCharacter);
+                        currentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
                         continue;
 
                     default:
-                        currentCommentBuffer.Append((char)currentInputCharacter);
+                        currentCommentBuffer.Add((char)currentInputCharacter);
                         continue;
                 }
             }

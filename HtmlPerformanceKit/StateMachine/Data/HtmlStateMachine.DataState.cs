@@ -48,7 +48,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                     case HtmlChar.Null:
                         ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                        currentDataBuffer.Append(HtmlChar.Null);
+                        currentDataBuffer.Add(HtmlChar.Null);
                         break;
 
                     case EofMarker:
@@ -61,7 +61,7 @@ namespace HtmlPerformanceKit.StateMachine
                         return;
 
                     default:
-                        currentDataBuffer.Append((char)currentInputCharacter);
+                        currentDataBuffer.Add((char)currentInputCharacter);
                         break;
                 }
             }

@@ -49,14 +49,14 @@ namespace HtmlPerformanceKit.StateMachine
                 case '"':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     currentDoctypeToken.Attributes.Add();
-                    currentDoctypeToken.Attributes.Current.Name.Append("public");
+                    currentDoctypeToken.Attributes.Current.Name.AddRange("public");
                     State = DoctypePublicIdentifierDoubleQuotedState;
                     return;
 
                 case '\'':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     currentDoctypeToken.Attributes.Add();
-                    currentDoctypeToken.Attributes.Current.Name.Append("public");
+                    currentDoctypeToken.Attributes.Current.Name.AddRange("public");
                     State = DoctypePublicIdentifierSingleQuotedState;
                     return;
 

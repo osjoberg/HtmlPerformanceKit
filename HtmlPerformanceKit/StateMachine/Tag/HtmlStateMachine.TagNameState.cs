@@ -83,12 +83,12 @@ namespace HtmlPerformanceKit.StateMachine
                     case 'X':
                     case 'Y':
                     case 'Z':
-                        currentTagToken.Name.Append((char)(currentInputCharacter + 0x20));
+                        currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
                         break;
 
                     case HtmlChar.Null:
                         ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                        currentTagToken.Name.Append(HtmlChar.ReplacementCharacter);
+                        currentTagToken.Name.Add(HtmlChar.ReplacementCharacter);
                         break;
 
                     case EofMarker:
@@ -98,7 +98,7 @@ namespace HtmlPerformanceKit.StateMachine
                         return;
 
                     default:
-                        currentTagToken.Name.Append((char)currentInputCharacter);
+                        currentTagToken.Name.Add((char)currentInputCharacter);
                         break;
                 }
             }

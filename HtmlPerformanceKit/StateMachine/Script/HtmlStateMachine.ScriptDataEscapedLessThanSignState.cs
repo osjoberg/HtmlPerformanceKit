@@ -57,10 +57,10 @@
                 case 'Y':
                 case 'Z':
                     temporaryBuffer.Clear();
-                    temporaryBuffer.Append((char)(currentInputCharacter + 0x20));
+                    temporaryBuffer.Add((char)(currentInputCharacter + 0x20));
                     State = ScriptDataDoubleEscapeStartState;
-                    currentDataBuffer.Append('<');
-                    currentDataBuffer.Append((char)currentInputCharacter);
+                    currentDataBuffer.Add('<');
+                    currentDataBuffer.Add((char)currentInputCharacter);
                     return;
 
                 case 'a':
@@ -90,15 +90,15 @@
                 case 'y':
                 case 'z':
                     temporaryBuffer.Clear();
-                    temporaryBuffer.Append((char)currentInputCharacter);
+                    temporaryBuffer.Add((char)currentInputCharacter);
                     State = ScriptDataDoubleEscapeStartState;
-                    currentDataBuffer.Append('<');
-                    currentDataBuffer.Append((char)currentInputCharacter);
+                    currentDataBuffer.Add('<');
+                    currentDataBuffer.Add((char)currentInputCharacter);
                     return;
 
                 default:
                     State = ScriptDataEscapedState;
-                    currentDataBuffer.Append('<');
+                    currentDataBuffer.Add('<');
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }

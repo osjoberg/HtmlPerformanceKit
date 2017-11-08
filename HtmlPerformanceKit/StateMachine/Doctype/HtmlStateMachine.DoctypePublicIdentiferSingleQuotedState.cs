@@ -36,7 +36,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    currentDoctypeToken.Attributes.Current.Value.Append(HtmlChar.ReplacementCharacter);
+                    currentDoctypeToken.Attributes.Current.Value.Add(HtmlChar.ReplacementCharacter);
                     return;
 
                 case '>':
@@ -53,7 +53,7 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 default:
-                    currentDoctypeToken.Attributes.Current.Value.Append((char)currentInputCharacter);
+                    currentDoctypeToken.Attributes.Current.Value.Add((char)currentInputCharacter);
                     return;
             }
         }

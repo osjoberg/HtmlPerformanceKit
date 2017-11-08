@@ -27,7 +27,7 @@
 
                 default:
                     State = RawTextState;
-                    currentDataBuffer.Append('<');
+                    currentDataBuffer.Add('<');
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }

@@ -34,7 +34,7 @@ namespace HtmlPerformanceKit.StateMachine
             switch (currentInputCharacter)
             {
                 case '-':
-                    currentDataBuffer.Append('-');
+                    currentDataBuffer.Add('-');
                     return;
 
                 case '<':
@@ -43,12 +43,12 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case '>':
                     State = ScriptDataState;
-                    currentDataBuffer.Append('>');
+                    currentDataBuffer.Add('>');
                     return;
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    currentDataBuffer.Append(HtmlChar.ReplacementCharacter);
+                    currentDataBuffer.Add(HtmlChar.ReplacementCharacter);
                     return;
 
                 case EofMarker:

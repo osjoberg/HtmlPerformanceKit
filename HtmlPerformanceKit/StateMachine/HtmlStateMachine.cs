@@ -102,7 +102,7 @@ namespace HtmlPerformanceKit.StateMachine
         internal void RememberLastStartTagName()
         {
             appropriateTagName.Clear();
-            appropriateTagName.Append(EmitTagToken.Name.Buffer, EmitTagToken.Name.Length);
+            appropriateTagName.AddRange(EmitTagToken.Name);
         }
     }
 }

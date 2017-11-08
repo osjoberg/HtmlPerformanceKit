@@ -93,14 +93,14 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'Y':
                 case 'Z':
                     currentTagToken.Attributes.Add();
-                    currentTagToken.Attributes.Current.Name.Append((char)(currentInputCharacter + 0x20));
+                    currentTagToken.Attributes.Current.Name.Add((char)(currentInputCharacter + 0x20));
                     State = AttributeNameState;
                     return;
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
                     currentTagToken.Attributes.Add();
-                    currentTagToken.Attributes.Current.Name.Append(HtmlChar.ReplacementCharacter);
+                    currentTagToken.Attributes.Current.Name.Add(HtmlChar.ReplacementCharacter);
                     State = AttributeNameState;
                     return;
 
@@ -118,7 +118,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                 default:
                     currentTagToken.Attributes.Add();
-                    currentTagToken.Attributes.Current.Name.Append((char)currentInputCharacter);
+                    currentTagToken.Attributes.Current.Name.Add((char)currentInputCharacter);
                     State = AttributeNameState;
                     return;
             }

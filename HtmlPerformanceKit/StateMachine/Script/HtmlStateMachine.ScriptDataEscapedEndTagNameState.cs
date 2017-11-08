@@ -38,7 +38,7 @@
                 case '\n':
                 case '\r':
                 case ' ':
-                    if (currentTagToken.Name.Equals(appropriateTagName.ToString()))
+                    if (currentTagToken.Name.Equals(appropriateTagName))
                     {
                         State = BeforeAttributeNameState;
                         return;
@@ -47,7 +47,7 @@
                     goto default;
 
                 case '/':
-                    if (currentTagToken.Name.Equals(appropriateTagName.ToString()))
+                    if (currentTagToken.Name.Equals(appropriateTagName))
                     {
                         State = SelfClosingStartTagState;
                         return;
@@ -56,7 +56,7 @@
                     goto default;
 
                 case '>':
-                    if (currentTagToken.Name.Equals(appropriateTagName.ToString()))
+                    if (currentTagToken.Name.Equals(appropriateTagName))
                     {
                         if (currentDataBuffer.Length > 0)
                         {
@@ -98,8 +98,8 @@
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    currentTagToken.Name.Append((char)(currentInputCharacter + 0x20));
-                    temporaryBuffer.Append((char)currentInputCharacter);
+                    currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
+                    temporaryBuffer.Add((char)currentInputCharacter);
                     return;
 
                 case 'a':
@@ -128,15 +128,15 @@
                 case 'x':
                 case 'y':
                 case 'z':
-                    currentTagToken.Name.Append((char)currentInputCharacter);
-                    temporaryBuffer.Append((char)currentInputCharacter);
+                    currentTagToken.Name.Add((char)currentInputCharacter);
+                    temporaryBuffer.Add((char)currentInputCharacter);
                     return;
 
                 default:
                     State = ScriptDataEscapedState;
-                    currentDataBuffer.Append('<');
-                    currentDataBuffer.Append('/');
-                    currentDataBuffer.Append(temporaryBuffer.ToString());
+                    currentDataBuffer.Add('<');
+                    currentDataBuffer.Add('/');
+                    currentDataBuffer.AddRange(temporaryBuffer);
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }

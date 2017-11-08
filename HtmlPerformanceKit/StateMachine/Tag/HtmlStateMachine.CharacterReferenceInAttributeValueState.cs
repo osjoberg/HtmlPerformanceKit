@@ -18,11 +18,11 @@
             var characters = ConsumeCharacterReference();
             if (characters.Length == 0)
             {
-                currentTagToken.Attributes.Current.Value.Append('&');
+                currentTagToken.Attributes.Current.Value.Add('&');
             }
             else
             {
-                currentTagToken.Attributes.Current.Value.Append(characters, characters.Length);
+                currentTagToken.Attributes.Current.Value.AddRange(characters);
             }
 
             State = returnToState;

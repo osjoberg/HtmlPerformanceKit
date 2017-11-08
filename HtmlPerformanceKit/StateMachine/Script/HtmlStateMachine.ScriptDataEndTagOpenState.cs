@@ -50,8 +50,8 @@
                 case 'Z':
                     currentTagToken.Clear();
                     currentTagToken.EndTag = true;
-                    currentTagToken.Name.Append((char)(currentInputCharacter + 0x20));
-                    temporaryBuffer.Append((char)currentInputCharacter);
+                    currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
+                    temporaryBuffer.Add((char)currentInputCharacter);
                     State = ScriptDataEndTagNameState;
                     return;
 
@@ -83,15 +83,15 @@
                 case 'z':
                     currentTagToken.Clear();
                     currentTagToken.EndTag = true;
-                    currentTagToken.Name.Append((char)currentInputCharacter);
-                    temporaryBuffer.Append((char)currentInputCharacter);
+                    currentTagToken.Name.Add((char)currentInputCharacter);
+                    temporaryBuffer.Add((char)currentInputCharacter);
                     State = ScriptDataEndTagNameState;
                     return;
 
                 default:
                     State = ScriptDataState;
-                    currentDataBuffer.Append('<');
-                    currentDataBuffer.Append('/');
+                    currentDataBuffer.Add('<');
+                    currentDataBuffer.Add('/');
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }

@@ -44,13 +44,13 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case '"':
                     currentDoctypeToken.Attributes.Add();
-                    currentDoctypeToken.Attributes.Current.Name.Append("system");
+                    currentDoctypeToken.Attributes.Current.Name.AddRange("system");
                     State = DoctypeSystemIdentifierDoubleQuotedState;
                     return;
 
                 case '\'':
                     currentDoctypeToken.Attributes.Add();
-                    currentDoctypeToken.Attributes.Current.Name.Append("system");
+                    currentDoctypeToken.Attributes.Current.Name.AddRange("system");
                     State = DoctypeSystemIdentifierSingleQuotedState;
                     return;
 

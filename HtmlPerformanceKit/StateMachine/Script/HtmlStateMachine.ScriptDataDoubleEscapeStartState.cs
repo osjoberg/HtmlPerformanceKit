@@ -43,7 +43,7 @@
                         return;
                     }
 
-                    currentDataBuffer.Append((char)currentInputCharacter);
+                    currentDataBuffer.Add((char)currentInputCharacter);
                     State = ScriptDataEscapedState;
                     return;
 
@@ -73,8 +73,8 @@
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    temporaryBuffer.Append((char)(currentInputCharacter + 0x20));
-                    currentDataBuffer.Append((char)currentInputCharacter);
+                    temporaryBuffer.Add((char)(currentInputCharacter + 0x20));
+                    currentDataBuffer.Add((char)currentInputCharacter);
                     return;
 
                 case 'a':
@@ -103,8 +103,8 @@
                 case 'x':
                 case 'y':
                 case 'z':
-                    temporaryBuffer.Append((char)currentInputCharacter);
-                    currentDataBuffer.Append((char)currentInputCharacter);
+                    temporaryBuffer.Add((char)currentInputCharacter);
+                    currentDataBuffer.Add((char)currentInputCharacter);
                     return;
 
                 default:

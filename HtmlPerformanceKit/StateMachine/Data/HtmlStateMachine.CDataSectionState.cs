@@ -39,7 +39,7 @@
                         return;
 
                     default:
-                        currentDataBuffer.Append((char)currentInputCharacter);
+                        currentDataBuffer.Add((char)currentInputCharacter);
                         continue;
                 }
             }
