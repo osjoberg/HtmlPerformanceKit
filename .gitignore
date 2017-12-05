@@ -24,3 +24,4 @@
 /HtmlPerformanceKit.Test/bin
 /HtmlPerformanceKit.Test/obj
 /.vs/HtmlPerformanceKit/v15
+*.log
