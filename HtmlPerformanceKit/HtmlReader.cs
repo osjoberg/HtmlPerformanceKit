@@ -200,6 +200,29 @@ namespace HtmlPerformanceKit
         }
 
         /// <summary>
+        /// Try get attribute value by attribute name.
+        /// </summary>
+        /// <param name="name">Name of attribute value to get.</param>
+        /// <param name="value">Attribute value of first specified attribute name if last read token kind was <see cref="HtmlTokenKind.Text"/> or <see cref="HtmlTokenKind.Comment"/>, otherwise Null.</param>
+        /// <returns>True when exist attribute with name <see cref="name"/>.</returns>
+        public bool TryGetAttribute(string name, out string value)
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            if (name.Length == 0)
+            {
+                throw new ArgumentException("Invalid attribute name, \"\".", nameof(name));
+            }
+
+            value = tagToken?.Attributes[name]?.ToString();
+
+            return value != null;
+        }
+
+        /// <summary>
         /// Disposes the instance and it's associated StreamReader.
         /// </summary>
         public void Dispose()
