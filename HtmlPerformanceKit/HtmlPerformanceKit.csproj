@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.0</TargetFramework>
-    <Version>0.7.0.0</Version>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>0.8.0.0</Version>
     <Authors>Oskar Sjöberg</Authors>
     <Company />
-    <Copyright>Copyright ©  2017</Copyright>
+    <Copyright>Copyright ©  2023</Copyright>
     <Description>HtmlPerformanceKit is a fast HTML parser whith a similar API as XmlReader.</Description>
     <PackageProjectUrl>https://github.com/osjoberg/HtmlPerformanceKit</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/osjoberg/HtmlPerformanceKit/blob/master/LICENSE</PackageLicenseUrl>
