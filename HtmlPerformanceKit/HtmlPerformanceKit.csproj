@@ -8,8 +8,8 @@
     <Copyright>Copyright ©  2023</Copyright>
     <Description>HtmlPerformanceKit is a fast HTML parser whith a similar API as XmlReader.</Description>
     <PackageProjectUrl>https://github.com/osjoberg/HtmlPerformanceKit</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/osjoberg/HtmlPerformanceKit/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/osjoberg/HtmlPerformanceKit</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
