@@ -8,12 +8,12 @@ namespace HtmlPerformanceKit.Infrastructure
 {
     internal class BufferReader : IDisposable
     {
-        private readonly StreamReader streamReader;
-        private LinkedList<int> peekBuffer = new LinkedList<int>();
+        private readonly TextReader textReader;
+        private readonly LinkedList<int> peekBuffer = new LinkedList<int>();
 
-        internal BufferReader(StreamReader streamReader)
+        internal BufferReader(TextReader textReader)
         {
-            this.streamReader = streamReader;
+            this.textReader = textReader;
         }
 
         internal int LineNumber { get; private set; }
@@ -22,7 +22,7 @@ namespace HtmlPerformanceKit.Infrastructure
 
         public void Dispose()
         {
-            streamReader?.Dispose();
+            textReader?.Dispose();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -32,7 +32,7 @@ namespace HtmlPerformanceKit.Infrastructure
 
             while (peekBuffer.Count < length)
             {
-                var currentInputCharacter = streamReader.Read();
+                var currentInputCharacter = textReader.Read();
 
                 peekBuffer.AddLast(currentInputCharacter);
                 outputLength++;
@@ -84,7 +84,7 @@ namespace HtmlPerformanceKit.Infrastructure
                 LinePosition = 1;
             }
 
-            var result = streamReader.Read();
+            var result = textReader.Read();
             if (result == '\n')
             {
                 LineNumber++;
@@ -227,7 +227,7 @@ namespace HtmlPerformanceKit.Infrastructure
                 return peekBuffer.First.Value;
             }
 
-            var currentInputCharacter = streamReader.Read();
+            var currentInputCharacter = textReader.Read();
             peekBuffer.AddLast(currentInputCharacter);
 
             return currentInputCharacter;

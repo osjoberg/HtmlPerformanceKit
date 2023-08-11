@@ -48,6 +48,21 @@ namespace HtmlPerformanceKit
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="HtmlReader" /> class.
+        /// </summary>
+        /// <param name="textReader">Stream instance to read from.</param>
+        public HtmlReader(TextReader textReader)
+        {
+            if (textReader == null)
+            {
+                throw new ArgumentNullException(nameof(textReader));
+            }
+
+            bufferReader = new BufferReader(textReader);
+            stateMachine = new HtmlStateMachine(bufferReader, message => OnParseError(this, new HtmlParseErrorEventArgs(message, bufferReader.LineNumber, bufferReader.LinePosition)));
+        }
+
+        /// <summary>
         /// Event that occurs whenever there is a parse error while parsing the Html.
         /// </summary>
         public event EventHandler<HtmlParseErrorEventArgs> ParseError;
@@ -108,7 +123,7 @@ namespace HtmlPerformanceKit
 
                 if (stateMachine.EmitTagToken != null)
                 {
-                    TokenKind = stateMachine.EmitTagToken.EndTag ? HtmlTokenKind.EndTag  : HtmlTokenKind.Tag;
+                    TokenKind = stateMachine.EmitTagToken.EndTag ? HtmlTokenKind.EndTag : HtmlTokenKind.Tag;
 
                     stateMachine.SetNextStateFromTagName();
 
