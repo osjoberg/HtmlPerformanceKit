@@ -12,15 +12,13 @@ namespace HtmlPerformanceKit.Test
         {
             var benchmark = new BenchmarkLibraries();
             var links = benchmark.ExtractLinks();
-            var linksHtmlAgilitypack = benchmark.ExtractLinksHtmlAgilityPack();
+            var linksHtmlAgilityPack = benchmark.ExtractLinksHtmlAgilityPack();
             var linksAngleSharp = benchmark.ExtractLinksAngleSharp();
-            var linksCsQuery = benchmark.ExtractLinksCsQuery();
             var linksHtmlParserSharp = benchmark.ExtractLinksHtmlParserSharp();
             var linksHtmlKit = benchmark.ExtractLinksHtmlKit();
 
-            CollectionAssert.AreEqual(links, linksHtmlAgilitypack);
+            CollectionAssert.AreEqual(links, linksHtmlAgilityPack);
             CollectionAssert.AreEqual(links, linksAngleSharp);
-            CollectionAssert.AreEqual(links, linksCsQuery);
             CollectionAssert.AreEqual(links, linksHtmlParserSharp);
             CollectionAssert.AreEqual(links, linksHtmlKit);
         }
@@ -31,15 +29,13 @@ namespace HtmlPerformanceKit.Test
             var benchmark = new BenchmarkLibraries();
 
             var texts = benchmark.ExtractTexts();
-            var textsHtmlAgilitypack = benchmark.ExtractTextsHtmlAgilityPack();
+            var textsHtmlAgilityPack = benchmark.ExtractTextsHtmlAgilityPack();
             var textsAngleSharp = benchmark.ExtractTextsAngleSharp();
-            var textsCsQuery = benchmark.ExtractTextsCsQuery();
             var textsHtmlParserSharp = benchmark.ExtractTextsHtmlParserSharp();
             var textsHtmlKit = benchmark.ExtractTextsHtmlKit();
 
-            CollectionAssert.AreEqual(texts, textsHtmlAgilitypack);
+            CollectionAssert.AreEqual(texts, textsHtmlAgilityPack);
             //CollectionAssert.AreEqual(texts, textsAngleSharp);
-            //CollectionAssert.AreEqual(texts, textsCsQuery);
             //CollectionAssert.AreEqual(texts, textsHtmlParserSharp);
             //CollectionAssert.AreEqual(texts, textsHtmlKit);
         }

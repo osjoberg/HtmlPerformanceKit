@@ -6,11 +6,8 @@ using System.Web;
 using System.Xml;
 
 using AngleSharp.Dom;
-using AngleSharp.Parser.Html;
-
+using AngleSharp.Html.Parser;
 using BenchmarkDotNet.Attributes;
-
-using CsQuery;
 
 using HtmlAgilityPack;
 
@@ -85,7 +82,7 @@ namespace HtmlPerformanceKit.Benchmark
             stream.Seek(0, SeekOrigin.Begin);
 
             var htmlParser = new HtmlParser();
-            var document = htmlParser.Parse(stream);
+            var document = htmlParser.ParseDocument(stream);
 
             var links = new List<string>();
 
@@ -100,33 +97,6 @@ namespace HtmlPerformanceKit.Benchmark
                     }
                 }
             }
-
-            return links;
-        }
-
-        [Benchmark]
-        public List<string> ExtractLinksCsQuery()
-        {
-            var executingAssembly = Assembly.GetExecutingAssembly();
-            stream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Benchmark.en.wikipedia.org_wiki_List_of_Australian_treaties.html");
-
-            var dom = CQ.Create(stream);
-
-            var links = new List<string>();
-
-            foreach (var element in dom.Document.QuerySelectorAll("*"))
-            {
-                if (element.NodeType == CsQuery.NodeType.ELEMENT_NODE && element.NodeName == "A")
-                {
-                    var hrefAttributeValue = element.Attributes["href"];
-                    if (hrefAttributeValue != null)
-                    {
-                        links.Add(hrefAttributeValue);
-                    }
-                }
-            }
-
-            stream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Benchmark.en.wikipedia.org_wiki_List_of_Australian_treaties.html");
 
             return links;
         }
@@ -173,7 +143,7 @@ namespace HtmlPerformanceKit.Benchmark
         {
             stream.Seek(0, SeekOrigin.Begin);
 
-            var htmlTokenizer = new HtmlTokenizer(new StreamReader(stream));
+            var htmlTokenizer = new HtmlKit.HtmlTokenizer(new StreamReader(stream));
 
             var links = new List<string>();
 
@@ -250,7 +220,7 @@ namespace HtmlPerformanceKit.Benchmark
             stream.Seek(0, SeekOrigin.Begin);
 
             var htmlParser = new HtmlParser();
-            var document = htmlParser.Parse(stream);
+            var document = htmlParser.ParseDocument(stream);
 
             var texts = new List<string>();
 
@@ -261,29 +231,6 @@ namespace HtmlPerformanceKit.Benchmark
                     texts.Add(childNode.Text);
                 }
             }
-
-            return texts;
-        }
-
-        [Benchmark]
-        public List<string> ExtractTextsCsQuery()
-        {
-            var executingAssembly = Assembly.GetExecutingAssembly();
-            stream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Benchmark.en.wikipedia.org_wiki_List_of_Australian_treaties.html");
-
-            var dom = CQ.Create(stream);
-
-            var texts = new List<string>();
-
-            foreach (var node in dom.Document.QuerySelectorAll("*"))
-            {
-                foreach (var childNode in node.ChildNodes.OfType<IText>())
-                {
-                    texts.Add(childNode.Text);
-                }
-            }
-
-            stream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Benchmark.en.wikipedia.org_wiki_List_of_Australian_treaties.html");
 
             return texts;
         }
@@ -326,7 +273,7 @@ namespace HtmlPerformanceKit.Benchmark
         {
             stream.Seek(0, SeekOrigin.Begin);
 
-            var htmlTokenizer = new HtmlTokenizer(new StreamReader(stream));
+            var htmlTokenizer = new HtmlKit.HtmlTokenizer(new StreamReader(stream));
 
             var texts = new List<string>();
 
