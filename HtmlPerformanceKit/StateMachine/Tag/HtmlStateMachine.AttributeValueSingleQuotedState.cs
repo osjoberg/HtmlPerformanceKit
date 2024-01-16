@@ -37,7 +37,7 @@ namespace HtmlPerformanceKit.StateMachine
                 case '&':
                     State = CharacterReferenceInAttributeValueState;
                     additionalAllowedCharacter = '\'';
-                    returnToState = AttributeValueDoubleQuotedState;
+                    returnToState = AttributeValueSingleQuotedState;
                     return;
 
                 case HtmlChar.Null:
