@@ -226,6 +226,18 @@ namespace HtmlPerformanceKit.Test
         }
 
         [TestMethod]
+        public void AttributeValueNamedCharacterReferenceSingleQuoted()
+        {
+            reader = HtmlReaderFactory.FromString("<a title='&lt;'>", parseErrors);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual("<", reader.GetAttribute("title"));
+
+            Assert.IsFalse(reader.Read());
+            Assert.AreEqual(0, parseErrors.Count);
+        }
+
+        [TestMethod]
         public void GetAttributeReturnsFirstAttributeValue()
         {
             reader = HtmlReaderFactory.FromString("<img src=\"a\" src=\"b\" />", parseErrors);
