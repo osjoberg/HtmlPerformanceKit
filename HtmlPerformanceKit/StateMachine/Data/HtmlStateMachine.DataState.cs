@@ -34,7 +34,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                 switch (currentInputCharacter)
                 {
-                    case '&':
+                    case '&' when !skipDecodingCharacterReferences:
                         State = CharacterReferenceInDataState;
                         return;
 
