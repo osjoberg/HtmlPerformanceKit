@@ -33,7 +33,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Append the current input character to the current tag token's tag name.
         /// </summary>
-        private void TagNameState()
+        private Action BuildTagNameState() => () =>
         {
             while (true)
             {
@@ -54,7 +54,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                     case '>':
                         State = DataState;
-                        EmitTagToken = currentTagToken;
+                        EmitTagToken = buffers.CurrentTagToken;
                         return;
 
                     case 'A':
@@ -83,12 +83,12 @@ namespace HtmlPerformanceKit.StateMachine
                     case 'X':
                     case 'Y':
                     case 'Z':
-                        currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
+                        buffers.CurrentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
                         break;
 
                     case HtmlChar.Null:
                         ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                        currentTagToken.Name.Add(HtmlChar.ReplacementCharacter);
+                        buffers.CurrentTagToken.Name.Add(HtmlChar.ReplacementCharacter);
                         break;
 
                     case EofMarker:
@@ -98,7 +98,7 @@ namespace HtmlPerformanceKit.StateMachine
                         return;
 
                     default:
-                        currentTagToken.Name.Add((char)currentInputCharacter);
+                        buffers.CurrentTagToken.Name.Add((char)currentInputCharacter);
                         break;
                 }
             }

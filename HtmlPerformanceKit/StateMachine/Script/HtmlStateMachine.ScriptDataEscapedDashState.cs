@@ -24,7 +24,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Switch to the script data escaped state. Emit the current input character as a character token.
         /// </summary>
-        private void ScriptDataEscapedDashState()
+        private Action BuildScriptDataEscapedDashState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -32,7 +32,7 @@ namespace HtmlPerformanceKit.StateMachine
             {
                 case '-':
                     State = ScriptDataEscapedDashDashState;
-                    currentDataBuffer.Add('-');
+                    buffers.CurrentDataBuffer.Add('-');
                     return;
 
                 case '<':
@@ -42,7 +42,7 @@ namespace HtmlPerformanceKit.StateMachine
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
                     State = ScriptDataEscapedState;
-                    currentDataBuffer.Add(HtmlChar.ReplacementCharacter);
+                    buffers.CurrentDataBuffer.Add(HtmlChar.ReplacementCharacter);
                     return;
 
                 case EofMarker:
@@ -53,7 +53,7 @@ namespace HtmlPerformanceKit.StateMachine
                     
                 default:
                     State = ScriptDataEscapedState;
-                    currentDataBuffer.Add((char)currentInputCharacter);
+                    buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
                     return;
             }
         }

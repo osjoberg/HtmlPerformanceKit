@@ -27,7 +27,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Parse error. Switch to the data state. Emit a U+003C LESS-THAN SIGN character token. Reconsume the current input character.
         /// </summary>
-        private void TagOpenState()
+        private Action BuildTagOpenState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -67,8 +67,8 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    currentTagToken.Clear();
-                    currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
+                    buffers.CurrentTagToken.Clear();
+                    buffers.CurrentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
                     State = TagNameState;
                     return;
 
@@ -98,8 +98,8 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'x':
                 case 'y':
                 case 'z':
-                    currentTagToken.Clear();
-                    currentTagToken.Name.Add((char)currentInputCharacter);
+                    buffers.CurrentTagToken.Clear();
+                    buffers.CurrentTagToken.Name.Add((char)currentInputCharacter);
                     State = TagNameState;
                     return;
 
@@ -111,7 +111,7 @@ namespace HtmlPerformanceKit.StateMachine
                 default:
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = DataState;
-                    currentDataBuffer.Add('<');
+                    buffers.CurrentDataBuffer.Add('<');
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }

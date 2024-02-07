@@ -1,4 +1,6 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+﻿using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     /// <summary>
     /// 8.2.4.68 CDATA section state
@@ -10,7 +12,7 @@
     /// If the end of the file was reached, reconsume the EOF character.    /// </summary>
     internal partial class HtmlStateMachine
     {
-        private void CDataSectionState()
+        private Action BuildCDataSectionState() => () =>
         {
             State = DataState;
 
@@ -24,7 +26,7 @@
                         if (nextInputCharacter == ']' && bufferReader.Peek() == '>')
                         {
                             bufferReader.Consume();
-                            EmitDataBuffer = currentDataBuffer;
+                            EmitDataBuffer = buffers.CurrentDataBuffer;
                         }
                         else
                         {
@@ -34,15 +36,15 @@
                         break;
 
                     case EofMarker:
-                        EmitDataBuffer = currentDataBuffer;
+                        EmitDataBuffer = buffers.CurrentDataBuffer;
                         bufferReader.Reconsume(EofMarker);
                         return;
 
                     default:
-                        currentDataBuffer.Add((char)currentInputCharacter);
+                        buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
                         continue;
                 }
             }
-        }
+        };
     }
 }

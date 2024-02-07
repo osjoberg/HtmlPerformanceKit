@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -21,7 +22,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Parse error. Switch to the before DOCTYPE name state. Reconsume the character.
         /// </summary>
-        private void DoctypeState()
+        private Action BuildDoctypeState()
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -37,7 +38,7 @@ namespace HtmlPerformanceKit.StateMachine
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    EmitDoctypeToken = currentDoctypeToken;
+                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;
 

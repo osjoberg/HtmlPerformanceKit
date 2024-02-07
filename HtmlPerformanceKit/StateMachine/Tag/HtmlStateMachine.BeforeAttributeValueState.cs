@@ -41,7 +41,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Append the current input character to the current attribute's value. Switch to the attribute value (unquoted) state.
         /// </summary>
-        private void BeforeAttributeValueState()
+        private Action BuildBeforeAttributeValueState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -68,13 +68,13 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    currentTagToken.Attributes.Current.Value.Add(HtmlChar.ReplacementCharacter);
+                    buffers.CurrentTagToken.Attributes.Current.Value.Add(HtmlChar.ReplacementCharacter);
                     return;
 
                 case '>':
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
                     State = DataState;
-                    EmitTagToken = currentTagToken;
+                    EmitTagToken = buffers.CurrentTagToken;
                     return;
 
                 case '<':
@@ -90,7 +90,7 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 default:
-                    currentTagToken.Attributes.Current.Value.Add((char)currentInputCharacter);
+                    buffers.CurrentTagToken.Attributes.Current.Value.Add((char)currentInputCharacter);
                     State = AttributeValueUnquotedState;
                     return;
             }

@@ -1,4 +1,6 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+﻿using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     /// <summary>
     /// 8.2.4.4 Character reference in RCDATA state
@@ -13,7 +15,7 @@
     /// </summary>
     internal partial class HtmlStateMachine
     {
-        private void CharacterReferenceInRcDataState()
+        private Action BuildCharacterReferenceInRcDataState() => () =>
         {
             State = RcDataState;
             additionalAllowedCharacter = '\t'; // Works as no additional character since '\t' is always allowed.
@@ -21,12 +23,12 @@
             var characters = ConsumeCharacterReference();
             if (characters.Length == 0)
             {
-                currentDataBuffer.Add('&');
+                buffers.CurrentDataBuffer.Add('&');
             }
             else
             {
-                currentDataBuffer.AddRange(characters);
+                buffers.CurrentDataBuffer.AddRange(characters);
             }
-        }
+        };
     }
 }

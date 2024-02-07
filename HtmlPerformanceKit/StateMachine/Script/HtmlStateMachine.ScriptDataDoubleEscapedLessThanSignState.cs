@@ -13,21 +13,21 @@
         /// Anything else
         /// Switch to the script data double escaped state. Reconsume the current input character.
         /// </summary>
-        private void ScriptDataDoubleEscapedLessThanSignState()
+        private Action BuildScriptDataDoubleEscapedLessThanSignState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
             switch (currentInputCharacter)
             {
                 case '/':
-                    temporaryBuffer.Clear();
+                    buffers.TemporaryBuffer.Clear();
                     State = ScriptDataDoubleEscapeEndState;
-                    currentDataBuffer.Add('/');
+                    buffers.CurrentDataBuffer.Add('/');
                     return;
 
                 default:
                     State = ScriptDataDoubleEscapedState;
-                    currentDataBuffer.Add((char)currentInputCharacter);
+                    buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
                     return;
             }
         }

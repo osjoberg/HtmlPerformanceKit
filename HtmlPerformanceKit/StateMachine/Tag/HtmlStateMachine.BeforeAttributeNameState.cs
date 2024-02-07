@@ -39,7 +39,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Start a new attribute in the current tag token. Set that attribute's name to the current input character, and its value to the empty string. Switch to the attribute name state.
         /// </summary>
-        private void BeforeAttributeNameState()
+        private Action BuildBeforeAttributeNameState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -56,7 +56,7 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case '>':
-                    EmitTagToken = currentTagToken;
+                    EmitTagToken = buffers.CurrentTagToken;
                     State = DataState;
                     return;
 
@@ -86,15 +86,15 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    currentTagToken.Attributes.Add();
-                    currentTagToken.Attributes.Current.Name.Add((char)(currentInputCharacter + 0x20));
+                    buffers.CurrentTagToken.Attributes.Add();
+                    buffers.CurrentTagToken.Attributes.Current.Name.Add((char)(currentInputCharacter + 0x20));
                     State = AttributeNameState;
                     return;
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    currentTagToken.Attributes.Add();
-                    currentTagToken.Attributes.Current.Name.Add(HtmlChar.ReplacementCharacter);
+                    buffers.CurrentTagToken.Attributes.Add();
+                    buffers.CurrentTagToken.Attributes.Current.Name.Add(HtmlChar.ReplacementCharacter);
                     State = AttributeNameState;
                     return;
 
@@ -112,8 +112,8 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 default:
-                    currentTagToken.Attributes.Add();
-                    currentTagToken.Attributes.Current.Name.Add((char)currentInputCharacter);
+                    buffers.CurrentTagToken.Attributes.Add();
+                    buffers.CurrentTagToken.Attributes.Current.Name.Add((char)currentInputCharacter);
                     State = AttributeNameState;
                     return;
             }

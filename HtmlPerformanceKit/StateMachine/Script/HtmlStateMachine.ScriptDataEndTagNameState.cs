@@ -28,7 +28,7 @@
         /// Anything else
         /// Switch to the script data state. Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume the current input character.
         /// </summary>
-        private void ScriptDataEndTagNameState()
+        private Action BuildScriptDataEndTagNameState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -38,7 +38,7 @@
                 case '\n':
                 case '\r':
                 case ' ':
-                    if (currentTagToken.Name.Equals(appropriateTagName))
+                    if (buffers.CurrentTagToken.Name.Equals(buffers.AppropriateTagName))
                     {
                         State = BeforeAttributeNameState;
                         return;                        
@@ -47,7 +47,7 @@
                     goto default;
 
                 case '/':
-                    if (currentTagToken.Name.Equals(appropriateTagName))
+                    if (buffers.CurrentTagToken.Name.Equals(buffers.AppropriateTagName))
                     {
                         State = SelfClosingStartTagState;
                         return;
@@ -56,17 +56,17 @@
                     goto default;
 
                 case '>':
-                    if (currentTagToken.Name.Equals(appropriateTagName))
+                    if (buffers.CurrentTagToken.Name.Equals(buffers.AppropriateTagName))
                     {
-                        if (currentDataBuffer.Length > 0)
+                        if (buffers.CurrentDataBuffer.Length > 0)
                         {
-                            EmitDataBuffer = currentDataBuffer;
+                            EmitDataBuffer = buffers.CurrentDataBuffer;
                             bufferReader.Reconsume('>');
                             return;
                         }
 
                         State = DataState;
-                        EmitTagToken = currentTagToken;
+                        EmitTagToken = buffers.CurrentTagToken;
                         return;
                     }
 
@@ -98,8 +98,8 @@
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
-                    temporaryBuffer.Add((char)currentInputCharacter);
+                    buffers.CurrentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
+                    buffers.TemporaryBuffer.Add((char)currentInputCharacter);
                     return;
 
                 case 'a':
@@ -128,15 +128,15 @@
                 case 'x':
                 case 'y':
                 case 'z':
-                    currentTagToken.Name.Add((char)currentInputCharacter);
-                    temporaryBuffer.Add((char)currentInputCharacter);
+                    buffers.CurrentTagToken.Name.Add((char)currentInputCharacter);
+                    buffers.TemporaryBuffer.Add((char)currentInputCharacter);
                     return;
 
                 default:
                     State = ScriptDataState;
-                    currentDataBuffer.Add('<');
-                    currentDataBuffer.Add('/');
-                    currentDataBuffer.AddRange(temporaryBuffer);
+                    buffers.CurrentDataBuffer.Add('<');
+                    buffers.CurrentDataBuffer.Add('/');
+                    buffers.CurrentDataBuffer.AddRange(buffers.TemporaryBuffer);
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }

@@ -24,7 +24,7 @@ namespace HtmlPerformanceKit.StateMachine
     /// </summary>
     internal partial class HtmlStateMachine
     {
-        private void RcDataState()
+        private Action BuildRcDataState() => () =>
         {
             while (true)
             {
@@ -42,7 +42,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                     case HtmlChar.Null:
                         ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                        currentDataBuffer.Add(HtmlChar.ReplacementCharacter);
+                        buffers.CurrentDataBuffer.Add(HtmlChar.ReplacementCharacter);
                         continue;
 
                     case EofMarker:
@@ -51,7 +51,7 @@ namespace HtmlPerformanceKit.StateMachine
                         return;
 
                     default:
-                        currentDataBuffer.Add((char)currentInputCharacter);
+                        buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
                         continue;
                 }
             }

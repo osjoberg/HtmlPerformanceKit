@@ -24,7 +24,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Parse error. Switch to the bogus comment state.
         /// </summary>
-        private void EndTagOpenState()
+        private Action BuildEndTagOpenState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -56,9 +56,9 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    currentTagToken.Clear();
-                    currentTagToken.EndTag = true;
-                    currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
+                    buffers.CurrentTagToken.Clear();
+                    buffers.CurrentTagToken.EndTag = true;
+                    buffers.CurrentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
                     State = TagNameState;
                     return;
 
@@ -88,9 +88,9 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'x':
                 case 'y':
                 case 'z':
-                    currentTagToken.Clear();
-                    currentTagToken.EndTag = true;
-                    currentTagToken.Name.Add((char)currentInputCharacter);
+                    buffers.CurrentTagToken.Clear();
+                    buffers.CurrentTagToken.EndTag = true;
+                    buffers.CurrentTagToken.Name.Add((char)currentInputCharacter);
                     State = TagNameState;
                     return;
 
@@ -102,8 +102,8 @@ namespace HtmlPerformanceKit.StateMachine
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    currentDataBuffer.Add('<');
-                    currentDataBuffer.Add('/');
+                    buffers.CurrentDataBuffer.Add('<');
+                    buffers.CurrentDataBuffer.Add('/');
                     bufferReader.Reconsume(EofMarker);
                     return;
 

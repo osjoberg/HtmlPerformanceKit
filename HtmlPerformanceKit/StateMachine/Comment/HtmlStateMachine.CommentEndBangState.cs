@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -24,48 +25,48 @@ namespace HtmlPerformanceKit.StateMachine
     /// </summary>
     internal partial class HtmlStateMachine
     {
-        private void CommentEndBangState()
+        private Action BuildCommentEndBangState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
             switch (currentInputCharacter)
             {
                 case '-':
-                    currentCommentBuffer.Add('-');
-                    currentCommentBuffer.Add('-');
-                    currentCommentBuffer.Add('!');
+                    buffers.CurrentCommentBuffer.Add('-');
+                    buffers.CurrentCommentBuffer.Add('-');
+                    buffers.CurrentCommentBuffer.Add('!');
                     State = CommentEndDashState;
                     return;
 
                 case '>':
                     State = DataState;
-                    EmitCommentBuffer = currentCommentBuffer;
+                    EmitCommentBuffer = buffers.CurrentCommentBuffer;
                     return;
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    currentCommentBuffer.Add('-');
-                    currentCommentBuffer.Add('-');
-                    currentCommentBuffer.Add('!');
-                    currentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
+                    buffers.CurrentCommentBuffer.Add('-');
+                    buffers.CurrentCommentBuffer.Add('-');
+                    buffers.CurrentCommentBuffer.Add('!');
+                    buffers.CurrentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
                     State = CommentState;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    EmitCommentBuffer = currentCommentBuffer;
+                    EmitCommentBuffer = buffers.CurrentCommentBuffer;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
-                    currentCommentBuffer.Add('-');
-                    currentCommentBuffer.Add('-');
-                    currentCommentBuffer.Add('!');
-                    currentCommentBuffer.Add((char)currentInputCharacter);
+                    buffers.CurrentCommentBuffer.Add('-');
+                    buffers.CurrentCommentBuffer.Add('-');
+                    buffers.CurrentCommentBuffer.Add('!');
+                    buffers.CurrentCommentBuffer.Add((char)currentInputCharacter);
                     State = CommentState;
                     return;
             }
-        }
+        };
     }
 }

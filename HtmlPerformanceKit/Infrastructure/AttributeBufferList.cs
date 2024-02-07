@@ -14,6 +14,20 @@ namespace HtmlPerformanceKit.Infrastructure
 
         internal AttributeBuffer this[int index] => index < Count ? attributes[index] : null;
 
+        internal int Capacity
+        {
+            get
+            {
+                var size = 0;
+                foreach (var buffer in attributes)
+                {
+                    size += buffer.Name.Capacity + buffer.Value.Capacity;
+                }
+
+                return size;
+            }
+        }
+
         internal void Add()
         {
             if (attributes.Count > Count)
@@ -42,6 +56,11 @@ namespace HtmlPerformanceKit.Infrastructure
 
         private AttributeBuffer GetItem(string name)
         {
+            if (name.Length != Count)
+            {
+                return null;
+            }
+
             for (var index = 0; index < Count; index++)
             {
                 if (attributes[index].Name.Equals(name))

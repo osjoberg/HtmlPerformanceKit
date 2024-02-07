@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -27,7 +28,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Parse error. Switch to the before attribute name state. Reconsume the character.
         /// </summary>
-        private void AfterAttributeValueQuotedState()
+        private Action BuildAfterAttributeValueQuotedState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -41,12 +42,12 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case '/':
-                    State = SelfClosingStartTagState;               
+                    State = SelfClosingStartTagState;
                     return;
 
                 case '>':
                     State = DataState;
-                    EmitTagToken = currentTagToken;
+                    EmitTagToken = buffers.CurrentTagToken;
                     return;
 
                 case EofMarker:
@@ -61,6 +62,6 @@ namespace HtmlPerformanceKit.StateMachine
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }
-        }
+        };
     }
 }

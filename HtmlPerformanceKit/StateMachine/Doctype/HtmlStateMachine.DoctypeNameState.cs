@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -30,7 +31,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Append the current input character to the current DOCTYPE token's name.
         /// </summary>
-        private void DoctypeNameState()
+        private Action BuildDoctypeNameState()
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -45,7 +46,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case '>':
                     State = DataState;
-                    EmitDoctypeToken = currentDoctypeToken;
+                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
                     return;
 
                 case 'A':
@@ -74,24 +75,24 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    currentDoctypeToken.Name.Add((char)(currentInputCharacter + 0x20));
+                    buffers.CurrentDoctypeToken.Name.Add((char)(currentInputCharacter + 0x20));
                     return;
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    currentDoctypeToken.Name.Add(HtmlChar.ReplacementCharacter);
+                    buffers.CurrentDoctypeToken.Name.Add(HtmlChar.ReplacementCharacter);
                     State = DoctypeNameState;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    EmitDoctypeToken = currentDoctypeToken;
+                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
-                    currentDoctypeToken.Name.Add((char)currentInputCharacter);
+                    buffers.CurrentDoctypeToken.Name.Add((char)currentInputCharacter);
                     return;
             }
         }

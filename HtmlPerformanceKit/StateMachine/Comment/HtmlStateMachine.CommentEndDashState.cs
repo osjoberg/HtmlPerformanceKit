@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -21,7 +22,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Append a "-" (U+002D) character and the current input character to the comment token's data. Switch to the comment state.
         /// </summary>
-        private void CommentEndDashState()
+        private Action BuildCommentEndDashState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -33,24 +34,24 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    currentCommentBuffer.Add('-');
-                    currentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
+                    buffers.CurrentCommentBuffer.Add('-');
+                    buffers.CurrentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
                     State = CommentState;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    EmitCommentBuffer = currentCommentBuffer;
+                    EmitCommentBuffer = buffers.CurrentCommentBuffer;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
-                    currentCommentBuffer.Add('-');
-                    currentCommentBuffer.Add((char)currentInputCharacter);
+                    buffers.CurrentCommentBuffer.Add('-');
+                    buffers.CurrentCommentBuffer.Add((char)currentInputCharacter);
                     State = CommentState;
                     return;
             }
-        }
+        };
     }
 }

@@ -24,7 +24,7 @@
         /// Anything else
         /// Switch to the script data double escaped state. Reconsume the current input character.
         /// </summary>
-        private void ScriptDataDoubleEscapeEndState()
+        private Action BuildScriptDataDoubleEscapeEndState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -36,7 +36,7 @@
                 case ' ':
                 case '/':
                 case '>':
-                    if (temporaryBuffer.Equals("script"))
+                    if (buffers.TemporaryBuffer.Equals("script"))
                     {
                         State = ScriptDataEscapedState;
                     }
@@ -45,7 +45,7 @@
                         State = ScriptDataDoubleEscapedState;
                     }
 
-                    currentDataBuffer.Add((char)currentInputCharacter);
+                    buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
                     return;
 
                 case 'A':
@@ -74,8 +74,8 @@
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    temporaryBuffer.Add((char)(currentInputCharacter + 0x20));
-                    currentDataBuffer.Add((char)currentInputCharacter);
+                    buffers.TemporaryBuffer.Add((char)(currentInputCharacter + 0x20));
+                    buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
                     return;
 
                 case 'a':
@@ -104,8 +104,8 @@
                 case 'x':
                 case 'y':
                 case 'z':
-                    temporaryBuffer.Add((char)currentInputCharacter);
-                    currentDataBuffer.Add((char)currentInputCharacter);
+                    buffers.TemporaryBuffer.Add((char)currentInputCharacter);
+                    buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
                     return;
 
                 default:

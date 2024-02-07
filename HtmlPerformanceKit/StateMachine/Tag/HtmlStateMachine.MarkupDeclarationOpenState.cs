@@ -21,7 +21,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// 
         /// Otherwise, this is a parse error.Switch to the bogus comment state. The next character that is consumed, if any, is the first character that will be in the comment.
         /// </summary>
-        private void MarkupDeclarationOpenState()
+        private Action BuildMarkupDeclarationOpenState() => () =>
         {
             var currentInputCharacter = bufferReader.Peek();
 
@@ -35,7 +35,7 @@ namespace HtmlPerformanceKit.StateMachine
                     }
 
                     bufferReader.Consume(CommentMarker.Length);
-                    currentCommentBuffer.Clear();
+                    buffers.CurrentCommentBuffer.Clear();
                     State = CommentStartState;
                     return;
 

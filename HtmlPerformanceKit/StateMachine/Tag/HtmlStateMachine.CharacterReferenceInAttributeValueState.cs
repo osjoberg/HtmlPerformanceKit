@@ -13,16 +13,16 @@
     /// </summary>
     internal partial class HtmlStateMachine
     {
-        private void CharacterReferenceInAttributeValueState()
+        private Action BuildCharacterReferenceInAttributeValueState() => () =>
         {
             var characters = ConsumeCharacterReference();
             if (characters.Length == 0)
             {
-                currentTagToken.Attributes.Current.Value.Add('&');
+                buffers.CurrentTagToken.Attributes.Current.Value.Add('&');
             }
             else
             {
-                currentTagToken.Attributes.Current.Value.AddRange(characters);
+                buffers.CurrentTagToken.Attributes.Current.Value.AddRange(characters);
             }
 
             State = returnToState;

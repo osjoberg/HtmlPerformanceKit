@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -18,7 +19,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Emit the current input character as a character token.
         /// </summary>
-        private void PlainTextState()
+        private Action BuildPlainTextState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -26,19 +27,19 @@ namespace HtmlPerformanceKit.StateMachine
             {
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-					currentDataBuffer.Add(HtmlChar.ReplacementCharacter);
-					break;
+                    buffers.CurrentDataBuffer.Add(HtmlChar.ReplacementCharacter);
+                    break;
 
                 case EofMarker:
                     State = DataState;
-                    EmitDataBuffer = currentDataBuffer;
+                    EmitDataBuffer = buffers.CurrentDataBuffer;
                     bufferReader.Reconsume(EofMarker);
                     break;
 
                 default:
-					currentDataBuffer.Add((char)currentInputCharacter);
+                    buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
                     break;
             }
-        }
+        }; 
     }
 }

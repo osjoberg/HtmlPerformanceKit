@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -30,7 +31,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the bogus DOCTYPE state.
         /// </summary>
-        private void BeforeDoctypePublicIdentifierState()
+        private Action BuildBeforeDoctypePublicIdentifierState()
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -43,27 +44,27 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case '"':
-                    currentDoctypeToken.Attributes.Add();
-                    currentDoctypeToken.Attributes.Current.Name.AddRange("public");
+                    buffers.CurrentDoctypeToken.Attributes.Add();
+                    buffers.CurrentDoctypeToken.Attributes.Current.Name.AddRange("public");
                     State = DoctypePublicIdentifierDoubleQuotedState;
                     return;
 
                 case '\'':
-                    currentDoctypeToken.Attributes.Add();
-                    currentDoctypeToken.Attributes.Current.Name.AddRange("public");
+                    buffers.CurrentDoctypeToken.Attributes.Add();
+                    buffers.CurrentDoctypeToken.Attributes.Current.Name.AddRange("public");
                     State = DoctypePublicIdentifierSingleQuotedState;
                     return;
 
                 case '>':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = DataState;
-                    EmitDoctypeToken = currentDoctypeToken;
+                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    EmitDoctypeToken = currentDoctypeToken;
+                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;
 

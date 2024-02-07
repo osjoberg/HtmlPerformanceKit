@@ -21,7 +21,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Emit the current input character as a character token.
         /// </summary>
-        private void ScriptDataState()
+        private Action BuildScriptDataState() => () =>
         {
             while (true)
             {
@@ -35,7 +35,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                     case HtmlChar.Null:
                         ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                        currentDataBuffer.Add(HtmlChar.ReplacementCharacter);
+                        buffers.CurrentDataBuffer.Add(HtmlChar.ReplacementCharacter);
                         continue;
 
                     case EofMarker:
@@ -44,7 +44,7 @@ namespace HtmlPerformanceKit.StateMachine
                         return;
 
                     default:
-                        currentDataBuffer.Add((char)currentInputCharacter);
+                        buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
                         continue;
                 }
             }

@@ -14,7 +14,7 @@ namespace HtmlPerformanceKit
         private static readonly HtmlReaderOptions DefaultOptions = new HtmlReaderOptions();
         private readonly BufferReader bufferReader;
         private readonly HtmlStateMachine stateMachine;
-
+        private readonly HtmlReaderOptions options;
         private CharBuffer textBuffer;
         private HtmlTagToken tagToken;
 
@@ -35,6 +35,7 @@ namespace HtmlPerformanceKit
                 options = DefaultOptions;
             }
 
+            this.options = options;
             bufferReader = new BufferReader(streamReader);
             stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, options.SkipCharacterReferenceDecoding);
         }
@@ -56,6 +57,7 @@ namespace HtmlPerformanceKit
                 options = DefaultOptions;
             }
 
+            this.options = options;
             bufferReader = new BufferReader(new StreamReader(stream));
             stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, options.SkipCharacterReferenceDecoding);
         }
@@ -108,11 +110,27 @@ namespace HtmlPerformanceKit
         /// </summary>
         public string Name => tagToken?.Name.ToString();
 
+#if NET8_0_OR_GREATER
+        /// <summary>
+        /// Gets the last read tag name as memory.
+        /// <returns>Lowercased tag name if last read token kind was <see cref="HtmlTokenKind.Tag"/> or <see cref="HtmlTokenKind.Doctype"/>, otherwise Null.</returns>
+        /// </summary>
+        public ReadOnlyMemory<char> NameAsMemory => tagToken?.Name.ToMemory() ?? default;
+#endif
+
         /// <summary>
         /// Gets the last read text.
         /// <returns>Text if last read token kind was <see cref="HtmlTokenKind.Text"/> or <see cref="HtmlTokenKind.Comment"/>, otherwise Null.</returns>
         /// </summary>
         public string Text => textBuffer?.ToString();
+
+#if NET8_0_OR_GREATER
+        /// <summary>
+        /// Gets the last read text as memory.
+        /// <returns>Text if last read token kind was <see cref="HtmlTokenKind.Text"/> or <see cref="HtmlTokenKind.Comment"/>, otherwise Null.</returns>
+        /// </summary>
+        public ReadOnlyMemory<char> TextAsMemory => textBuffer?.ToMemory() ?? default;
+#endif
 
         /// <summary>
         /// Gets the last read attribute count.
@@ -208,6 +226,28 @@ namespace HtmlPerformanceKit
             return tagToken?.Attributes[name]?.ToString();
         }
 
+#if NET8_0_OR_GREATER
+        /// <summary>
+        /// Get attribute value by attribute name as memory.
+        /// </summary>
+        /// <param name="name">Name of attribute value to get.</param>
+        /// <returns>Attribute value of first specified attribute name if last read token kind was <see cref="HtmlTokenKind.Text"/> or <see cref="HtmlTokenKind.Comment"/>, otherwise Null.</returns>
+        public ReadOnlyMemory<char> GetAttributeAsMemory(string name)
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            if (name.Length == 0)
+            {
+                throw new ArgumentException("Invalid attribute name, \"\".", nameof(name));
+            }
+
+            return tagToken?.Attributes[name]?.ToMemory() ?? default;
+        }
+#endif
+
         /// <summary>
         /// Get attribute value by attribute index.
         /// </summary>
@@ -222,6 +262,23 @@ namespace HtmlPerformanceKit
 
             return tagToken?.Attributes[index]?.Value.ToString();
         }
+
+#if NET8_0_OR_GREATER
+        /// <summary>
+        /// Get attribute value by attribute index.
+        /// </summary>
+        /// <param name="index">Index of attribute value to get.</param>
+        /// <returns>Attribute value of specified index if last read token kind was <see cref="HtmlTokenKind.Text"/> or <see cref="HtmlTokenKind.Comment"/>, otherwise Null.</returns>
+        public ReadOnlyMemory<char> GetAttributeAsMemory(int index)
+        {
+            if (index < 0 || index >= AttributeCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            return tagToken?.Attributes[index]?.Value.ToMemory() ?? default;
+        }
+#endif
 
         /// <summary>
         /// Get attribute name by attribute index.
@@ -238,12 +295,36 @@ namespace HtmlPerformanceKit
             return tagToken?.Attributes[index]?.Name.ToString();
         }
 
+#if NET8_0_OR_GREATER
+        /// <summary>
+        /// Get attribute name by attribute index.
+        /// </summary>
+        /// <param name="index">Index of attribute name to get.</param>
+        /// <returns>Attribute name of specified index if last read token kind was <see cref="HtmlTokenKind.Text"/> or <see cref="HtmlTokenKind.Comment"/>, otherwise Null.</returns>
+        public ReadOnlyMemory<char> GetAttributeNameAsMemory(int index)
+        {
+            if (index < 0 || index >= AttributeCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            return tagToken?.Attributes[index]?.Name.ToMemory() ?? default;
+        }
+#endif
+
         /// <summary>
         /// Disposes the instance and it's associated StreamReader.
         /// </summary>
         public void Dispose()
         {
-            bufferReader.Dispose();
+            stateMachine.Dispose();
+            tagToken = null;
+            textBuffer = null;
+
+            if (!options.KeepOpen)
+            {
+                bufferReader.Dispose();
+            }
         }
 
         private void OnParseError(object sender, HtmlParseErrorEventArgs args)

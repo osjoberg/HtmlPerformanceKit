@@ -13,7 +13,7 @@
         /// Anything else
         /// Switch to the script data state. Reconsume the current input character.
         /// </summary>
-        private void ScriptDataEscapeStartDashState()
+        private Action BuildScriptDataEscapeStartDashState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -21,7 +21,7 @@
             {
                 case '-':
                     State = ScriptDataEscapedDashState;
-                    currentDataBuffer.Add('-');
+                    buffers.CurrentDataBuffer.Add('-');
                     return;
 
                 default:

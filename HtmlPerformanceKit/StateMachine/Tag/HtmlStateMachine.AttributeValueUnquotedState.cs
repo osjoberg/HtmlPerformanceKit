@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -37,7 +38,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Append the current input character to the current attribute's value.
         /// </summary>
-        private void AttributeValueUnquotedState()
+        private Action BuildAttributeValueUnquotedState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -58,12 +59,12 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case '>':
                     State = DataState;
-                    EmitTagToken = currentTagToken;
+                    EmitTagToken = buffers.CurrentTagToken;
                     return;
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    currentTagToken.Attributes.Current.Value.Add(HtmlChar.ReplacementCharacter);
+                    buffers.CurrentTagToken.Attributes.Current.Value.Add(HtmlChar.ReplacementCharacter);
                     return;
 
                 case '"':
@@ -81,9 +82,9 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 default:
-                    currentTagToken.Attributes.Current.Value.Add((char)currentInputCharacter);
+                    buffers.CurrentTagToken.Attributes.Current.Value.Add((char)currentInputCharacter);
                     return;
             }
-        }
+        };
     }
 }

@@ -1,20 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Xml;
-
 using AngleSharp.Dom;
 using AngleSharp.Html.Parser;
 using BenchmarkDotNet.Attributes;
-
 using HtmlAgilityPack;
-
 using HtmlKit;
-
 using HtmlParserSharp;
-
 using NodeType = AngleSharp.Dom.NodeType;
 
 namespace HtmlPerformanceKit.Benchmark
@@ -51,6 +47,31 @@ namespace HtmlPerformanceKit.Benchmark
 
             return links;
         }
+
+#if DEBUG || RELEASE
+        [Benchmark]
+        public List<ReadOnlyMemory<char>> ExtractLinksMemory()
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+
+            var htmlReader = new HtmlReader(new StreamReader(stream));
+            var links = new List<ReadOnlyMemory<char>>();
+
+            while (htmlReader.Read())
+            {
+                if (htmlReader.TokenKind == HtmlTokenKind.Tag && htmlReader.Name == "a")
+                {
+                    var hrefAttributeValue = htmlReader.GetAttributeAsMemory("href");
+                    if (hrefAttributeValue.Length > 0)
+                    {
+                        links.Add(hrefAttributeValue);
+                    }
+                }
+            }
+
+            return links;
+        }
+#endif
 
         [Benchmark]
         public List<string> ExtractLinksHtmlAgilityPack()

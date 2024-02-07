@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -26,7 +27,7 @@ namespace HtmlPerformanceKit.StateMachine
     /// /// </summary>
     internal partial class HtmlStateMachine
     {
-        private void DataState()
+        private Action BuildDataState() => () =>
         {
             while (true)
             {
@@ -40,31 +41,31 @@ namespace HtmlPerformanceKit.StateMachine
 
                     case '<':
                         State = TagOpenState;
-                        if (currentDataBuffer.Length > 0)
+                        if (buffers.CurrentDataBuffer.Length > 0)
                         {
-                            EmitDataBuffer = currentDataBuffer;
-                        }                        
+                            EmitDataBuffer = buffers.CurrentDataBuffer;
+                        }
                         return;
 
                     case HtmlChar.Null:
                         ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                        currentDataBuffer.Add(HtmlChar.Null);
+                        buffers.CurrentDataBuffer.Add(HtmlChar.Null);
                         break;
 
                     case EofMarker:
-                        if (currentDataBuffer.Length > 0)
+                        if (buffers.CurrentDataBuffer.Length > 0)
                         {
-                            EmitDataBuffer = currentDataBuffer;
+                            EmitDataBuffer = buffers.CurrentDataBuffer;
                         }
 
                         Eof = true;
                         return;
 
                     default:
-                        currentDataBuffer.Add((char)currentInputCharacter);
+                        buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
                         break;
                 }
             }
-        }
+        };
     }
 }

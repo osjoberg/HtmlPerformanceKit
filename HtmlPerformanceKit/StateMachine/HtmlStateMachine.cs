@@ -5,19 +5,14 @@ using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
-    internal partial class HtmlStateMachine
+    internal partial class HtmlStateMachine : IDisposable
     {
         private const int EofMarker = -1;
-        private readonly HtmlTagToken currentTagToken = new HtmlTagToken();
-        private readonly HtmlTagToken currentDoctypeToken = new HtmlTagToken();
-        private readonly CharBuffer currentDataBuffer = new CharBuffer(1024 * 10);
-        private readonly CharBuffer currentCommentBuffer = new CharBuffer(1024 * 10);
-        private readonly CharBuffer temporaryBuffer = new CharBuffer(1024);
-        private readonly CharBuffer appropriateTagName = new CharBuffer(100);
+        private readonly Buffers buffers = BuffersPool.Get();
         private readonly BufferReader bufferReader;
         private readonly Action<string> parseError;
         private readonly bool skipDecodingCharacterReferences;
-        private CurrentState returnToState;
+        private Action returnToState;
         private char additionalAllowedCharacter;
 
         internal HtmlStateMachine(BufferReader bufferReader, Action<string> parseError, bool skipDecodingCharacterReferences)
@@ -28,9 +23,12 @@ namespace HtmlPerformanceKit.StateMachine
             State = DataState;
         }
 
-        internal delegate void CurrentState();
+        public void Dispose()
+        {
+            BuffersPool.Return(buffers);
+        }
 
-        internal CurrentState State
+        internal Action State
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get;
@@ -97,14 +95,14 @@ namespace HtmlPerformanceKit.StateMachine
             EmitDoctypeToken = null;
             EmitCommentBuffer = null;
 
-            currentDataBuffer.Clear();
+            buffers.CurrentDataBuffer.Clear();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void RememberLastStartTagName()
         {
-            appropriateTagName.Clear();
-            appropriateTagName.AddRange(EmitTagToken.Name);
+            buffers.AppropriateTagName.Clear();
+            buffers.AppropriateTagName.AddRange(EmitTagToken.Name);
         }
     }
 }

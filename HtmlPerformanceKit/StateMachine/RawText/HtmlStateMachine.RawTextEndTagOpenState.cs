@@ -1,4 +1,6 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+﻿using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
@@ -16,7 +18,7 @@
         /// Anything else
         /// Switch to the RAWTEXT state. Emit a U+003C LESS-THAN SIGN character token and a U+002F SOLIDUS character token. Reconsume the current input character.
         /// </summary>
-        private void RawTextEndTagOpenState()
+        private Action BuildRawTextEndTagOpenState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -48,10 +50,10 @@
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    currentTagToken.Clear();
-                    currentTagToken.EndTag = true;
-                    currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
-                    temporaryBuffer.Add((char)currentInputCharacter);
+                    buffers.CurrentTagToken.Clear();
+                    buffers.CurrentTagToken.EndTag = true;
+                    buffers.CurrentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
+                    buffers.TemporaryBuffer.Add((char)currentInputCharacter);
                     State = RawTextEndTagNameState;
                     return;
 
@@ -81,20 +83,20 @@
                 case 'x':
                 case 'y':
                 case 'z':
-                    currentTagToken.Clear();
-                    currentTagToken.EndTag = true;
-                    currentTagToken.Name.Add((char)currentInputCharacter);
-                    temporaryBuffer.Add((char)currentInputCharacter);
+                    buffers.CurrentTagToken.Clear();
+                    buffers.CurrentTagToken.EndTag = true;
+                    buffers.CurrentTagToken.Name.Add((char)currentInputCharacter);
+                    buffers.TemporaryBuffer.Add((char)currentInputCharacter);
                     State = RawTextEndTagNameState;
                     return;
 
                 default:
                     State = RawTextState;
-                    currentDataBuffer.Add('<');
-                    currentDataBuffer.Add('/');
+                    buffers.CurrentDataBuffer.Add('<');
+                    buffers.CurrentDataBuffer.Add('/');
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }
-        }
+        };
     }
 }

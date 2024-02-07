@@ -30,7 +30,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// 
         /// Otherwise, this is a parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the bogus DOCTYPE state.
         /// </summary>
-        private void AfterDoctypeNameState()
+        private Action BuildAfterDoctypeNameState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -44,13 +44,13 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case '>':
                     State = DataState;
-                    EmitDoctypeToken = currentDoctypeToken;
+                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    EmitDoctypeToken = currentDoctypeToken;
+                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
@@ -76,6 +76,6 @@ namespace HtmlPerformanceKit.StateMachine
                     State = BogusDoctypeState;
                     return;
             }
-        }
+        };
     }
 }

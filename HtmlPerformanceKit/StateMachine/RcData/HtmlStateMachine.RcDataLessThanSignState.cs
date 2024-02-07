@@ -13,20 +13,20 @@
         /// Anything else
         /// Switch to the RCDATA state. Emit a U+003C LESS-THAN SIGN character token. Reconsume the current input character.
         /// </summary>
-        private void RcDataLessThanSignState()
+        private Action BuildRcDataLessThanSignState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
             switch (currentInputCharacter)
             {
                 case '/':
-                    temporaryBuffer.Clear();
+                    buffers.TemporaryBuffer.Clear();
                     State = RcDataEndTagOpenState;
                     return;
 
                 default:
                     State = RcDataState;
-                    currentDataBuffer.Add('<');
+                    buffers.CurrentDataBuffer.Add('<');
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }

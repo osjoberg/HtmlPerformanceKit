@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -24,7 +25,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Append the current input character to the current DOCTYPE token's public identifier.
         /// </summary>
-        private void DoctypePublicIdentifierSingleQuotedState()
+        private Action BuildDoctypePublicIdentifierSingleQuotedState()
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -36,24 +37,24 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    currentDoctypeToken.Attributes.Current.Value.Add(HtmlChar.ReplacementCharacter);
+                    buffers.CurrentDoctypeToken.Attributes.Current.Value.Add(HtmlChar.ReplacementCharacter);
                     return;
 
                 case '>':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = DataState;
-                    EmitDoctypeToken = currentDoctypeToken;
+                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = DataState;
-                    EmitDoctypeToken = currentDoctypeToken;
+                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
-                    currentDoctypeToken.Attributes.Current.Value.Add((char)currentInputCharacter);
+                    buffers.CurrentDoctypeToken.Attributes.Current.Value.Add((char)currentInputCharacter);
                     return;
             }
         }

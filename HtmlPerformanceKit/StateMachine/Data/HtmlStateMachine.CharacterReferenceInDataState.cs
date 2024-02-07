@@ -1,4 +1,6 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+﻿using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
@@ -13,21 +15,21 @@
         /// 
         /// Otherwise, emit the character tokens that were returned.
         /// </summary>
-        private void CharacterReferenceInDataState()
+        private Action BuildCharacterReferenceInDataState() => () =>
         {
             additionalAllowedCharacter = '\t'; // Works as no additional character since '\t' is always allowed.
 
             var characters = ConsumeCharacterReference();
             if (characters.Length == 0)
             {
-                currentDataBuffer.Add('&');
+                buffers.CurrentDataBuffer.Add('&');
             }
             else
             {
-                currentDataBuffer.AddRange(characters);
+                buffers.CurrentDataBuffer.AddRange(characters);
             }
 
             State = DataState;
-        }
+        };
     }
 }

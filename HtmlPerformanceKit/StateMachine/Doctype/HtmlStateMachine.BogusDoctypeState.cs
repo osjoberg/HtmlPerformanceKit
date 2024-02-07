@@ -1,4 +1,6 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+﻿using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
@@ -16,7 +18,7 @@
         /// Anything else
         /// Ignore the character.
         /// </summary>
-        private void BogusDoctypeState()
+        private Action BuildBogusDoctypeState()
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -24,12 +26,12 @@
             {
                 case '>':
                     State = DataState;
-                    EmitDoctypeToken = currentDoctypeToken;
+                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
                     return;
 
                 case EofMarker:
                     State = DataState;
-                    EmitDoctypeToken = currentDoctypeToken;
+                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;
 

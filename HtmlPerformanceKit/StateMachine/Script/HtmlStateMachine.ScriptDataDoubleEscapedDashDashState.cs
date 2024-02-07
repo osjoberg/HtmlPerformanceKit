@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -27,30 +28,30 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Switch to the script data double escaped state. Emit the current input character as a character token.
         /// </summary>
-        private void ScriptDataDoubleEscapedDashDashState()
+        private Action BuildScriptDataDoubleEscapedDashDashState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
             switch (currentInputCharacter)
             {
                 case '-':
-                    currentDataBuffer.Add('-');
+                    buffers.CurrentDataBuffer.Add('-');
                     return;
 
                 case '<':
                     State = ScriptDataDoubleEscapedLessThanSignState;
-                    currentDataBuffer.Add('<');
+                    buffers.CurrentDataBuffer.Add('<');
                     return;
 
                 case '>':
                     State = ScriptDataState;
-                    currentDataBuffer.Add('>');
+                    buffers.CurrentDataBuffer.Add('>');
                     return;
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
                     State = ScriptDataDoubleEscapedState;
-                    currentDataBuffer.Add(HtmlChar.ReplacementCharacter);
+                    buffers.CurrentDataBuffer.Add(HtmlChar.ReplacementCharacter);
                     return;
 
                 case EofMarker:
@@ -58,12 +59,12 @@ namespace HtmlPerformanceKit.StateMachine
                     State = DataState;
                     bufferReader.Reconsume(EofMarker);
                     return;
-                    
+
                 default:
                     State = ScriptDataDoubleEscapedState;
-                    currentDataBuffer.Add((char)currentInputCharacter);
+                    buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
                     return;
             }
-        }
+        };
     }
 }

@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -24,7 +25,7 @@ namespace HtmlPerformanceKit.StateMachine
     /// </summary>
     internal partial class HtmlStateMachine
     {
-        private void CommentStartDashState()
+        private Action BuildCommentStartDashState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -36,30 +37,30 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    currentCommentBuffer.Add('-');
-                    currentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
+                    buffers.CurrentCommentBuffer.Add('-');
+                    buffers.CurrentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
                     State = CommentState;
                     return;
 
                 case '>':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = DataState;
-                    EmitCommentBuffer = currentCommentBuffer;
+                    EmitCommentBuffer = buffers.CurrentCommentBuffer;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    EmitCommentBuffer = currentCommentBuffer;
+                    EmitCommentBuffer = buffers.CurrentCommentBuffer;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
-                    currentCommentBuffer.Add('-');
-                    currentCommentBuffer.Add((char)currentInputCharacter);
+                    buffers.CurrentCommentBuffer.Add('-');
+                    buffers.CurrentCommentBuffer.Add((char)currentInputCharacter);
                     State = CommentState;
                     return;
             }
-        }
+        };
     }
 }

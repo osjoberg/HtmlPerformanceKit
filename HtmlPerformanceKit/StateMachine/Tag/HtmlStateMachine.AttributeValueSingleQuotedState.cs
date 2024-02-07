@@ -24,7 +24,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Append the current input character to the current attribute's value.
         /// </summary>
-        private void AttributeValueSingleQuotedState()
+        private Action BuildAttributeValueSingleQuotedState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -42,7 +42,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    currentTagToken.Attributes.Current.Value.Add(HtmlChar.ReplacementCharacter);
+                    buffers.CurrentTagToken.Attributes.Current.Value.Add(HtmlChar.ReplacementCharacter);
                     return;
 
                 case EofMarker:
@@ -52,9 +52,9 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 default:
-                    currentTagToken.Attributes.Current.Value.Add((char)currentInputCharacter);
+                    buffers.CurrentTagToken.Attributes.Current.Value.Add((char)currentInputCharacter);
                     return;
             }
-        }
+        };
     }
 }

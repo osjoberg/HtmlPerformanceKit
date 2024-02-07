@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -21,7 +22,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Append the current input character to the comment token's data.
         /// </summary>
-        private void CommentState()
+        private Action BuildCommentState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -33,20 +34,20 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    currentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
+                    buffers.CurrentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    EmitCommentBuffer = currentCommentBuffer;
+                    EmitCommentBuffer = buffers.CurrentCommentBuffer;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
-                    currentCommentBuffer.Add((char)currentInputCharacter);
+                    buffers.CurrentCommentBuffer.Add((char)currentInputCharacter);
                     return;
             }
-        }
+        };
     }
 }

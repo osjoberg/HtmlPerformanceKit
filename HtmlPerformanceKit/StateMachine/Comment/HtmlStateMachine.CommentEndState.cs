@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -27,7 +28,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Parse error. Append two "-" (U+002D) characters and the current input character to the comment token's data. Switch to the comment state.
         /// </summary>
-        private void CommentEndState()
+        private Action BuildCommentEndState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -35,14 +36,14 @@ namespace HtmlPerformanceKit.StateMachine
             {
                 case '>':
                     State = DataState;
-                    EmitCommentBuffer = currentCommentBuffer;
+                    EmitCommentBuffer = buffers.CurrentCommentBuffer;
                     return;
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    currentCommentBuffer.Add('-');
-                    currentCommentBuffer.Add('-');
-                    currentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
+                    buffers.CurrentCommentBuffer.Add('-');
+                    buffers.CurrentCommentBuffer.Add('-');
+                    buffers.CurrentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
                     State = CommentState;
                     return;
 
@@ -53,24 +54,24 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case '-':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    currentCommentBuffer.Add('-');
+                    buffers.CurrentCommentBuffer.Add('-');
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    EmitCommentBuffer = currentCommentBuffer;
+                    EmitCommentBuffer = buffers.CurrentCommentBuffer;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    currentCommentBuffer.Add('-');
-                    currentCommentBuffer.Add('-');
-                    currentCommentBuffer.Add((char)currentInputCharacter);
+                    buffers.CurrentCommentBuffer.Add('-');
+                    buffers.CurrentCommentBuffer.Add('-');
+                    buffers.CurrentCommentBuffer.Add((char)currentInputCharacter);
                     State = CommentState;
                     return;
             }
-        }
+        };
     }
 }

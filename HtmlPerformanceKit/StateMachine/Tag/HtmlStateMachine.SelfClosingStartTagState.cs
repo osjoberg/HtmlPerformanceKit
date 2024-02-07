@@ -18,16 +18,16 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Parse error. Switch to the before attribute name state. Reconsume the character.
         /// </summary>
-        private void SelfClosingStartTagState()
+        private Action BuildSelfClosingStartTagState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
             switch (currentInputCharacter)
             {
                 case '>':
-                    currentTagToken.SelfClosing = true;
+                    buffers.CurrentTagToken.SelfClosing = true;
                     State = DataState;
-                    EmitTagToken = currentTagToken;
+                    EmitTagToken = buffers.CurrentTagToken;
                     break;
 
                 case EofMarker:

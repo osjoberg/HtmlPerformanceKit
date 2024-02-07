@@ -19,14 +19,14 @@
         /// Anything else
         /// Switch to the script data escaped state. Emit a U+003C LESS-THAN SIGN character token. Reconsume the current input character.
         /// </summary>
-        private void ScriptDataEscapedLessThanSignState()
+        private Action BuildScriptDataEscapedLessThanSignState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
             switch (currentInputCharacter)
             {
                 case '/':
-                    temporaryBuffer.Clear();
+                    buffers.TemporaryBuffer.Clear();
                     State = ScriptDataEscapedEndTagOpenState;
                     return;
 
@@ -56,11 +56,11 @@
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    temporaryBuffer.Clear();
-                    temporaryBuffer.Add((char)(currentInputCharacter + 0x20));
+                    buffers.TemporaryBuffer.Clear();
+                    buffers.TemporaryBuffer.Add((char)(currentInputCharacter + 0x20));
                     State = ScriptDataDoubleEscapeStartState;
-                    currentDataBuffer.Add('<');
-                    currentDataBuffer.Add((char)currentInputCharacter);
+                    buffers.CurrentDataBuffer.Add('<');
+                    buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
                     return;
 
                 case 'a':
@@ -89,16 +89,16 @@
                 case 'x':
                 case 'y':
                 case 'z':
-                    temporaryBuffer.Clear();
-                    temporaryBuffer.Add((char)currentInputCharacter);
+                    buffers.TemporaryBuffer.Clear();
+                    buffers.TemporaryBuffer.Add((char)currentInputCharacter);
                     State = ScriptDataDoubleEscapeStartState;
-                    currentDataBuffer.Add('<');
-                    currentDataBuffer.Add((char)currentInputCharacter);
+                    buffers.CurrentDataBuffer.Add('<');
+                    buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
                     return;
 
                 default:
                     State = ScriptDataEscapedState;
-                    currentDataBuffer.Add('<');
+                    buffers.CurrentDataBuffer.Add('<');
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }

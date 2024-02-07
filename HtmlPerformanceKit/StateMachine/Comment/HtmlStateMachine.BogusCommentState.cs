@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -14,7 +15,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// 
         /// If the end of the file was reached, reconsume the EOF character.
         /// </summary>
-        private void BogusCommentState()
+        private Action BuildBogusCommentState() => () =>
         {
             while (true)
             {
@@ -23,25 +24,25 @@ namespace HtmlPerformanceKit.StateMachine
                 switch (currentInputCharacter)
                 {
                     case '>':
-                        EmitCommentBuffer = currentCommentBuffer;
+                        EmitCommentBuffer = buffers.CurrentCommentBuffer;
                         State = DataState;
                         return;
-                        
+
                     case EofMarker:
                         State = DataState;
-                        EmitCommentBuffer = currentCommentBuffer;
+                        EmitCommentBuffer = buffers.CurrentCommentBuffer;
                         bufferReader.Reconsume(EofMarker);
                         return;
 
                     case HtmlChar.Null:
-                        currentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
+                        buffers.CurrentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
                         continue;
 
                     default:
-                        currentCommentBuffer.Add((char)currentInputCharacter);
+                        buffers.CurrentCommentBuffer.Add((char)currentInputCharacter);
                         continue;
                 }
             }
-        }
+        };
     }
 }
