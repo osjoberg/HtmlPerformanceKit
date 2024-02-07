@@ -12,7 +12,6 @@ namespace HtmlPerformanceKit
     public sealed class HtmlReader : IDisposable
     {
         private static readonly HtmlReaderOptions DefaultOptions = new HtmlReaderOptions();
-        private readonly BufferReader bufferReader;
         private readonly HtmlStateMachine stateMachine;
         private readonly HtmlReaderOptions options;
         private CharBuffer textBuffer;
@@ -36,8 +35,7 @@ namespace HtmlPerformanceKit
             }
 
             this.options = options;
-            bufferReader = new BufferReader(new StreamReader(stream));
-            stateMachine = HtmlStateMachine.Create(bufferReader, ParseErrorFromMessage, options.SkipCharacterReferenceDecoding);
+            stateMachine = HtmlStateMachine.Create(new StreamReader(stream), ParseErrorFromMessage, options.SkipCharacterReferenceDecoding);
         }
 
         /// <summary>
@@ -58,13 +56,12 @@ namespace HtmlPerformanceKit
             }
 
             this.options = options;
-            bufferReader = new BufferReader(textReader);
-            stateMachine = HtmlStateMachine.Create(bufferReader, ParseErrorFromMessage, options.SkipCharacterReferenceDecoding);
+            stateMachine = HtmlStateMachine.Create(textReader, ParseErrorFromMessage, options.SkipCharacterReferenceDecoding);
         }
 
         private void ParseErrorFromMessage(string message)
         {
-            OnParseError(this, new HtmlParseErrorEventArgs(message, bufferReader.LineNumber, bufferReader.LinePosition));
+            OnParseError(this, new HtmlParseErrorEventArgs(message, LineNumber, LinePosition));
         }
 
         /// <summary>
@@ -116,12 +113,12 @@ namespace HtmlPerformanceKit
         /// <summary>
         /// Gets the current line number.
         /// </summary>
-        public int LineNumber => bufferReader.LineNumber;
+        public int LineNumber => stateMachine.BufferReader.LineNumber;
 
         /// <summary>
         /// Gets the current line position.
         /// </summary>
-        public int LinePosition => bufferReader.LinePosition;
+        public int LinePosition => stateMachine.BufferReader.LinePosition;
 
         /// <summary>
         /// Read one token from the stream.
@@ -292,7 +289,7 @@ namespace HtmlPerformanceKit
 
             if (!options.KeepOpen)
             {
-                bufferReader.Dispose();
+                stateMachine.BufferReader.Close();
             }
         }
 

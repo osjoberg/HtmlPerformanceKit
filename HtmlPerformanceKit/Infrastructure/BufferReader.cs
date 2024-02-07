@@ -1,81 +1,121 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace HtmlPerformanceKit.Infrastructure
 {
-    internal class BufferReader : IDisposable
+    internal class BufferReader
     {
-        private readonly TextReader textReader;
         private readonly char[] PeekBuffer = new char[40];
-        private readonly LinkedList<int> peekBuffer = new LinkedList<int>();
-
-        internal BufferReader(TextReader textReader)
-        {
-            this.textReader = textReader;
-        }
+        private readonly Queue<int> peekBuffer = new Queue<int>();
+        private readonly Queue<int> reconsumeBuffer = new Queue<int>();
+        private TextReader textReader;
 
         internal int LineNumber { get; private set; }
 
         internal int LinePosition { get; private set; }
 
-        public void Dispose()
+        public void Clear()
         {
-            textReader?.Dispose();
+            peekBuffer.Clear();
+            reconsumeBuffer.Clear();
+        }
+
+        public void Close()
+        {
+            textReader.Dispose();
+        }
+
+        public void Init(TextReader reader)
+        {
+            textReader = reader;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal ReadOnlyMemory<char> Peek(int length)
         {
-            var outputLength = Math.Min(peekBuffer.Count, length);
+            int i = 0;
 
-            while (peekBuffer.Count < length)
+            for (; i < length; i++)
             {
-                var currentInputCharacter = textReader.Read();
-
-                peekBuffer.AddLast(currentInputCharacter);
-                outputLength++;
-
-                if (currentInputCharacter == -1)
-                {
-                    break;
-                }
-            }
-
-            var intBuffer = peekBuffer.ToArray();
-
-            for (var index = 0; index < outputLength; index++)
-            {
-                if (intBuffer[index] == -1)
+                if (!peekBuffer.TryDequeue(out var peekResult))
                 {
                     break;
                 }
 
-                PeekBuffer[index] = (char)intBuffer[index];
+                PeekBuffer[i] = (char)peekResult;
             }
 
-            return new ReadOnlyMemory<char>(PeekBuffer, 0, outputLength);
+            // Put them back to the peek buffer.
+            for (var j = 0; j < i; j++)
+            {
+                peekBuffer.Enqueue(PeekBuffer[j]);
+            }
+
+            for (; i < length; i++)
+            {
+                var consumed = textReader.Read();
+
+                if (consumed < 0)
+                {
+                    break;
+                }
+
+                peekBuffer.Enqueue(consumed);
+
+                PeekBuffer[i] = (char)consumed;
+            }
+
+            return new ReadOnlyMemory<char>(PeekBuffer, 0, i);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Consume(int length)
         {
-            while (length > 0)
+            for (var i = 0; i < length; i++)
             {
-                Consume();
-                length--;
+                if (Consume() < 0)
+                {
+                    return;
+                }
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void Reconsume(int data)
+        {
+            reconsumeBuffer.Enqueue(data);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal int Peek()
+        {
+            if (peekBuffer.TryPeek(out var peekResult))
+            {
+                return peekResult;
+            }
+
+            var consumed = textReader.Read();
+
+            if (consumed >= 0)
+            {
+                peekBuffer.Enqueue(consumed);
+            }
+
+            return consumed;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal int Consume()
         {
-            if (peekBuffer.Count != 0)
+            if (reconsumeBuffer.TryDequeue(out var reconsume))
             {
-                var peekResult = peekBuffer.First.Value;
-                peekBuffer.RemoveFirst();
+                return reconsume;
+            }
+
+            if (peekBuffer.TryDequeue(out var peekResult))
+            {
                 return peekResult;
             }
 
@@ -91,7 +131,7 @@ namespace HtmlPerformanceKit.Infrastructure
                 LineNumber++;
                 LinePosition = 1;
             }
-            else
+            else if (result >= 0)
             {
                 LinePosition++;
             }
@@ -212,26 +252,6 @@ namespace HtmlPerformanceKit.Infrastructure
                         return (int)number;
                 }
             }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void Reconsume(int data)
-        {
-            peekBuffer.AddFirst(data);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal int Peek()
-        {
-            if (peekBuffer.Count > 0)
-            {
-                return peekBuffer.First.Value;
-            }
-
-            var currentInputCharacter = textReader.Read();
-            peekBuffer.AddLast(currentInputCharacter);
-
-            return currentInputCharacter;
         }
     }
 }

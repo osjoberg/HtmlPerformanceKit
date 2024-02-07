@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Runtime.CompilerServices;
 
 using HtmlPerformanceKit.Infrastructure;
@@ -8,6 +9,7 @@ namespace HtmlPerformanceKit.StateMachine
     internal partial class HtmlStateMachine : IDisposable
     {
         private const int EofMarker = -1;
+        private readonly BufferReader bufferReader = new BufferReader();
         private readonly HtmlTagToken currentDoctypeToken = new HtmlTagToken();
         private readonly HtmlTagToken currentTagToken = new HtmlTagToken();
         private readonly CharBuffer appropriateTagName = new CharBuffer(100);
@@ -82,7 +84,6 @@ namespace HtmlPerformanceKit.StateMachine
         private readonly Action SelfClosingStartTagState;
         private readonly Action TagNameState;
         private readonly Action TagOpenState;
-        private BufferReader bufferReader;
         private Action<string> parseError;
         private Action returnToState;
         private bool skipDecodingCharacterReferences;
@@ -161,16 +162,17 @@ namespace HtmlPerformanceKit.StateMachine
             State = DataState;
         }
 
-        public static HtmlStateMachine Create(BufferReader bufferReader, Action<string> parseError, bool skipDecodingCharacterReferences)
+        public static HtmlStateMachine Create(TextReader streamReader, Action<string> parseError, bool skipDecodingCharacterReferences)
         {
             var instance = Pool.Get();
-            instance.Prepare(bufferReader, parseError, skipDecodingCharacterReferences);
+            instance.Prepare(streamReader, parseError, skipDecodingCharacterReferences);
             return instance;
         }
 
-        public void Prepare(BufferReader bufferReader, Action<string> parseError, bool skipDecodingCharacterReferences)
+        public void Prepare(TextReader streamReader, Action<string> parseError, bool skipDecodingCharacterReferences)
         {
-            this.bufferReader = bufferReader;
+            bufferReader.Init(streamReader);
+
             this.parseError = parseError;
             this.skipDecodingCharacterReferences = skipDecodingCharacterReferences;
         }
@@ -178,6 +180,12 @@ namespace HtmlPerformanceKit.StateMachine
         public void Dispose()
         {
             Pool.Return(this);
+        }
+
+        internal BufferReader BufferReader
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => bufferReader;
         }
 
         internal Action State

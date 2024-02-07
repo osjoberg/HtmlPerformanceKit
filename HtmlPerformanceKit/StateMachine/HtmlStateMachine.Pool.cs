@@ -37,6 +37,7 @@ namespace HtmlPerformanceKit.StateMachine
                 obj.additionalAllowedCharacter = default;
                 obj.returnToState = null;
                 obj.appropriateTagName.Clear();
+                obj.bufferReader.Clear();
                 obj.currentCommentBuffer.Clear();
                 obj.currentDoctypeToken.Clear();
                 obj.currentTagToken.Clear();
