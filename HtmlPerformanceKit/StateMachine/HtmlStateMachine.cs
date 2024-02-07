@@ -17,7 +17,7 @@ namespace HtmlPerformanceKit.StateMachine
         private readonly BufferReader bufferReader;
         private readonly Action<string> parseError;
         private readonly bool decodeHtmlCharacters;
-        private CurrentState returnToState;
+        private Action returnToState;
         private char additionalAllowedCharacter;
 
         internal HtmlStateMachine(BufferReader bufferReader, Action<string> parseError, bool decodeHtmlCharacters)
@@ -28,9 +28,8 @@ namespace HtmlPerformanceKit.StateMachine
             State = DataState;
         }
 
-        internal delegate void CurrentState();
 
-        internal CurrentState State
+        internal Action State
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get;
