@@ -35,7 +35,7 @@ namespace HtmlPerformanceKit.StateMachine
                     }
 
                     bufferReader.Consume(CommentMarker.Length);
-                    buffers.CurrentCommentBuffer.Clear();
+                    currentCommentBuffer.Clear();
                     State = CommentStartState;
                     return;
 
@@ -65,6 +65,6 @@ namespace HtmlPerformanceKit.StateMachine
                     State = BogusCommentState;
                     return;
             }
-        }
+        };
     }
 }

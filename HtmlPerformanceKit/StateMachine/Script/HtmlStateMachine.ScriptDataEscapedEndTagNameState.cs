@@ -1,4 +1,6 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+﻿using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
@@ -38,7 +40,7 @@
                 case '\n':
                 case '\r':
                 case ' ':
-                    if (buffers.CurrentTagToken.Name.Equals(buffers.AppropriateTagName))
+                    if (currentTagToken.Name.Equals(appropriateTagName))
                     {
                         State = BeforeAttributeNameState;
                         return;
@@ -47,7 +49,7 @@
                     goto default;
 
                 case '/':
-                    if (buffers.CurrentTagToken.Name.Equals(buffers.AppropriateTagName))
+                    if (currentTagToken.Name.Equals(appropriateTagName))
                     {
                         State = SelfClosingStartTagState;
                         return;
@@ -56,17 +58,17 @@
                     goto default;
 
                 case '>':
-                    if (buffers.CurrentTagToken.Name.Equals(buffers.AppropriateTagName))
+                    if (currentTagToken.Name.Equals(appropriateTagName))
                     {
-                        if (buffers.CurrentDataBuffer.Length > 0)
+                        if (currentDataBuffer.Length > 0)
                         {
-                            EmitDataBuffer = buffers.CurrentDataBuffer;
+                            EmitDataBuffer = currentDataBuffer;
                             bufferReader.Reconsume('>');
                             return;
                         }
 
                         State = DataState;
-                        EmitTagToken = buffers.CurrentTagToken;
+                        EmitTagToken = currentTagToken;
                         return;
                     }
 
@@ -98,8 +100,8 @@
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    buffers.CurrentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
-                    buffers.TemporaryBuffer.Add((char)currentInputCharacter);
+                    currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
+                    temporaryBuffer.Add((char)currentInputCharacter);
                     return;
 
                 case 'a':
@@ -128,18 +130,18 @@
                 case 'x':
                 case 'y':
                 case 'z':
-                    buffers.CurrentTagToken.Name.Add((char)currentInputCharacter);
-                    buffers.TemporaryBuffer.Add((char)currentInputCharacter);
+                    currentTagToken.Name.Add((char)currentInputCharacter);
+                    temporaryBuffer.Add((char)currentInputCharacter);
                     return;
 
                 default:
                     State = ScriptDataEscapedState;
-                    buffers.CurrentDataBuffer.Add('<');
-                    buffers.CurrentDataBuffer.Add('/');
-                    buffers.CurrentDataBuffer.AddRange(buffers.TemporaryBuffer);
+                    currentDataBuffer.Add('<');
+                    currentDataBuffer.Add('/');
+                    currentDataBuffer.AddRange(temporaryBuffer);
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }
-        }
+        };
     }
 }

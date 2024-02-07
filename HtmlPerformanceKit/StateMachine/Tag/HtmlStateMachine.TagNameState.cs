@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -54,7 +55,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                     case '>':
                         State = DataState;
-                        EmitTagToken = buffers.CurrentTagToken;
+                        EmitTagToken = currentTagToken;
                         return;
 
                     case 'A':
@@ -83,12 +84,12 @@ namespace HtmlPerformanceKit.StateMachine
                     case 'X':
                     case 'Y':
                     case 'Z':
-                        buffers.CurrentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
+                        currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
                         break;
 
                     case HtmlChar.Null:
                         ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                        buffers.CurrentTagToken.Name.Add(HtmlChar.ReplacementCharacter);
+                        currentTagToken.Name.Add(HtmlChar.ReplacementCharacter);
                         break;
 
                     case EofMarker:
@@ -98,10 +99,10 @@ namespace HtmlPerformanceKit.StateMachine
                         return;
 
                     default:
-                        buffers.CurrentTagToken.Name.Add((char)currentInputCharacter);
+                        currentTagToken.Name.Add((char)currentInputCharacter);
                         break;
                 }
             }
-        }
+        };
     }
 }

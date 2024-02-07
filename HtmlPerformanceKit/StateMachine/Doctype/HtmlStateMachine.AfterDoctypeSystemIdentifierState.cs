@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -38,13 +39,13 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case '>':
                     State = DataState;
-                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
+                    EmitDoctypeToken = currentDoctypeToken;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
+                    EmitDoctypeToken = currentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
@@ -53,6 +54,6 @@ namespace HtmlPerformanceKit.StateMachine
                     State = BogusDoctypeState;
                     return;
             }
-        }
+        };
     }
 }

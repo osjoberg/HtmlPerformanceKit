@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -25,9 +26,9 @@ namespace HtmlPerformanceKit.StateMachine
             switch (currentInputCharacter)
             {
                 case '>':
-                    buffers.CurrentTagToken.SelfClosing = true;
+                    currentTagToken.SelfClosing = true;
                     State = DataState;
-                    EmitTagToken = buffers.CurrentTagToken;
+                    EmitTagToken = currentTagToken;
                     break;
 
                 case EofMarker:
@@ -42,6 +43,6 @@ namespace HtmlPerformanceKit.StateMachine
                     bufferReader.Reconsume(currentInputCharacter);
                     break;
             }
-        }
+        };
     }
 }

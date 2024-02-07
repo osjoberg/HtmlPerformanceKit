@@ -1,4 +1,6 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+﻿using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
@@ -21,7 +23,7 @@
             {
                 case '-':
                     State = ScriptDataEscapeStartDashState;
-                    buffers.CurrentDataBuffer.Add('-');
+                    currentDataBuffer.Add('-');
                     return;
 
                 default:
@@ -29,6 +31,6 @@
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }
-        }
+        };
     }
 }

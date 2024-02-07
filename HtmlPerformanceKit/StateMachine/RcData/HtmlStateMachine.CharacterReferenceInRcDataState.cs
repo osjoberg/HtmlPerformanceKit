@@ -23,11 +23,11 @@ namespace HtmlPerformanceKit.StateMachine
             var characters = ConsumeCharacterReference();
             if (characters.Length == 0)
             {
-                buffers.CurrentDataBuffer.Add('&');
+                currentDataBuffer.Add('&');
             }
             else
             {
-                buffers.CurrentDataBuffer.AddRange(characters);
+                currentDataBuffer.AddRange(characters);
             }
         };
     }

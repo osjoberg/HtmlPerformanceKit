@@ -1,4 +1,6 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+﻿using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
@@ -48,10 +50,10 @@
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    buffers.CurrentTagToken.Clear();
-                    buffers.CurrentTagToken.EndTag = true;
-                    buffers.CurrentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
-                    buffers.TemporaryBuffer.Add((char)currentInputCharacter);
+                    currentTagToken.Clear();
+                    currentTagToken.EndTag = true;
+                    currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
+                    temporaryBuffer.Add((char)currentInputCharacter);
                     State = RcDataEndTagNameState;
                     return;
 
@@ -81,20 +83,20 @@
                 case 'x':
                 case 'y':
                 case 'z':
-                    buffers.CurrentTagToken.Clear();
-                    buffers.CurrentTagToken.EndTag = true;
-                    buffers.CurrentTagToken.Name.Add((char)currentInputCharacter);
-                    buffers.TemporaryBuffer.Add((char)currentInputCharacter);
+                    currentTagToken.Clear();
+                    currentTagToken.EndTag = true;
+                    currentTagToken.Name.Add((char)currentInputCharacter);
+                    temporaryBuffer.Add((char)currentInputCharacter);
                     State = RcDataEndTagNameState;
                     return;
 
                 default:
                     State = RcDataState;
-                    buffers.CurrentDataBuffer.Add('<');
-                    buffers.CurrentDataBuffer.Add('/');
+                    currentDataBuffer.Add('<');
+                    currentDataBuffer.Add('/');
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }
-        }
+        };
     }
 }

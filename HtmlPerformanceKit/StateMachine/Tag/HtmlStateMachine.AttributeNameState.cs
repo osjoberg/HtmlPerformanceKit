@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -66,7 +67,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                     case '>':
                         State = DataState;
-                        EmitTagToken = buffers.CurrentTagToken;
+                        EmitTagToken = currentTagToken;
                         return;
 
                     case 'A':
@@ -95,12 +96,12 @@ namespace HtmlPerformanceKit.StateMachine
                     case 'X':
                     case 'Y':
                     case 'Z':
-                        buffers.CurrentTagToken.Attributes.Current.Name.Add((char)(currentInputCharacter + 0x20));
+                        currentTagToken.Attributes.Current.Name.Add((char)(currentInputCharacter + 0x20));
                         break;
 
                     case HtmlChar.Null:
                         ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                        buffers.CurrentTagToken.Attributes.Current.Name.Add(HtmlChar.ReplacementCharacter);
+                        currentTagToken.Attributes.Current.Name.Add(HtmlChar.ReplacementCharacter);
                         break;
 
                     case '"':
@@ -116,7 +117,7 @@ namespace HtmlPerformanceKit.StateMachine
                         return;
 
                     default:
-                        buffers.CurrentTagToken.Attributes.Current.Name.Add((char)currentInputCharacter);
+                        currentTagToken.Attributes.Current.Name.Add((char)currentInputCharacter);
                         break;
                 }
             }

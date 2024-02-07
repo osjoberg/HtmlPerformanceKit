@@ -1,4 +1,6 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+﻿using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     /// <summary>
     /// 8.2.4.41 Character reference in attribute value state
@@ -18,14 +20,14 @@
             var characters = ConsumeCharacterReference();
             if (characters.Length == 0)
             {
-                buffers.CurrentTagToken.Attributes.Current.Value.Add('&');
+                currentTagToken.Attributes.Current.Value.Add('&');
             }
             else
             {
-                buffers.CurrentTagToken.Attributes.Current.Value.AddRange(characters);
+                currentTagToken.Attributes.Current.Value.AddRange(characters);
             }
 
             State = returnToState;
-        }
+        };
     }
 }

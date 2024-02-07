@@ -41,28 +41,28 @@ namespace HtmlPerformanceKit.StateMachine
 
                     case '<':
                         State = TagOpenState;
-                        if (buffers.CurrentDataBuffer.Length > 0)
+                        if (currentDataBuffer.Length > 0)
                         {
-                            EmitDataBuffer = buffers.CurrentDataBuffer;
+                            EmitDataBuffer = currentDataBuffer;
                         }
                         return;
 
                     case HtmlChar.Null:
                         ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                        buffers.CurrentDataBuffer.Add(HtmlChar.Null);
+                        currentDataBuffer.Add(HtmlChar.Null);
                         break;
 
                     case EofMarker:
-                        if (buffers.CurrentDataBuffer.Length > 0)
+                        if (currentDataBuffer.Length > 0)
                         {
-                            EmitDataBuffer = buffers.CurrentDataBuffer;
+                            EmitDataBuffer = currentDataBuffer;
                         }
 
                         Eof = true;
                         return;
 
                     default:
-                        buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
+                        currentDataBuffer.Add((char)currentInputCharacter);
                         break;
                 }
             }

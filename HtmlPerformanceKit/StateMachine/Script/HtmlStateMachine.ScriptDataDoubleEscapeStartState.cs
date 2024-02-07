@@ -1,4 +1,6 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+﻿using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
@@ -36,14 +38,14 @@
                 case ' ':
                 case '/':
                 case '>':
-                    if (buffers.TemporaryBuffer.Equals("script"))
+                    if (temporaryBuffer.Equals("script"))
                     {
                         State = ScriptDataDoubleEscapedState;
-                        EmitTagToken = buffers.CurrentTagToken;
+                        EmitTagToken = currentTagToken;
                         return;
                     }
 
-                    buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
+                    currentDataBuffer.Add((char)currentInputCharacter);
                     State = ScriptDataEscapedState;
                     return;
 
@@ -73,8 +75,8 @@
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    buffers.TemporaryBuffer.Add((char)(currentInputCharacter + 0x20));
-                    buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
+                    temporaryBuffer.Add((char)(currentInputCharacter + 0x20));
+                    currentDataBuffer.Add((char)currentInputCharacter);
                     return;
 
                 case 'a':
@@ -103,8 +105,8 @@
                 case 'x':
                 case 'y':
                 case 'z':
-                    buffers.TemporaryBuffer.Add((char)currentInputCharacter);
-                    buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
+                    temporaryBuffer.Add((char)currentInputCharacter);
+                    currentDataBuffer.Add((char)currentInputCharacter);
                     return;
 
                 default:
@@ -112,6 +114,6 @@
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }
-        }
+        };
     }
 }

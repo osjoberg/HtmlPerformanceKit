@@ -21,28 +21,6 @@ namespace HtmlPerformanceKit
         /// <summary>
         /// Initializes a new instance of the <see cref="HtmlReader" /> class.
         /// </summary>
-        /// <param name="streamReader">StreamReader instance to read from.</param>
-        /// <param name="options">The optional options.</param>
-        public HtmlReader(StreamReader streamReader, HtmlReaderOptions options = null)
-        {
-            if (streamReader == null)
-            {
-                throw new ArgumentNullException(nameof(streamReader));
-            }
-
-            if (options == null)
-            {
-                options = DefaultOptions;
-            }
-
-            this.options = options;
-            bufferReader = new BufferReader(streamReader);
-            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, options.SkipCharacterReferenceDecoding);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HtmlReader" /> class.
-        /// </summary>
         /// <param name="stream">Stream instance to read from.</param>
         /// <param name="options">The optional options.</param>
         public HtmlReader(Stream stream, HtmlReaderOptions options = null)
@@ -59,7 +37,7 @@ namespace HtmlPerformanceKit
 
             this.options = options;
             bufferReader = new BufferReader(new StreamReader(stream));
-            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, options.SkipCharacterReferenceDecoding);
+            stateMachine = HtmlStateMachine.Create(bufferReader, ParseErrorFromMessage, options.SkipCharacterReferenceDecoding);
         }
 
         /// <summary>
@@ -79,8 +57,9 @@ namespace HtmlPerformanceKit
                 options = DefaultOptions;
             }
 
+            this.options = options;
             bufferReader = new BufferReader(textReader);
-            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, options.SkipCharacterReferenceDecoding);
+            stateMachine = HtmlStateMachine.Create(bufferReader, ParseErrorFromMessage, options.SkipCharacterReferenceDecoding);
         }
 
         private void ParseErrorFromMessage(string message)

@@ -14,8 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Readme.md = Readme.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{F8FD5571-9BF9-4643-BF14-AF917D434B78}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,12 +32,11 @@ Global
 		{FDA36D48-5011-43BA-B558-B5ED0AAFB13F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDA36D48-5011-43BA-B558-B5ED0AAFB13F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDA36D48-5011-43BA-B558-B5ED0AAFB13F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F8FD5571-9BF9-4643-BF14-AF917D434B78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F8FD5571-9BF9-4643-BF14-AF917D434B78}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F8FD5571-9BF9-4643-BF14-AF917D434B78}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F8FD5571-9BF9-4643-BF14-AF917D434B78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {00B5F1F9-1680-4571-95C8-AF7413D64A04}
 	EndGlobalSection
 EndGlobal

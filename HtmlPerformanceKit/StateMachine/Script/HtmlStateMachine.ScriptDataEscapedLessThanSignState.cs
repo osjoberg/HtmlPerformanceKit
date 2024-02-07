@@ -1,4 +1,6 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+﻿using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
@@ -26,7 +28,7 @@
             switch (currentInputCharacter)
             {
                 case '/':
-                    buffers.TemporaryBuffer.Clear();
+                    temporaryBuffer.Clear();
                     State = ScriptDataEscapedEndTagOpenState;
                     return;
 
@@ -56,11 +58,11 @@
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    buffers.TemporaryBuffer.Clear();
-                    buffers.TemporaryBuffer.Add((char)(currentInputCharacter + 0x20));
+                    temporaryBuffer.Clear();
+                    temporaryBuffer.Add((char)(currentInputCharacter + 0x20));
                     State = ScriptDataDoubleEscapeStartState;
-                    buffers.CurrentDataBuffer.Add('<');
-                    buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
+                    currentDataBuffer.Add('<');
+                    currentDataBuffer.Add((char)currentInputCharacter);
                     return;
 
                 case 'a':
@@ -89,19 +91,19 @@
                 case 'x':
                 case 'y':
                 case 'z':
-                    buffers.TemporaryBuffer.Clear();
-                    buffers.TemporaryBuffer.Add((char)currentInputCharacter);
+                    temporaryBuffer.Clear();
+                    temporaryBuffer.Add((char)currentInputCharacter);
                     State = ScriptDataDoubleEscapeStartState;
-                    buffers.CurrentDataBuffer.Add('<');
-                    buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
+                    currentDataBuffer.Add('<');
+                    currentDataBuffer.Add((char)currentInputCharacter);
                     return;
 
                 default:
                     State = ScriptDataEscapedState;
-                    buffers.CurrentDataBuffer.Add('<');
+                    currentDataBuffer.Add('<');
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }
-        }
+        };
     }
 }

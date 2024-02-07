@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -56,7 +57,7 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case '>':
-                    EmitTagToken = buffers.CurrentTagToken;
+                    EmitTagToken = currentTagToken;
                     State = DataState;
                     return;
 
@@ -86,15 +87,15 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    buffers.CurrentTagToken.Attributes.Add();
-                    buffers.CurrentTagToken.Attributes.Current.Name.Add((char)(currentInputCharacter + 0x20));
+                    currentTagToken.Attributes.Add();
+                    currentTagToken.Attributes.Current.Name.Add((char)(currentInputCharacter + 0x20));
                     State = AttributeNameState;
                     return;
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    buffers.CurrentTagToken.Attributes.Add();
-                    buffers.CurrentTagToken.Attributes.Current.Name.Add(HtmlChar.ReplacementCharacter);
+                    currentTagToken.Attributes.Add();
+                    currentTagToken.Attributes.Current.Name.Add(HtmlChar.ReplacementCharacter);
                     State = AttributeNameState;
                     return;
 
@@ -112,11 +113,11 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 default:
-                    buffers.CurrentTagToken.Attributes.Add();
-                    buffers.CurrentTagToken.Attributes.Current.Name.Add((char)currentInputCharacter);
+                    currentTagToken.Attributes.Add();
+                    currentTagToken.Attributes.Current.Name.Add((char)currentInputCharacter);
                     State = AttributeNameState;
                     return;
             }
-        }
+        };
     }
 }

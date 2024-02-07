@@ -31,7 +31,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the bogus DOCTYPE state.
         /// </summary>
-        private Action BuildBetweenDoctypePublicAndSystemIdentifiersState()
+        private Action BuildBetweenDoctypePublicAndSystemIdentifiersState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -45,25 +45,25 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case '>':
                     State = DataState;
-                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
+                    EmitDoctypeToken = currentDoctypeToken;
                     return;
 
                 case '"':
-                    buffers.CurrentDoctypeToken.Attributes.Add();
-                    buffers.CurrentDoctypeToken.Attributes.Current.Name.AddRange("system");
+                    currentDoctypeToken.Attributes.Add();
+                    currentDoctypeToken.Attributes.Current.Name.AddRange("system");
                     State = DoctypeSystemIdentifierDoubleQuotedState;
                     return;
 
                 case '\'':
-                    buffers.CurrentDoctypeToken.Attributes.Add();
-                    buffers.CurrentDoctypeToken.Attributes.Current.Name.AddRange("system");
+                    currentDoctypeToken.Attributes.Add();
+                    currentDoctypeToken.Attributes.Current.Name.AddRange("system");
                     State = DoctypeSystemIdentifierSingleQuotedState;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
+                    EmitDoctypeToken = currentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
@@ -72,6 +72,6 @@ namespace HtmlPerformanceKit.StateMachine
                     State = BogusDoctypeState;
                     return;
             }
-        }
+        };
     }
 }

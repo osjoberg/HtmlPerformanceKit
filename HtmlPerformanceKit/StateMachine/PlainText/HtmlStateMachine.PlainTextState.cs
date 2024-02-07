@@ -27,17 +27,17 @@ namespace HtmlPerformanceKit.StateMachine
             {
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    buffers.CurrentDataBuffer.Add(HtmlChar.ReplacementCharacter);
+                    currentDataBuffer.Add(HtmlChar.ReplacementCharacter);
                     break;
 
                 case EofMarker:
                     State = DataState;
-                    EmitDataBuffer = buffers.CurrentDataBuffer;
+                    EmitDataBuffer = currentDataBuffer;
                     bufferReader.Reconsume(EofMarker);
                     break;
 
                 default:
-                    buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
+                    currentDataBuffer.Add((char)currentInputCharacter);
                     break;
             }
         }; 

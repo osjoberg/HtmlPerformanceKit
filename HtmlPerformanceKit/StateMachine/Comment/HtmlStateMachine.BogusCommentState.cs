@@ -24,22 +24,22 @@ namespace HtmlPerformanceKit.StateMachine
                 switch (currentInputCharacter)
                 {
                     case '>':
-                        EmitCommentBuffer = buffers.CurrentCommentBuffer;
+                        EmitCommentBuffer = currentCommentBuffer;
                         State = DataState;
                         return;
 
                     case EofMarker:
                         State = DataState;
-                        EmitCommentBuffer = buffers.CurrentCommentBuffer;
+                        EmitCommentBuffer = currentCommentBuffer;
                         bufferReader.Reconsume(EofMarker);
                         return;
 
                     case HtmlChar.Null:
-                        buffers.CurrentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
+                        currentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
                         continue;
 
                     default:
-                        buffers.CurrentCommentBuffer.Add((char)currentInputCharacter);
+                        currentCommentBuffer.Add((char)currentInputCharacter);
                         continue;
                 }
             }

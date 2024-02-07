@@ -26,7 +26,7 @@ namespace HtmlPerformanceKit.StateMachine
                         if (nextInputCharacter == ']' && bufferReader.Peek() == '>')
                         {
                             bufferReader.Consume();
-                            EmitDataBuffer = buffers.CurrentDataBuffer;
+                            EmitDataBuffer = currentDataBuffer;
                         }
                         else
                         {
@@ -36,12 +36,12 @@ namespace HtmlPerformanceKit.StateMachine
                         break;
 
                     case EofMarker:
-                        EmitDataBuffer = buffers.CurrentDataBuffer;
+                        EmitDataBuffer = currentDataBuffer;
                         bufferReader.Reconsume(EofMarker);
                         return;
 
                     default:
-                        buffers.CurrentDataBuffer.Add((char)currentInputCharacter);
+                        currentDataBuffer.Add((char)currentInputCharacter);
                         continue;
                 }
             }

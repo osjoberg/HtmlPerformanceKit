@@ -18,7 +18,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Ignore the character.
         /// </summary>
-        private Action BuildBogusDoctypeState()
+        private Action BuildBogusDoctypeState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -26,18 +26,18 @@ namespace HtmlPerformanceKit.StateMachine
             {
                 case '>':
                     State = DataState;
-                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
+                    EmitDoctypeToken = currentDoctypeToken;
                     return;
 
                 case EofMarker:
                     State = DataState;
-                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
+                    EmitDoctypeToken = currentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
                     return;
             }
-        }
+        };
     }
 }

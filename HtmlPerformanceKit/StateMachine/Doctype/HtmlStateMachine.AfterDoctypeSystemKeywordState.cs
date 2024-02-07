@@ -31,7 +31,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the bogus DOCTYPE state.
         /// </summary>
-        private Action BuildAfterDoctypeSystemKeywordState()
+        private Action BuildAfterDoctypeSystemKeywordState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -46,28 +46,28 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case '"':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    buffers.CurrentDoctypeToken.Attributes.Add();
-                    buffers.CurrentDoctypeToken.Attributes.Current.Name.AddRange("system");
+                    currentDoctypeToken.Attributes.Add();
+                    currentDoctypeToken.Attributes.Current.Name.AddRange("system");
                     State = DoctypeSystemIdentifierDoubleQuotedState;
                     return;
 
                 case '\'':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    buffers.CurrentDoctypeToken.Attributes.Add();
-                    buffers.CurrentDoctypeToken.Attributes.Current.Name.AddRange("system");
+                    currentDoctypeToken.Attributes.Add();
+                    currentDoctypeToken.Attributes.Current.Name.AddRange("system");
                     State = DoctypeSystemIdentifierSingleQuotedState;
                     return;
 
                 case '>':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = DataState;
-                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
+                    EmitDoctypeToken = currentDoctypeToken;
                     break;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
+                    EmitDoctypeToken = currentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
@@ -76,6 +76,6 @@ namespace HtmlPerformanceKit.StateMachine
                     State = BogusDoctypeState;
                     return;
             }
-        }
+        };
     }
 }

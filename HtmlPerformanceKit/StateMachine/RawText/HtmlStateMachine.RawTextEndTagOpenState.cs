@@ -50,10 +50,10 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    buffers.CurrentTagToken.Clear();
-                    buffers.CurrentTagToken.EndTag = true;
-                    buffers.CurrentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
-                    buffers.TemporaryBuffer.Add((char)currentInputCharacter);
+                    currentTagToken.Clear();
+                    currentTagToken.EndTag = true;
+                    currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
+                    temporaryBuffer.Add((char)currentInputCharacter);
                     State = RawTextEndTagNameState;
                     return;
 
@@ -83,17 +83,17 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'x':
                 case 'y':
                 case 'z':
-                    buffers.CurrentTagToken.Clear();
-                    buffers.CurrentTagToken.EndTag = true;
-                    buffers.CurrentTagToken.Name.Add((char)currentInputCharacter);
-                    buffers.TemporaryBuffer.Add((char)currentInputCharacter);
+                    currentTagToken.Clear();
+                    currentTagToken.EndTag = true;
+                    currentTagToken.Name.Add((char)currentInputCharacter);
+                    temporaryBuffer.Add((char)currentInputCharacter);
                     State = RawTextEndTagNameState;
                     return;
 
                 default:
                     State = RawTextState;
-                    buffers.CurrentDataBuffer.Add('<');
-                    buffers.CurrentDataBuffer.Add('/');
+                    currentDataBuffer.Add('<');
+                    currentDataBuffer.Add('/');
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }

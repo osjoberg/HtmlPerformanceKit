@@ -31,7 +31,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Create a new DOCTYPE token. Set the token's name to the current input character. Switch to the DOCTYPE name state.
         /// </summary>
-        private Action BuildBeforeDoctypeNameState()
+        private Action BuildBeforeDoctypeNameState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -69,38 +69,38 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    buffers.CurrentDoctypeToken.Clear();
-                    buffers.CurrentDoctypeToken.Name.Add((char)(currentInputCharacter + 0x20));
+                    currentDoctypeToken.Clear();
+                    currentDoctypeToken.Name.Add((char)(currentInputCharacter + 0x20));
                     return;
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    buffers.CurrentDoctypeToken.Clear();
-                    buffers.CurrentDoctypeToken.Name.Add(HtmlChar.ReplacementCharacter);
+                    currentDoctypeToken.Clear();
+                    currentDoctypeToken.Name.Add(HtmlChar.ReplacementCharacter);
                     State = DoctypeNameState;
                     return;
 
                 case '>':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    buffers.CurrentDoctypeToken.Clear();
+                    currentDoctypeToken.Clear();
                     State = DataState;
-                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
+                    EmitDoctypeToken = currentDoctypeToken;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    buffers.CurrentDoctypeToken.Clear();
-                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
+                    currentDoctypeToken.Clear();
+                    EmitDoctypeToken = currentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
-                    buffers.CurrentDoctypeToken.Clear();
-                    buffers.CurrentDoctypeToken.Name.Add((char)currentInputCharacter);
+                    currentDoctypeToken.Clear();
+                    currentDoctypeToken.Name.Add((char)currentInputCharacter);
                     State = DoctypeNameState;
                     return;
             }
-        }
+        };
     }
 }

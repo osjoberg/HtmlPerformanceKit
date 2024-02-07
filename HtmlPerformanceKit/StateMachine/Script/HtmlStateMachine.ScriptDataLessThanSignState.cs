@@ -1,4 +1,6 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+﻿using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
@@ -23,22 +25,22 @@
             switch (currentInputCharacter)
             {
                 case '/':
-                    buffers.TemporaryBuffer.Clear();
+                    temporaryBuffer.Clear();
                     State = ScriptDataEndTagOpenState;
                     return;
 
                 case '!':
                     State = ScriptDataEscapeStartState;
-                    buffers.CurrentDataBuffer.Add('<');
-                    buffers.CurrentDataBuffer.Add('!');
+                    currentDataBuffer.Add('<');
+                    currentDataBuffer.Add('!');
                     return;
 
                 default:
                     State = ScriptDataState;
-                    buffers.CurrentDataBuffer.Add('<');
+                    currentDataBuffer.Add('<');
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }
-        }
+        };
     }
 }

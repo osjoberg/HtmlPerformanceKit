@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -56,9 +57,9 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    buffers.CurrentTagToken.Clear();
-                    buffers.CurrentTagToken.EndTag = true;
-                    buffers.CurrentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
+                    currentTagToken.Clear();
+                    currentTagToken.EndTag = true;
+                    currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
                     State = TagNameState;
                     return;
 
@@ -88,9 +89,9 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'x':
                 case 'y':
                 case 'z':
-                    buffers.CurrentTagToken.Clear();
-                    buffers.CurrentTagToken.EndTag = true;
-                    buffers.CurrentTagToken.Name.Add((char)currentInputCharacter);
+                    currentTagToken.Clear();
+                    currentTagToken.EndTag = true;
+                    currentTagToken.Name.Add((char)currentInputCharacter);
                     State = TagNameState;
                     return;
 
@@ -102,8 +103,8 @@ namespace HtmlPerformanceKit.StateMachine
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    buffers.CurrentDataBuffer.Add('<');
-                    buffers.CurrentDataBuffer.Add('/');
+                    currentDataBuffer.Add('<');
+                    currentDataBuffer.Add('/');
                     bufferReader.Reconsume(EofMarker);
                     return;
 
@@ -112,6 +113,6 @@ namespace HtmlPerformanceKit.StateMachine
                     State = BogusCommentState;
                     return;
             }
-        }
+        };
     }
 }

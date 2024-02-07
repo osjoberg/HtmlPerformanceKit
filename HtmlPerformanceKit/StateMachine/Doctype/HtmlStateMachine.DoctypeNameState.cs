@@ -31,7 +31,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Append the current input character to the current DOCTYPE token's name.
         /// </summary>
-        private Action BuildDoctypeNameState()
+        private Action BuildDoctypeNameState() => () =>
         {
             var currentInputCharacter = bufferReader.Consume();
 
@@ -46,7 +46,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case '>':
                     State = DataState;
-                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
+                    EmitDoctypeToken = currentDoctypeToken;
                     return;
 
                 case 'A':
@@ -75,26 +75,26 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    buffers.CurrentDoctypeToken.Name.Add((char)(currentInputCharacter + 0x20));
+                    currentDoctypeToken.Name.Add((char)(currentInputCharacter + 0x20));
                     return;
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    buffers.CurrentDoctypeToken.Name.Add(HtmlChar.ReplacementCharacter);
+                    currentDoctypeToken.Name.Add(HtmlChar.ReplacementCharacter);
                     State = DoctypeNameState;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
+                    EmitDoctypeToken = currentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
-                    buffers.CurrentDoctypeToken.Name.Add((char)currentInputCharacter);
+                    currentDoctypeToken.Name.Add((char)currentInputCharacter);
                     return;
             }
-        }
+        };
     }
 }

@@ -34,21 +34,21 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    buffers.CurrentCommentBuffer.Add('-');
-                    buffers.CurrentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
+                    currentCommentBuffer.Add('-');
+                    currentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
                     State = CommentState;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    EmitCommentBuffer = buffers.CurrentCommentBuffer;
+                    EmitCommentBuffer = currentCommentBuffer;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
-                    buffers.CurrentCommentBuffer.Add('-');
-                    buffers.CurrentCommentBuffer.Add((char)currentInputCharacter);
+                    currentCommentBuffer.Add('-');
+                    currentCommentBuffer.Add((char)currentInputCharacter);
                     State = CommentState;
                     return;
             }

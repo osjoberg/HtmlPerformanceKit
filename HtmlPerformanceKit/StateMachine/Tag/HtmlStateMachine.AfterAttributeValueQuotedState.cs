@@ -47,7 +47,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case '>':
                     State = DataState;
-                    EmitTagToken = buffers.CurrentTagToken;
+                    EmitTagToken = currentTagToken;
                     return;
 
                 case EofMarker:

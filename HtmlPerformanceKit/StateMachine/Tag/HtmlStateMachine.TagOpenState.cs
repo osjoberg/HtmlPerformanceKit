@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -67,8 +68,8 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'X':
                 case 'Y':
                 case 'Z':
-                    buffers.CurrentTagToken.Clear();
-                    buffers.CurrentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
+                    currentTagToken.Clear();
+                    currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
                     State = TagNameState;
                     return;
 
@@ -98,8 +99,8 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'x':
                 case 'y':
                 case 'z':
-                    buffers.CurrentTagToken.Clear();
-                    buffers.CurrentTagToken.Name.Add((char)currentInputCharacter);
+                    currentTagToken.Clear();
+                    currentTagToken.Name.Add((char)currentInputCharacter);
                     State = TagNameState;
                     return;
 
@@ -111,10 +112,10 @@ namespace HtmlPerformanceKit.StateMachine
                 default:
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = DataState;
-                    buffers.CurrentDataBuffer.Add('<');
+                    currentDataBuffer.Add('<');
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }
-        }
+        };
     }
 }

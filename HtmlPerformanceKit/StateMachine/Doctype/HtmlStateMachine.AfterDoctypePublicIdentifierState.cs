@@ -46,27 +46,27 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case '>':
                     State = DataState;
-                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
+                    EmitDoctypeToken = currentDoctypeToken;
                     return;
 
                 case '"':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    buffers.CurrentDoctypeToken.Attributes.Add();
-                    buffers.CurrentDoctypeToken.Attributes.Current.Name.AddRange("system");
+                    currentDoctypeToken.Attributes.Add();
+                    currentDoctypeToken.Attributes.Current.Name.AddRange("system");
                     State = DoctypeSystemIdentifierDoubleQuotedState;
                     return;
 
                 case '\'':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    buffers.CurrentDoctypeToken.Attributes.Add();
-                    buffers.CurrentDoctypeToken.Attributes.Current.Name.AddRange("system");
+                    currentDoctypeToken.Attributes.Add();
+                    currentDoctypeToken.Attributes.Current.Name.AddRange("system");
                     State = DoctypeSystemIdentifierSingleQuotedState;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    EmitDoctypeToken = buffers.CurrentDoctypeToken;
+                    EmitDoctypeToken = currentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;
 

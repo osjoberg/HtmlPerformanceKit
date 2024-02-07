@@ -37,25 +37,25 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    buffers.CurrentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
+                    currentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
                     State = CommentState;
                     return;
 
                 case '>':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     State = DataState;
-                    EmitCommentBuffer = buffers.CurrentCommentBuffer;
+                    EmitCommentBuffer = currentCommentBuffer;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = DataState;
-                    EmitCommentBuffer = buffers.CurrentCommentBuffer;
+                    EmitCommentBuffer = currentCommentBuffer;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
-                    buffers.CurrentCommentBuffer.Add((char)currentInputCharacter);
+                    currentCommentBuffer.Add((char)currentInputCharacter);
                     State = CommentState;
                     return;
             }

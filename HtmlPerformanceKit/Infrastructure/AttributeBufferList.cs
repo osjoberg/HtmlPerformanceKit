@@ -56,11 +56,6 @@ namespace HtmlPerformanceKit.Infrastructure
 
         private AttributeBuffer GetItem(string name)
         {
-            if (name.Length != Count)
-            {
-                return null;
-            }
-
             for (var index = 0; index < Count; index++)
             {
                 if (attributes[index].Name.Equals(name))
