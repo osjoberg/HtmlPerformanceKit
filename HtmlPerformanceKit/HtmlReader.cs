@@ -89,13 +89,11 @@ namespace HtmlPerformanceKit
         /// </summary>
         public string Name => tagToken?.Name.ToString();
 
-#if NET8_0_OR_GREATER
         /// <summary>
         /// Gets the last read tag name as memory.
         /// <returns>Lowercased tag name if last read token kind was <see cref="HtmlTokenKind.Tag"/> or <see cref="HtmlTokenKind.Doctype"/>, otherwise Null.</returns>
         /// </summary>
         public ReadOnlyMemory<char> NameAsMemory => tagToken?.Name.ToMemory() ?? default;
-#endif
 
         /// <summary>
         /// Gets the last read text.
@@ -103,13 +101,11 @@ namespace HtmlPerformanceKit
         /// </summary>
         public string Text => textBuffer?.ToString();
 
-#if NET8_0_OR_GREATER
         /// <summary>
         /// Gets the last read text as memory.
         /// <returns>Text if last read token kind was <see cref="HtmlTokenKind.Text"/> or <see cref="HtmlTokenKind.Comment"/>, otherwise Null.</returns>
         /// </summary>
         public ReadOnlyMemory<char> TextAsMemory => textBuffer?.ToMemory() ?? default;
-#endif
 
         /// <summary>
         /// Gets the last read attribute count.
@@ -205,7 +201,6 @@ namespace HtmlPerformanceKit
             return tagToken?.Attributes[name]?.ToString();
         }
 
-#if NET8_0_OR_GREATER
         /// <summary>
         /// Get attribute value by attribute name as memory.
         /// </summary>
@@ -225,7 +220,6 @@ namespace HtmlPerformanceKit
 
             return tagToken?.Attributes[name]?.ToMemory() ?? default;
         }
-#endif
 
         /// <summary>
         /// Get attribute value by attribute index.
@@ -242,7 +236,6 @@ namespace HtmlPerformanceKit
             return tagToken?.Attributes[index]?.Value.ToString();
         }
 
-#if NET8_0_OR_GREATER
         /// <summary>
         /// Get attribute value by attribute index.
         /// </summary>
@@ -257,7 +250,6 @@ namespace HtmlPerformanceKit
 
             return tagToken?.Attributes[index]?.Value.ToMemory() ?? default;
         }
-#endif
 
         /// <summary>
         /// Get attribute name by attribute index.
@@ -274,7 +266,6 @@ namespace HtmlPerformanceKit
             return tagToken?.Attributes[index]?.Name.ToString();
         }
 
-#if NET8_0_OR_GREATER
         /// <summary>
         /// Get attribute name by attribute index.
         /// </summary>
@@ -289,7 +280,6 @@ namespace HtmlPerformanceKit
 
             return tagToken?.Attributes[index]?.Name.ToMemory() ?? default;
         }
-#endif
 
         /// <summary>
         /// Disposes the instance and it's associated StreamReader.

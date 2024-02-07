@@ -1,4 +1,5 @@
 ﻿using HtmlPerformanceKit.Infrastructure;
+using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -85,13 +86,14 @@ namespace HtmlPerformanceKit.StateMachine
                         return Nothing;
                     }
 
-                    var characterReferenceBuffer = bufferReader.Peek(35);
+                    var characterReferenceMemory = bufferReader.Peek(35);
+                    var characterReferenceBuffer = characterReferenceMemory.Span;
                     var startIndex = characterReferenceBuffer.IndexOf(';');
                     startIndex = startIndex == -1 ? characterReferenceBuffer.Length : startIndex + 1;
 
                     for (var i = startIndex; i > 0; i--)
                     {
-                        var characterReferenceAttempt = characterReferenceBuffer.Substring(0, i);
+                        var characterReferenceAttempt = characterReferenceMemory.Slice(0, i);
                         var characterReferenceResult = HtmlChar.GetCharactersByCharacterReference(characterReferenceAttempt);
                         if (characterReferenceResult == null)
                         {

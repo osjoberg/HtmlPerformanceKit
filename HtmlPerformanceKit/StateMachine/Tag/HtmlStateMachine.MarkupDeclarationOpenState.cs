@@ -28,7 +28,7 @@ namespace HtmlPerformanceKit.StateMachine
             switch (currentInputCharacter)
             {
                 case '-':
-                    var comment = bufferReader.Peek(CommentMarker.Length);
+                    var comment = bufferReader.Peek(CommentMarker.Length).Span;
                     if (comment[1] != CommentMarker[1])
                     {
                         goto default;
@@ -41,7 +41,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case 'd':
                 case 'D':
-                    if (bufferReader.Peek(DoctypeMarker.Length).Equals(DoctypeMarker, StringComparison.OrdinalIgnoreCase) == false)
+                    if (bufferReader.Peek(DoctypeMarker.Length).Span.Equals(DoctypeMarker.AsSpan(), StringComparison.OrdinalIgnoreCase) == false)
                     {
                         goto default;
                     }
@@ -51,7 +51,7 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case '[':
-                    if (bufferReader.Peek(CDataMarker.Length) != CDataMarker)
+                    if (bufferReader.Peek(CDataMarker.Length).Span.Equals(CDataMarker.AsSpan(), StringComparison.OrdinalIgnoreCase))
                     {
                         goto default;
                     }

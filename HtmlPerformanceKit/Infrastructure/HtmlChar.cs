@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 
 namespace HtmlPerformanceKit.Infrastructure
 {
@@ -7,2242 +9,2277 @@ namespace HtmlPerformanceKit.Infrastructure
         internal const char Null = '\0';
         internal const char ReplacementCharacter = '\uFFFD';
 
-        private static readonly Dictionary<string, char[]> HtmlCharacterReferences = new Dictionary<string, char[]>
+        private class ReadOnlyMemoryComparer : IEqualityComparer<ReadOnlyMemory<char>>
         {
-            { "Aacute;", new[] { '\u00C1' } },
-            { "Aacute", new[] { '\u00C1' } },
-            { "aacute;", new[] { '\u00E1' } },
-            { "aacute", new[] { '\u00E1' } },
-            { "Abreve;", new[] { '\u0102' } },
-            { "abreve;", new[] { '\u0103' } },
-            { "ac;", new[] { '\u223E' } },
-            { "acd;", new[] { '\u223F' } },
-            { "acE;", new[] { '\u223E', '\u0333' } },
-            { "Acirc;", new[] { '\u00C2' } },
-            { "Acirc", new[] { '\u00C2' } },
-            { "acirc;", new[] { '\u00E2' } },
-            { "acirc", new[] { '\u00E2' } },
-            { "acute;", new[] { '\u00B4' } },
-            { "acute", new[] { '\u00B4' } },
-            { "Acy;", new[] { '\u0410' } },
-            { "acy;", new[] { '\u0430' } },
-            { "AElig;", new[] { '\u00C6' } },
-            { "AElig", new[] { '\u00C6' } },
-            { "aelig;", new[] { '\u00E6' } },
-            { "aelig", new[] { '\u00E6' } },
-            { "af;", new[] { '\u2061' } },
-            { "Afr;", new[] { '\uD835', '\uDD04' } },
-            { "afr;", new[] { '\uD835', '\uDD1E' } },
-            { "Agrave;", new[] { '\u00C0' } },
-            { "Agrave", new[] { '\u00C0' } },
-            { "agrave;", new[] { '\u00E0' } },
-            { "agrave", new[] { '\u00E0' } },
-            { "alefsym;", new[] { '\u2135' } },
-            { "aleph;", new[] { '\u2135' } },
-            { "Alpha;", new[] { '\u0391' } },
-            { "alpha;", new[] { '\u03B1' } },
-            { "Amacr;", new[] { '\u0100' } },
-            { "amacr;", new[] { '\u0101' } },
-            { "amalg;", new[] { '\u2A3F' } },
-            { "AMP;", new[] { '\u0026' } },
-            { "AMP", new[] { '\u0026' } },
-            { "amp;", new[] { '\u0026' } },
-            { "amp", new[] { '\u0026' } },
-            { "And;", new[] { '\u2A53' } },
-            { "and;", new[] { '\u2227' } },
-            { "andand;", new[] { '\u2A55' } },
-            { "andd;", new[] { '\u2A5C' } },
-            { "andslope;", new[] { '\u2A58' } },
-            { "andv;", new[] { '\u2A5A' } },
-            { "ang;", new[] { '\u2220' } },
-            { "ange;", new[] { '\u29A4' } },
-            { "angle;", new[] { '\u2220' } },
-            { "angmsd;", new[] { '\u2221' } },
-            { "angmsdaa;", new[] { '\u29A8' } },
-            { "angmsdab;", new[] { '\u29A9' } },
-            { "angmsdac;", new[] { '\u29AA' } },
-            { "angmsdad;", new[] { '\u29AB' } },
-            { "angmsdae;", new[] { '\u29AC' } },
-            { "angmsdaf;", new[] { '\u29AD' } },
-            { "angmsdag;", new[] { '\u29AE' } },
-            { "angmsdah;", new[] { '\u29AF' } },
-            { "angrt;", new[] { '\u221F' } },
-            { "angrtvb;", new[] { '\u22BE' } },
-            { "angrtvbd;", new[] { '\u299D' } },
-            { "angsph;", new[] { '\u2222' } },
-            { "angst;", new[] { '\u00C5' } },
-            { "angzarr;", new[] { '\u237C' } },
-            { "Aogon;", new[] { '\u0104' } },
-            { "aogon;", new[] { '\u0105' } },
-            { "Aopf;", new[] { '\uD835', '\uDD38' } },
-            { "aopf;", new[] { '\uD835', '\uDD52' } },
-            { "ap;", new[] { '\u2248' } },
-            { "apacir;", new[] { '\u2A6F' } },
-            { "apE;", new[] { '\u2A70' } },
-            { "ape;", new[] { '\u224A' } },
-            { "apid;", new[] { '\u224B' } },
-            { "apos;", new[] { '\u0027' } },
-            { "ApplyFunction;", new[] { '\u2061' } },
-            { "approx;", new[] { '\u2248' } },
-            { "approxeq;", new[] { '\u224A' } },
-            { "Aring;", new[] { '\u00C5' } },
-            { "Aring", new[] { '\u00C5' } },
-            { "aring;", new[] { '\u00E5' } },
-            { "aring", new[] { '\u00E5' } },
-            { "Ascr;", new[] { '\uD835', '\uDC9C' } },
-            { "ascr;", new[] { '\uD835', '\uDCB6' } },
-            { "Assign;", new[] { '\u2254' } },
-            { "ast;", new[] { '\u002A' } },
-            { "asymp;", new[] { '\u2248' } },
-            { "asympeq;", new[] { '\u224D' } },
-            { "Atilde;", new[] { '\u00C3' } },
-            { "Atilde", new[] { '\u00C3' } },
-            { "atilde;", new[] { '\u00E3' } },
-            { "atilde", new[] { '\u00E3' } },
-            { "Auml;", new[] { '\u00C4' } },
-            { "Auml", new[] { '\u00C4' } },
-            { "auml;", new[] { '\u00E4' } },
-            { "auml", new[] { '\u00E4' } },
-            { "awconint;", new[] { '\u2233' } },
-            { "awint;", new[] { '\u2A11' } },
-            { "backcong;", new[] { '\u224C' } },
-            { "backepsilon;", new[] { '\u03F6' } },
-            { "backprime;", new[] { '\u2035' } },
-            { "backsim;", new[] { '\u223D' } },
-            { "backsimeq;", new[] { '\u22CD' } },
-            { "Backslash;", new[] { '\u2216' } },
-            { "Barv;", new[] { '\u2AE7' } },
-            { "barvee;", new[] { '\u22BD' } },
-            { "Barwed;", new[] { '\u2306' } },
-            { "barwed;", new[] { '\u2305' } },
-            { "barwedge;", new[] { '\u2305' } },
-            { "bbrk;", new[] { '\u23B5' } },
-            { "bbrktbrk;", new[] { '\u23B6' } },
-            { "bcong;", new[] { '\u224C' } },
-            { "Bcy;", new[] { '\u0411' } },
-            { "bcy;", new[] { '\u0431' } },
-            { "bdquo;", new[] { '\u201E' } },
-            { "becaus;", new[] { '\u2235' } },
-            { "Because;", new[] { '\u2235' } },
-            { "because;", new[] { '\u2235' } },
-            { "bemptyv;", new[] { '\u29B0' } },
-            { "bepsi;", new[] { '\u03F6' } },
-            { "bernou;", new[] { '\u212C' } },
-            { "Bernoullis;", new[] { '\u212C' } },
-            { "Beta;", new[] { '\u0392' } },
-            { "beta;", new[] { '\u03B2' } },
-            { "beth;", new[] { '\u2136' } },
-            { "between;", new[] { '\u226C' } },
-            { "Bfr;", new[] { '\uD835', '\uDD05' } },
-            { "bfr;", new[] { '\uD835', '\uDD1F' } },
-            { "bigcap;", new[] { '\u22C2' } },
-            { "bigcirc;", new[] { '\u25EF' } },
-            { "bigcup;", new[] { '\u22C3' } },
-            { "bigodot;", new[] { '\u2A00' } },
-            { "bigoplus;", new[] { '\u2A01' } },
-            { "bigotimes;", new[] { '\u2A02' } },
-            { "bigsqcup;", new[] { '\u2A06' } },
-            { "bigstar;", new[] { '\u2605' } },
-            { "bigtriangledown;", new[] { '\u25BD' } },
-            { "bigtriangleup;", new[] { '\u25B3' } },
-            { "biguplus;", new[] { '\u2A04' } },
-            { "bigvee;", new[] { '\u22C1' } },
-            { "bigwedge;", new[] { '\u22C0' } },
-            { "bkarow;", new[] { '\u290D' } },
-            { "blacklozenge;", new[] { '\u29EB' } },
-            { "blacksquare;", new[] { '\u25AA' } },
-            { "blacktriangle;", new[] { '\u25B4' } },
-            { "blacktriangledown;", new[] { '\u25BE' } },
-            { "blacktriangleleft;", new[] { '\u25C2' } },
-            { "blacktriangleright;", new[] { '\u25B8' } },
-            { "blank;", new[] { '\u2423' } },
-            { "blk12;", new[] { '\u2592' } },
-            { "blk14;", new[] { '\u2591' } },
-            { "blk34;", new[] { '\u2593' } },
-            { "block;", new[] { '\u2588' } },
-            { "bne;", new[] { '\u003D', '\u20E5' } },
-            { "bnequiv;", new[] { '\u2261', '\u20E5' } },
-            { "bNot;", new[] { '\u2AED' } },
-            { "bnot;", new[] { '\u2310' } },
-            { "Bopf;", new[] { '\uD835', '\uDD39' } },
-            { "bopf;", new[] { '\uD835', '\uDD53' } },
-            { "bot;", new[] { '\u22A5' } },
-            { "bottom;", new[] { '\u22A5' } },
-            { "bowtie;", new[] { '\u22C8' } },
-            { "boxbox;", new[] { '\u29C9' } },
-            { "boxDL;", new[] { '\u2557' } },
-            { "boxDl;", new[] { '\u2556' } },
-            { "boxdL;", new[] { '\u2555' } },
-            { "boxdl;", new[] { '\u2510' } },
-            { "boxDR;", new[] { '\u2554' } },
-            { "boxDr;", new[] { '\u2553' } },
-            { "boxdR;", new[] { '\u2552' } },
-            { "boxdr;", new[] { '\u250C' } },
-            { "boxH;", new[] { '\u2550' } },
-            { "boxh;", new[] { '\u2500' } },
-            { "boxHD;", new[] { '\u2566' } },
-            { "boxHd;", new[] { '\u2564' } },
-            { "boxhD;", new[] { '\u2565' } },
-            { "boxhd;", new[] { '\u252C' } },
-            { "boxHU;", new[] { '\u2569' } },
-            { "boxHu;", new[] { '\u2567' } },
-            { "boxhU;", new[] { '\u2568' } },
-            { "boxhu;", new[] { '\u2534' } },
-            { "boxminus;", new[] { '\u229F' } },
-            { "boxplus;", new[] { '\u229E' } },
-            { "boxtimes;", new[] { '\u22A0' } },
-            { "boxUL;", new[] { '\u255D' } },
-            { "boxUl;", new[] { '\u255C' } },
-            { "boxuL;", new[] { '\u255B' } },
-            { "boxul;", new[] { '\u2518' } },
-            { "boxUR;", new[] { '\u255A' } },
-            { "boxUr;", new[] { '\u2559' } },
-            { "boxuR;", new[] { '\u2558' } },
-            { "boxur;", new[] { '\u2514' } },
-            { "boxV;", new[] { '\u2551' } },
-            { "boxv;", new[] { '\u2502' } },
-            { "boxVH;", new[] { '\u256C' } },
-            { "boxVh;", new[] { '\u256B' } },
-            { "boxvH;", new[] { '\u256A' } },
-            { "boxvh;", new[] { '\u253C' } },
-            { "boxVL;", new[] { '\u2563' } },
-            { "boxVl;", new[] { '\u2562' } },
-            { "boxvL;", new[] { '\u2561' } },
-            { "boxvl;", new[] { '\u2524' } },
-            { "boxVR;", new[] { '\u2560' } },
-            { "boxVr;", new[] { '\u255F' } },
-            { "boxvR;", new[] { '\u255E' } },
-            { "boxvr;", new[] { '\u251C' } },
-            { "bprime;", new[] { '\u2035' } },
-            { "Breve;", new[] { '\u02D8' } },
-            { "breve;", new[] { '\u02D8' } },
-            { "brvbar;", new[] { '\u00A6' } },
-            { "brvbar", new[] { '\u00A6' } },
-            { "Bscr;", new[] { '\u212C' } },
-            { "bscr;", new[] { '\uD835', '\uDCB7' } },
-            { "bsemi;", new[] { '\u204F' } },
-            { "bsim;", new[] { '\u223D' } },
-            { "bsime;", new[] { '\u22CD' } },
-            { "bsol;", new[] { '\u005C' } },
-            { "bsolb;", new[] { '\u29C5' } },
-            { "bsolhsub;", new[] { '\u27C8' } },
-            { "bull;", new[] { '\u2022' } },
-            { "bullet;", new[] { '\u2022' } },
-            { "bump;", new[] { '\u224E' } },
-            { "bumpE;", new[] { '\u2AAE' } },
-            { "bumpe;", new[] { '\u224F' } },
-            { "Bumpeq;", new[] { '\u224E' } },
-            { "bumpeq;", new[] { '\u224F' } },
-            { "Cacute;", new[] { '\u0106' } },
-            { "cacute;", new[] { '\u0107' } },
-            { "Cap;", new[] { '\u22D2' } },
-            { "cap;", new[] { '\u2229' } },
-            { "capand;", new[] { '\u2A44' } },
-            { "capbrcup;", new[] { '\u2A49' } },
-            { "capcap;", new[] { '\u2A4B' } },
-            { "capcup;", new[] { '\u2A47' } },
-            { "capdot;", new[] { '\u2A40' } },
-            { "CapitalDifferentialD;", new[] { '\u2145' } },
-            { "caps;", new[] { '\u2229', '\uFE00' } },
-            { "caret;", new[] { '\u2041' } },
-            { "caron;", new[] { '\u02C7' } },
-            { "Cayleys;", new[] { '\u212D' } },
-            { "ccaps;", new[] { '\u2A4D' } },
-            { "Ccaron;", new[] { '\u010C' } },
-            { "ccaron;", new[] { '\u010D' } },
-            { "Ccedil;", new[] { '\u00C7' } },
-            { "Ccedil", new[] { '\u00C7' } },
-            { "ccedil;", new[] { '\u00E7' } },
-            { "ccedil", new[] { '\u00E7' } },
-            { "Ccirc;", new[] { '\u0108' } },
-            { "ccirc;", new[] { '\u0109' } },
-            { "Cconint;", new[] { '\u2230' } },
-            { "ccups;", new[] { '\u2A4C' } },
-            { "ccupssm;", new[] { '\u2A50' } },
-            { "Cdot;", new[] { '\u010A' } },
-            { "cdot;", new[] { '\u010B' } },
-            { "cedil;", new[] { '\u00B8' } },
-            { "cedil", new[] { '\u00B8' } },
-            { "Cedilla;", new[] { '\u00B8' } },
-            { "cemptyv;", new[] { '\u29B2' } },
-            { "cent;", new[] { '\u00A2' } },
-            { "cent", new[] { '\u00A2' } },
-            { "CenterDot;", new[] { '\u00B7' } },
-            { "centerdot;", new[] { '\u00B7' } },
-            { "Cfr;", new[] { '\u212D' } },
-            { "cfr;", new[] { '\uD835', '\uDD20' } },
-            { "CHcy;", new[] { '\u0427' } },
-            { "chcy;", new[] { '\u0447' } },
-            { "check;", new[] { '\u2713' } },
-            { "checkmark;", new[] { '\u2713' } },
-            { "Chi;", new[] { '\u03A7' } },
-            { "chi;", new[] { '\u03C7' } },
-            { "cir;", new[] { '\u25CB' } },
-            { "circ;", new[] { '\u02C6' } },
-            { "circeq;", new[] { '\u2257' } },
-            { "circlearrowleft;", new[] { '\u21BA' } },
-            { "circlearrowright;", new[] { '\u21BB' } },
-            { "circledast;", new[] { '\u229B' } },
-            { "circledcirc;", new[] { '\u229A' } },
-            { "circleddash;", new[] { '\u229D' } },
-            { "CircleDot;", new[] { '\u2299' } },
-            { "circledR;", new[] { '\u00AE' } },
-            { "circledS;", new[] { '\u24C8' } },
-            { "CircleMinus;", new[] { '\u2296' } },
-            { "CirclePlus;", new[] { '\u2295' } },
-            { "CircleTimes;", new[] { '\u2297' } },
-            { "cirE;", new[] { '\u29C3' } },
-            { "cire;", new[] { '\u2257' } },
-            { "cirfnint;", new[] { '\u2A10' } },
-            { "cirmid;", new[] { '\u2AEF' } },
-            { "cirscir;", new[] { '\u29C2' } },
-            { "ClockwiseContourIntegral;", new[] { '\u2232' } },
-            { "CloseCurlyDoubleQuote;", new[] { '\u201D' } },
-            { "CloseCurlyQuote;", new[] { '\u2019' } },
-            { "clubs;", new[] { '\u2663' } },
-            { "clubsuit;", new[] { '\u2663' } },
-            { "Colon;", new[] { '\u2237' } },
-            { "colon;", new[] { '\u003A' } },
-            { "Colone;", new[] { '\u2A74' } },
-            { "colone;", new[] { '\u2254' } },
-            { "coloneq;", new[] { '\u2254' } },
-            { "comma;", new[] { '\u002C' } },
-            { "commat;", new[] { '\u0040' } },
-            { "comp;", new[] { '\u2201' } },
-            { "compfn;", new[] { '\u2218' } },
-            { "complement;", new[] { '\u2201' } },
-            { "complexes;", new[] { '\u2102' } },
-            { "cong;", new[] { '\u2245' } },
-            { "congdot;", new[] { '\u2A6D' } },
-            { "Congruent;", new[] { '\u2261' } },
-            { "Conint;", new[] { '\u222F' } },
-            { "conint;", new[] { '\u222E' } },
-            { "ContourIntegral;", new[] { '\u222E' } },
-            { "Copf;", new[] { '\u2102' } },
-            { "copf;", new[] { '\uD835', '\uDD54' } },
-            { "coprod;", new[] { '\u2210' } },
-            { "Coproduct;", new[] { '\u2210' } },
-            { "COPY;", new[] { '\u00A9' } },
-            { "COPY", new[] { '\u00A9' } },
-            { "copy;", new[] { '\u00A9' } },
-            { "copy", new[] { '\u00A9' } },
-            { "copysr;", new[] { '\u2117' } },
-            { "CounterClockwiseContourIntegral;", new[] { '\u2233' } },
-            { "crarr;", new[] { '\u21B5' } },
-            { "Cross;", new[] { '\u2A2F' } },
-            { "cross;", new[] { '\u2717' } },
-            { "Cscr;", new[] { '\uD835', '\uDC9E' } },
-            { "cscr;", new[] { '\uD835', '\uDCB8' } },
-            { "csub;", new[] { '\u2ACF' } },
-            { "csube;", new[] { '\u2AD1' } },
-            { "csup;", new[] { '\u2AD0' } },
-            { "csupe;", new[] { '\u2AD2' } },
-            { "ctdot;", new[] { '\u22EF' } },
-            { "cudarrl;", new[] { '\u2938' } },
-            { "cudarrr;", new[] { '\u2935' } },
-            { "cuepr;", new[] { '\u22DE' } },
-            { "cuesc;", new[] { '\u22DF' } },
-            { "cularr;", new[] { '\u21B6' } },
-            { "cularrp;", new[] { '\u293D' } },
-            { "Cup;", new[] { '\u22D3' } },
-            { "cup;", new[] { '\u222A' } },
-            { "cupbrcap;", new[] { '\u2A48' } },
-            { "CupCap;", new[] { '\u224D' } },
-            { "cupcap;", new[] { '\u2A46' } },
-            { "cupcup;", new[] { '\u2A4A' } },
-            { "cupdot;", new[] { '\u228D' } },
-            { "cupor;", new[] { '\u2A45' } },
-            { "cups;", new[] { '\u222A', '\uFE00' } },
-            { "curarr;", new[] { '\u21B7' } },
-            { "curarrm;", new[] { '\u293C' } },
-            { "curlyeqprec;", new[] { '\u22DE' } },
-            { "curlyeqsucc;", new[] { '\u22DF' } },
-            { "curlyvee;", new[] { '\u22CE' } },
-            { "curlywedge;", new[] { '\u22CF' } },
-            { "curren;", new[] { '\u00A4' } },
-            { "curren", new[] { '\u00A4' } },
-            { "curvearrowleft;", new[] { '\u21B6' } },
-            { "curvearrowright;", new[] { '\u21B7' } },
-            { "cuvee;", new[] { '\u22CE' } },
-            { "cuwed;", new[] { '\u22CF' } },
-            { "cwconint;", new[] { '\u2232' } },
-            { "cwint;", new[] { '\u2231' } },
-            { "cylcty;", new[] { '\u232D' } },
-            { "Dagger;", new[] { '\u2021' } },
-            { "dagger;", new[] { '\u2020' } },
-            { "daleth;", new[] { '\u2138' } },
-            { "Darr;", new[] { '\u21A1' } },
-            { "dArr;", new[] { '\u21D3' } },
-            { "darr;", new[] { '\u2193' } },
-            { "dash;", new[] { '\u2010' } },
-            { "Dashv;", new[] { '\u2AE4' } },
-            { "dashv;", new[] { '\u22A3' } },
-            { "dbkarow;", new[] { '\u290F' } },
-            { "dblac;", new[] { '\u02DD' } },
-            { "Dcaron;", new[] { '\u010E' } },
-            { "dcaron;", new[] { '\u010F' } },
-            { "Dcy;", new[] { '\u0414' } },
-            { "dcy;", new[] { '\u0434' } },
-            { "DD;", new[] { '\u2145' } },
-            { "dd;", new[] { '\u2146' } },
-            { "ddagger;", new[] { '\u2021' } },
-            { "ddarr;", new[] { '\u21CA' } },
-            { "DDotrahd;", new[] { '\u2911' } },
-            { "ddotseq;", new[] { '\u2A77' } },
-            { "deg;", new[] { '\u00B0' } },
-            { "deg", new[] { '\u00B0' } },
-            { "Del;", new[] { '\u2207' } },
-            { "Delta;", new[] { '\u0394' } },
-            { "delta;", new[] { '\u03B4' } },
-            { "demptyv;", new[] { '\u29B1' } },
-            { "dfisht;", new[] { '\u297F' } },
-            { "Dfr;", new[] { '\uD835', '\uDD07' } },
-            { "dfr;", new[] { '\uD835', '\uDD21' } },
-            { "dHar;", new[] { '\u2965' } },
-            { "dharl;", new[] { '\u21C3' } },
-            { "dharr;", new[] { '\u21C2' } },
-            { "DiacriticalAcute;", new[] { '\u00B4' } },
-            { "DiacriticalDot;", new[] { '\u02D9' } },
-            { "DiacriticalDoubleAcute;", new[] { '\u02DD' } },
-            { "DiacriticalGrave;", new[] { '\u0060' } },
-            { "DiacriticalTilde;", new[] { '\u02DC' } },
-            { "diam;", new[] { '\u22C4' } },
-            { "Diamond;", new[] { '\u22C4' } },
-            { "diamond;", new[] { '\u22C4' } },
-            { "diamondsuit;", new[] { '\u2666' } },
-            { "diams;", new[] { '\u2666' } },
-            { "die;", new[] { '\u00A8' } },
-            { "DifferentialD;", new[] { '\u2146' } },
-            { "digamma;", new[] { '\u03DD' } },
-            { "disin;", new[] { '\u22F2' } },
-            { "div;", new[] { '\u00F7' } },
-            { "divide;", new[] { '\u00F7' } },
-            { "divide", new[] { '\u00F7' } },
-            { "divideontimes;", new[] { '\u22C7' } },
-            { "divonx;", new[] { '\u22C7' } },
-            { "DJcy;", new[] { '\u0402' } },
-            { "djcy;", new[] { '\u0452' } },
-            { "dlcorn;", new[] { '\u231E' } },
-            { "dlcrop;", new[] { '\u230D' } },
-            { "dollar;", new[] { '\u0024' } },
-            { "Dopf;", new[] { '\uD835', '\uDD3B' } },
-            { "dopf;", new[] { '\uD835', '\uDD55' } },
-            { "Dot;", new[] { '\u00A8' } },
-            { "dot;", new[] { '\u02D9' } },
-            { "DotDot;", new[] { '\u20DC' } },
-            { "doteq;", new[] { '\u2250' } },
-            { "doteqdot;", new[] { '\u2251' } },
-            { "DotEqual;", new[] { '\u2250' } },
-            { "dotminus;", new[] { '\u2238' } },
-            { "dotplus;", new[] { '\u2214' } },
-            { "dotsquare;", new[] { '\u22A1' } },
-            { "doublebarwedge;", new[] { '\u2306' } },
-            { "DoubleContourIntegral;", new[] { '\u222F' } },
-            { "DoubleDot;", new[] { '\u00A8' } },
-            { "DoubleDownArrow;", new[] { '\u21D3' } },
-            { "DoubleLeftArrow;", new[] { '\u21D0' } },
-            { "DoubleLeftRightArrow;", new[] { '\u21D4' } },
-            { "DoubleLeftTee;", new[] { '\u2AE4' } },
-            { "DoubleLongLeftArrow;", new[] { '\u27F8' } },
-            { "DoubleLongLeftRightArrow;", new[] { '\u27FA' } },
-            { "DoubleLongRightArrow;", new[] { '\u27F9' } },
-            { "DoubleRightArrow;", new[] { '\u21D2' } },
-            { "DoubleRightTee;", new[] { '\u22A8' } },
-            { "DoubleUpArrow;", new[] { '\u21D1' } },
-            { "DoubleUpDownArrow;", new[] { '\u21D5' } },
-            { "DoubleVerticalBar;", new[] { '\u2225' } },
-            { "DownArrow;", new[] { '\u2193' } },
-            { "Downarrow;", new[] { '\u21D3' } },
-            { "downarrow;", new[] { '\u2193' } },
-            { "DownArrowBar;", new[] { '\u2913' } },
-            { "DownArrowUpArrow;", new[] { '\u21F5' } },
-            { "DownBreve;", new[] { '\u0311' } },
-            { "downdownarrows;", new[] { '\u21CA' } },
-            { "downharpoonleft;", new[] { '\u21C3' } },
-            { "downharpoonright;", new[] { '\u21C2' } },
-            { "DownLeftRightVector;", new[] { '\u2950' } },
-            { "DownLeftTeeVector;", new[] { '\u295E' } },
-            { "DownLeftVector;", new[] { '\u21BD' } },
-            { "DownLeftVectorBar;", new[] { '\u2956' } },
-            { "DownRightTeeVector;", new[] { '\u295F' } },
-            { "DownRightVector;", new[] { '\u21C1' } },
-            { "DownRightVectorBar;", new[] { '\u2957' } },
-            { "DownTee;", new[] { '\u22A4' } },
-            { "DownTeeArrow;", new[] { '\u21A7' } },
-            { "drbkarow;", new[] { '\u2910' } },
-            { "drcorn;", new[] { '\u231F' } },
-            { "drcrop;", new[] { '\u230C' } },
-            { "Dscr;", new[] { '\uD835', '\uDC9F' } },
-            { "dscr;", new[] { '\uD835', '\uDCB9' } },
-            { "DScy;", new[] { '\u0405' } },
-            { "dscy;", new[] { '\u0455' } },
-            { "dsol;", new[] { '\u29F6' } },
-            { "Dstrok;", new[] { '\u0110' } },
-            { "dstrok;", new[] { '\u0111' } },
-            { "dtdot;", new[] { '\u22F1' } },
-            { "dtri;", new[] { '\u25BF' } },
-            { "dtrif;", new[] { '\u25BE' } },
-            { "duarr;", new[] { '\u21F5' } },
-            { "duhar;", new[] { '\u296F' } },
-            { "dwangle;", new[] { '\u29A6' } },
-            { "DZcy;", new[] { '\u040F' } },
-            { "dzcy;", new[] { '\u045F' } },
-            { "dzigrarr;", new[] { '\u27FF' } },
-            { "Eacute;", new[] { '\u00C9' } },
-            { "Eacute", new[] { '\u00C9' } },
-            { "eacute;", new[] { '\u00E9' } },
-            { "eacute", new[] { '\u00E9' } },
-            { "easter;", new[] { '\u2A6E' } },
-            { "Ecaron;", new[] { '\u011A' } },
-            { "ecaron;", new[] { '\u011B' } },
-            { "ecir;", new[] { '\u2256' } },
-            { "Ecirc;", new[] { '\u00CA' } },
-            { "Ecirc", new[] { '\u00CA' } },
-            { "ecirc;", new[] { '\u00EA' } },
-            { "ecirc", new[] { '\u00EA' } },
-            { "ecolon;", new[] { '\u2255' } },
-            { "Ecy;", new[] { '\u042D' } },
-            { "ecy;", new[] { '\u044D' } },
-            { "eDDot;", new[] { '\u2A77' } },
-            { "Edot;", new[] { '\u0116' } },
-            { "eDot;", new[] { '\u2251' } },
-            { "edot;", new[] { '\u0117' } },
-            { "ee;", new[] { '\u2147' } },
-            { "efDot;", new[] { '\u2252' } },
-            { "Efr;", new[] { '\uD835', '\uDD08' } },
-            { "efr;", new[] { '\uD835', '\uDD22' } },
-            { "eg;", new[] { '\u2A9A' } },
-            { "Egrave;", new[] { '\u00C8' } },
-            { "Egrave", new[] { '\u00C8' } },
-            { "egrave;", new[] { '\u00E8' } },
-            { "egrave", new[] { '\u00E8' } },
-            { "egs;", new[] { '\u2A96' } },
-            { "egsdot;", new[] { '\u2A98' } },
-            { "el;", new[] { '\u2A99' } },
-            { "Element;", new[] { '\u2208' } },
-            { "elinters;", new[] { '\u23E7' } },
-            { "ell;", new[] { '\u2113' } },
-            { "els;", new[] { '\u2A95' } },
-            { "elsdot;", new[] { '\u2A97' } },
-            { "Emacr;", new[] { '\u0112' } },
-            { "emacr;", new[] { '\u0113' } },
-            { "empty;", new[] { '\u2205' } },
-            { "emptyset;", new[] { '\u2205' } },
-            { "EmptySmallSquare;", new[] { '\u25FB' } },
-            { "emptyv;", new[] { '\u2205' } },
-            { "EmptyVerySmallSquare;", new[] { '\u25AB' } },
-            { "emsp;", new[] { '\u2003' } },
-            { "emsp13;", new[] { '\u2004' } },
-            { "emsp14;", new[] { '\u2005' } },
-            { "ENG;", new[] { '\u014A' } },
-            { "eng;", new[] { '\u014B' } },
-            { "ensp;", new[] { '\u2002' } },
-            { "Eogon;", new[] { '\u0118' } },
-            { "eogon;", new[] { '\u0119' } },
-            { "Eopf;", new[] { '\uD835', '\uDD3C' } },
-            { "eopf;", new[] { '\uD835', '\uDD56' } },
-            { "epar;", new[] { '\u22D5' } },
-            { "eparsl;", new[] { '\u29E3' } },
-            { "eplus;", new[] { '\u2A71' } },
-            { "epsi;", new[] { '\u03B5' } },
-            { "Epsilon;", new[] { '\u0395' } },
-            { "epsilon;", new[] { '\u03B5' } },
-            { "epsiv;", new[] { '\u03F5' } },
-            { "eqcirc;", new[] { '\u2256' } },
-            { "eqcolon;", new[] { '\u2255' } },
-            { "eqsim;", new[] { '\u2242' } },
-            { "eqslantgtr;", new[] { '\u2A96' } },
-            { "eqslantless;", new[] { '\u2A95' } },
-            { "Equal;", new[] { '\u2A75' } },
-            { "equals;", new[] { '\u003D' } },
-            { "EqualTilde;", new[] { '\u2242' } },
-            { "equest;", new[] { '\u225F' } },
-            { "Equilibrium;", new[] { '\u21CC' } },
-            { "equiv;", new[] { '\u2261' } },
-            { "equivDD;", new[] { '\u2A78' } },
-            { "eqvparsl;", new[] { '\u29E5' } },
-            { "erarr;", new[] { '\u2971' } },
-            { "erDot;", new[] { '\u2253' } },
-            { "Escr;", new[] { '\u2130' } },
-            { "escr;", new[] { '\u212F' } },
-            { "esdot;", new[] { '\u2250' } },
-            { "Esim;", new[] { '\u2A73' } },
-            { "esim;", new[] { '\u2242' } },
-            { "Eta;", new[] { '\u0397' } },
-            { "eta;", new[] { '\u03B7' } },
-            { "ETH;", new[] { '\u00D0' } },
-            { "ETH", new[] { '\u00D0' } },
-            { "eth;", new[] { '\u00F0' } },
-            { "eth", new[] { '\u00F0' } },
-            { "Euml;", new[] { '\u00CB' } },
-            { "Euml", new[] { '\u00CB' } },
-            { "euml;", new[] { '\u00EB' } },
-            { "euml", new[] { '\u00EB' } },
-            { "euro;", new[] { '\u20AC' } },
-            { "excl;", new[] { '\u0021' } },
-            { "exist;", new[] { '\u2203' } },
-            { "Exists;", new[] { '\u2203' } },
-            { "expectation;", new[] { '\u2130' } },
-            { "ExponentialE;", new[] { '\u2147' } },
-            { "exponentiale;", new[] { '\u2147' } },
-            { "fallingdotseq;", new[] { '\u2252' } },
-            { "Fcy;", new[] { '\u0424' } },
-            { "fcy;", new[] { '\u0444' } },
-            { "female;", new[] { '\u2640' } },
-            { "ffilig;", new[] { '\uFB03' } },
-            { "fflig;", new[] { '\uFB00' } },
-            { "ffllig;", new[] { '\uFB04' } },
-            { "Ffr;", new[] { '\uD835', '\uDD09' } },
-            { "ffr;", new[] { '\uD835', '\uDD23' } },
-            { "filig;", new[] { '\uFB01' } },
-            { "FilledSmallSquare;", new[] { '\u25FC' } },
-            { "FilledVerySmallSquare;", new[] { '\u25AA' } },
-            { "fjlig;", new[] { '\u0066', '\u006A' } },
-            { "flat;", new[] { '\u266D' } },
-            { "fllig;", new[] { '\uFB02' } },
-            { "fltns;", new[] { '\u25B1' } },
-            { "fnof;", new[] { '\u0192' } },
-            { "Fopf;", new[] { '\uD835', '\uDD3D' } },
-            { "fopf;", new[] { '\uD835', '\uDD57' } },
-            { "ForAll;", new[] { '\u2200' } },
-            { "forall;", new[] { '\u2200' } },
-            { "fork;", new[] { '\u22D4' } },
-            { "forkv;", new[] { '\u2AD9' } },
-            { "Fouriertrf;", new[] { '\u2131' } },
-            { "fpartint;", new[] { '\u2A0D' } },
-            { "frac12;", new[] { '\u00BD' } },
-            { "frac12", new[] { '\u00BD' } },
-            { "frac13;", new[] { '\u2153' } },
-            { "frac14;", new[] { '\u00BC' } },
-            { "frac14", new[] { '\u00BC' } },
-            { "frac15;", new[] { '\u2155' } },
-            { "frac16;", new[] { '\u2159' } },
-            { "frac18;", new[] { '\u215B' } },
-            { "frac23;", new[] { '\u2154' } },
-            { "frac25;", new[] { '\u2156' } },
-            { "frac34;", new[] { '\u00BE' } },
-            { "frac34", new[] { '\u00BE' } },
-            { "frac35;", new[] { '\u2157' } },
-            { "frac38;", new[] { '\u215C' } },
-            { "frac45;", new[] { '\u2158' } },
-            { "frac56;", new[] { '\u215A' } },
-            { "frac58;", new[] { '\u215D' } },
-            { "frac78;", new[] { '\u215E' } },
-            { "frasl;", new[] { '\u2044' } },
-            { "frown;", new[] { '\u2322' } },
-            { "Fscr;", new[] { '\u2131' } },
-            { "fscr;", new[] { '\uD835', '\uDCBB' } },
-            { "gacute;", new[] { '\u01F5' } },
-            { "Gamma;", new[] { '\u0393' } },
-            { "gamma;", new[] { '\u03B3' } },
-            { "Gammad;", new[] { '\u03DC' } },
-            { "gammad;", new[] { '\u03DD' } },
-            { "gap;", new[] { '\u2A86' } },
-            { "Gbreve;", new[] { '\u011E' } },
-            { "gbreve;", new[] { '\u011F' } },
-            { "Gcedil;", new[] { '\u0122' } },
-            { "Gcirc;", new[] { '\u011C' } },
-            { "gcirc;", new[] { '\u011D' } },
-            { "Gcy;", new[] { '\u0413' } },
-            { "gcy;", new[] { '\u0433' } },
-            { "Gdot;", new[] { '\u0120' } },
-            { "gdot;", new[] { '\u0121' } },
-            { "gE;", new[] { '\u2267' } },
-            { "ge;", new[] { '\u2265' } },
-            { "gEl;", new[] { '\u2A8C' } },
-            { "gel;", new[] { '\u22DB' } },
-            { "geq;", new[] { '\u2265' } },
-            { "geqq;", new[] { '\u2267' } },
-            { "geqslant;", new[] { '\u2A7E' } },
-            { "ges;", new[] { '\u2A7E' } },
-            { "gescc;", new[] { '\u2AA9' } },
-            { "gesdot;", new[] { '\u2A80' } },
-            { "gesdoto;", new[] { '\u2A82' } },
-            { "gesdotol;", new[] { '\u2A84' } },
-            { "gesl;", new[] { '\u22DB', '\uFE00' } },
-            { "gesles;", new[] { '\u2A94' } },
-            { "Gfr;", new[] { '\uD835', '\uDD0A' } },
-            { "gfr;", new[] { '\uD835', '\uDD24' } },
-            { "Gg;", new[] { '\u22D9' } },
-            { "gg;", new[] { '\u226B' } },
-            { "ggg;", new[] { '\u22D9' } },
-            { "gimel;", new[] { '\u2137' } },
-            { "GJcy;", new[] { '\u0403' } },
-            { "gjcy;", new[] { '\u0453' } },
-            { "gl;", new[] { '\u2277' } },
-            { "gla;", new[] { '\u2AA5' } },
-            { "glE;", new[] { '\u2A92' } },
-            { "glj;", new[] { '\u2AA4' } },
-            { "gnap;", new[] { '\u2A8A' } },
-            { "gnapprox;", new[] { '\u2A8A' } },
-            { "gnE;", new[] { '\u2269' } },
-            { "gne;", new[] { '\u2A88' } },
-            { "gneq;", new[] { '\u2A88' } },
-            { "gneqq;", new[] { '\u2269' } },
-            { "gnsim;", new[] { '\u22E7' } },
-            { "Gopf;", new[] { '\uD835', '\uDD3E' } },
-            { "gopf;", new[] { '\uD835', '\uDD58' } },
-            { "grave;", new[] { '\u0060' } },
-            { "GreaterEqual;", new[] { '\u2265' } },
-            { "GreaterEqualLess;", new[] { '\u22DB' } },
-            { "GreaterFullEqual;", new[] { '\u2267' } },
-            { "GreaterGreater;", new[] { '\u2AA2' } },
-            { "GreaterLess;", new[] { '\u2277' } },
-            { "GreaterSlantEqual;", new[] { '\u2A7E' } },
-            { "GreaterTilde;", new[] { '\u2273' } },
-            { "Gscr;", new[] { '\uD835', '\uDCA2' } },
-            { "gscr;", new[] { '\u210A' } },
-            { "gsim;", new[] { '\u2273' } },
-            { "gsime;", new[] { '\u2A8E' } },
-            { "gsiml;", new[] { '\u2A90' } },
-            { "GT;", new[] { '\u003E' } },
-            { "GT", new[] { '\u003E' } },
-            { "Gt;", new[] { '\u226B' } },
-            { "gt;", new[] { '\u003E' } },
-            { "gt", new[] { '\u003E' } },
-            { "gtcc;", new[] { '\u2AA7' } },
-            { "gtcir;", new[] { '\u2A7A' } },
-            { "gtdot;", new[] { '\u22D7' } },
-            { "gtlPar;", new[] { '\u2995' } },
-            { "gtquest;", new[] { '\u2A7C' } },
-            { "gtrapprox;", new[] { '\u2A86' } },
-            { "gtrarr;", new[] { '\u2978' } },
-            { "gtrdot;", new[] { '\u22D7' } },
-            { "gtreqless;", new[] { '\u22DB' } },
-            { "gtreqqless;", new[] { '\u2A8C' } },
-            { "gtrless;", new[] { '\u2277' } },
-            { "gtrsim;", new[] { '\u2273' } },
-            { "gvertneqq;", new[] { '\u2269', '\uFE00' } },
-            { "gvnE;", new[] { '\u2269', '\uFE00' } },
-            { "Hacek;", new[] { '\u02C7' } },
-            { "hairsp;", new[] { '\u200A' } },
-            { "half;", new[] { '\u00BD' } },
-            { "hamilt;", new[] { '\u210B' } },
-            { "HARDcy;", new[] { '\u042A' } },
-            { "hardcy;", new[] { '\u044A' } },
-            { "hArr;", new[] { '\u21D4' } },
-            { "harr;", new[] { '\u2194' } },
-            { "harrcir;", new[] { '\u2948' } },
-            { "harrw;", new[] { '\u21AD' } },
-            { "Hat;", new[] { '\u005E' } },
-            { "hbar;", new[] { '\u210F' } },
-            { "Hcirc;", new[] { '\u0124' } },
-            { "hcirc;", new[] { '\u0125' } },
-            { "hearts;", new[] { '\u2665' } },
-            { "heartsuit;", new[] { '\u2665' } },
-            { "hellip;", new[] { '\u2026' } },
-            { "hercon;", new[] { '\u22B9' } },
-            { "Hfr;", new[] { '\u210C' } },
-            { "hfr;", new[] { '\uD835', '\uDD25' } },
-            { "HilbertSpace;", new[] { '\u210B' } },
-            { "hksearow;", new[] { '\u2925' } },
-            { "hkswarow;", new[] { '\u2926' } },
-            { "hoarr;", new[] { '\u21FF' } },
-            { "homtht;", new[] { '\u223B' } },
-            { "hookleftarrow;", new[] { '\u21A9' } },
-            { "hookrightarrow;", new[] { '\u21AA' } },
-            { "Hopf;", new[] { '\u210D' } },
-            { "hopf;", new[] { '\uD835', '\uDD59' } },
-            { "horbar;", new[] { '\u2015' } },
-            { "HorizontalLine;", new[] { '\u2500' } },
-            { "Hscr;", new[] { '\u210B' } },
-            { "hscr;", new[] { '\uD835', '\uDCBD' } },
-            { "hslash;", new[] { '\u210F' } },
-            { "Hstrok;", new[] { '\u0126' } },
-            { "hstrok;", new[] { '\u0127' } },
-            { "HumpDownHump;", new[] { '\u224E' } },
-            { "HumpEqual;", new[] { '\u224F' } },
-            { "hybull;", new[] { '\u2043' } },
-            { "hyphen;", new[] { '\u2010' } },
-            { "Iacute;", new[] { '\u00CD' } },
-            { "Iacute", new[] { '\u00CD' } },
-            { "iacute;", new[] { '\u00ED' } },
-            { "iacute", new[] { '\u00ED' } },
-            { "ic;", new[] { '\u2063' } },
-            { "Icirc;", new[] { '\u00CE' } },
-            { "Icirc", new[] { '\u00CE' } },
-            { "icirc;", new[] { '\u00EE' } },
-            { "icirc", new[] { '\u00EE' } },
-            { "Icy;", new[] { '\u0418' } },
-            { "icy;", new[] { '\u0438' } },
-            { "Idot;", new[] { '\u0130' } },
-            { "IEcy;", new[] { '\u0415' } },
-            { "iecy;", new[] { '\u0435' } },
-            { "iexcl;", new[] { '\u00A1' } },
-            { "iexcl", new[] { '\u00A1' } },
-            { "iff;", new[] { '\u21D4' } },
-            { "Ifr;", new[] { '\u2111' } },
-            { "ifr;", new[] { '\uD835', '\uDD26' } },
-            { "Igrave;", new[] { '\u00CC' } },
-            { "Igrave", new[] { '\u00CC' } },
-            { "igrave;", new[] { '\u00EC' } },
-            { "igrave", new[] { '\u00EC' } },
-            { "ii;", new[] { '\u2148' } },
-            { "iiiint;", new[] { '\u2A0C' } },
-            { "iiint;", new[] { '\u222D' } },
-            { "iinfin;", new[] { '\u29DC' } },
-            { "iiota;", new[] { '\u2129' } },
-            { "IJlig;", new[] { '\u0132' } },
-            { "ijlig;", new[] { '\u0133' } },
-            { "Im;", new[] { '\u2111' } },
-            { "Imacr;", new[] { '\u012A' } },
-            { "imacr;", new[] { '\u012B' } },
-            { "image;", new[] { '\u2111' } },
-            { "ImaginaryI;", new[] { '\u2148' } },
-            { "imagline;", new[] { '\u2110' } },
-            { "imagpart;", new[] { '\u2111' } },
-            { "imath;", new[] { '\u0131' } },
-            { "imof;", new[] { '\u22B7' } },
-            { "imped;", new[] { '\u01B5' } },
-            { "Implies;", new[] { '\u21D2' } },
-            { "in;", new[] { '\u2208' } },
-            { "incare;", new[] { '\u2105' } },
-            { "infin;", new[] { '\u221E' } },
-            { "infintie;", new[] { '\u29DD' } },
-            { "inodot;", new[] { '\u0131' } },
-            { "Int;", new[] { '\u222C' } },
-            { "int;", new[] { '\u222B' } },
-            { "intcal;", new[] { '\u22BA' } },
-            { "integers;", new[] { '\u2124' } },
-            { "Integral;", new[] { '\u222B' } },
-            { "intercal;", new[] { '\u22BA' } },
-            { "Intersection;", new[] { '\u22C2' } },
-            { "intlarhk;", new[] { '\u2A17' } },
-            { "intprod;", new[] { '\u2A3C' } },
-            { "InvisibleComma;", new[] { '\u2063' } },
-            { "InvisibleTimes;", new[] { '\u2062' } },
-            { "IOcy;", new[] { '\u0401' } },
-            { "iocy;", new[] { '\u0451' } },
-            { "Iogon;", new[] { '\u012E' } },
-            { "iogon;", new[] { '\u012F' } },
-            { "Iopf;", new[] { '\uD835', '\uDD40' } },
-            { "iopf;", new[] { '\uD835', '\uDD5A' } },
-            { "Iota;", new[] { '\u0399' } },
-            { "iota;", new[] { '\u03B9' } },
-            { "iprod;", new[] { '\u2A3C' } },
-            { "iquest;", new[] { '\u00BF' } },
-            { "iquest", new[] { '\u00BF' } },
-            { "Iscr;", new[] { '\u2110' } },
-            { "iscr;", new[] { '\uD835', '\uDCBE' } },
-            { "isin;", new[] { '\u2208' } },
-            { "isindot;", new[] { '\u22F5' } },
-            { "isinE;", new[] { '\u22F9' } },
-            { "isins;", new[] { '\u22F4' } },
-            { "isinsv;", new[] { '\u22F3' } },
-            { "isinv;", new[] { '\u2208' } },
-            { "it;", new[] { '\u2062' } },
-            { "Itilde;", new[] { '\u0128' } },
-            { "itilde;", new[] { '\u0129' } },
-            { "Iukcy;", new[] { '\u0406' } },
-            { "iukcy;", new[] { '\u0456' } },
-            { "Iuml;", new[] { '\u00CF' } },
-            { "Iuml", new[] { '\u00CF' } },
-            { "iuml;", new[] { '\u00EF' } },
-            { "iuml", new[] { '\u00EF' } },
-            { "Jcirc;", new[] { '\u0134' } },
-            { "jcirc;", new[] { '\u0135' } },
-            { "Jcy;", new[] { '\u0419' } },
-            { "jcy;", new[] { '\u0439' } },
-            { "Jfr;", new[] { '\uD835', '\uDD0D' } },
-            { "jfr;", new[] { '\uD835', '\uDD27' } },
-            { "jmath;", new[] { '\u0237' } },
-            { "Jopf;", new[] { '\uD835', '\uDD41' } },
-            { "jopf;", new[] { '\uD835', '\uDD5B' } },
-            { "Jscr;", new[] { '\uD835', '\uDCA5' } },
-            { "jscr;", new[] { '\uD835', '\uDCBF' } },
-            { "Jsercy;", new[] { '\u0408' } },
-            { "jsercy;", new[] { '\u0458' } },
-            { "Jukcy;", new[] { '\u0404' } },
-            { "jukcy;", new[] { '\u0454' } },
-            { "Kappa;", new[] { '\u039A' } },
-            { "kappa;", new[] { '\u03BA' } },
-            { "kappav;", new[] { '\u03F0' } },
-            { "Kcedil;", new[] { '\u0136' } },
-            { "kcedil;", new[] { '\u0137' } },
-            { "Kcy;", new[] { '\u041A' } },
-            { "kcy;", new[] { '\u043A' } },
-            { "Kfr;", new[] { '\uD835', '\uDD0E' } },
-            { "kfr;", new[] { '\uD835', '\uDD28' } },
-            { "kgreen;", new[] { '\u0138' } },
-            { "KHcy;", new[] { '\u0425' } },
-            { "khcy;", new[] { '\u0445' } },
-            { "KJcy;", new[] { '\u040C' } },
-            { "kjcy;", new[] { '\u045C' } },
-            { "Kopf;", new[] { '\uD835', '\uDD42' } },
-            { "kopf;", new[] { '\uD835', '\uDD5C' } },
-            { "Kscr;", new[] { '\uD835', '\uDCA6' } },
-            { "kscr;", new[] { '\uD835', '\uDCC0' } },
-            { "lAarr;", new[] { '\u21DA' } },
-            { "Lacute;", new[] { '\u0139' } },
-            { "lacute;", new[] { '\u013A' } },
-            { "laemptyv;", new[] { '\u29B4' } },
-            { "lagran;", new[] { '\u2112' } },
-            { "Lambda;", new[] { '\u039B' } },
-            { "lambda;", new[] { '\u03BB' } },
-            { "Lang;", new[] { '\u27EA' } },
-            { "lang;", new[] { '\u27E8' } },
-            { "langd;", new[] { '\u2991' } },
-            { "langle;", new[] { '\u27E8' } },
-            { "lap;", new[] { '\u2A85' } },
-            { "Laplacetrf;", new[] { '\u2112' } },
-            { "laquo;", new[] { '\u00AB' } },
-            { "laquo", new[] { '\u00AB' } },
-            { "Larr;", new[] { '\u219E' } },
-            { "lArr;", new[] { '\u21D0' } },
-            { "larr;", new[] { '\u2190' } },
-            { "larrb;", new[] { '\u21E4' } },
-            { "larrbfs;", new[] { '\u291F' } },
-            { "larrfs;", new[] { '\u291D' } },
-            { "larrhk;", new[] { '\u21A9' } },
-            { "larrlp;", new[] { '\u21AB' } },
-            { "larrpl;", new[] { '\u2939' } },
-            { "larrsim;", new[] { '\u2973' } },
-            { "larrtl;", new[] { '\u21A2' } },
-            { "lat;", new[] { '\u2AAB' } },
-            { "lAtail;", new[] { '\u291B' } },
-            { "latail;", new[] { '\u2919' } },
-            { "late;", new[] { '\u2AAD' } },
-            { "lates;", new[] { '\u2AAD', '\uFE00' } },
-            { "lBarr;", new[] { '\u290E' } },
-            { "lbarr;", new[] { '\u290C' } },
-            { "lbbrk;", new[] { '\u2772' } },
-            { "lbrace;", new[] { '\u007B' } },
-            { "lbrack;", new[] { '\u005B' } },
-            { "lbrke;", new[] { '\u298B' } },
-            { "lbrksld;", new[] { '\u298F' } },
-            { "lbrkslu;", new[] { '\u298D' } },
-            { "Lcaron;", new[] { '\u013D' } },
-            { "lcaron;", new[] { '\u013E' } },
-            { "Lcedil;", new[] { '\u013B' } },
-            { "lcedil;", new[] { '\u013C' } },
-            { "lceil;", new[] { '\u2308' } },
-            { "lcub;", new[] { '\u007B' } },
-            { "Lcy;", new[] { '\u041B' } },
-            { "lcy;", new[] { '\u043B' } },
-            { "ldca;", new[] { '\u2936' } },
-            { "ldquo;", new[] { '\u201C' } },
-            { "ldquor;", new[] { '\u201E' } },
-            { "ldrdhar;", new[] { '\u2967' } },
-            { "ldrushar;", new[] { '\u294B' } },
-            { "ldsh;", new[] { '\u21B2' } },
-            { "lE;", new[] { '\u2266' } },
-            { "le;", new[] { '\u2264' } },
-            { "LeftAngleBracket;", new[] { '\u27E8' } },
-            { "LeftArrow;", new[] { '\u2190' } },
-            { "Leftarrow;", new[] { '\u21D0' } },
-            { "leftarrow;", new[] { '\u2190' } },
-            { "LeftArrowBar;", new[] { '\u21E4' } },
-            { "LeftArrowRightArrow;", new[] { '\u21C6' } },
-            { "leftarrowtail;", new[] { '\u21A2' } },
-            { "LeftCeiling;", new[] { '\u2308' } },
-            { "LeftDoubleBracket;", new[] { '\u27E6' } },
-            { "LeftDownTeeVector;", new[] { '\u2961' } },
-            { "LeftDownVector;", new[] { '\u21C3' } },
-            { "LeftDownVectorBar;", new[] { '\u2959' } },
-            { "LeftFloor;", new[] { '\u230A' } },
-            { "leftharpoondown;", new[] { '\u21BD' } },
-            { "leftharpoonup;", new[] { '\u21BC' } },
-            { "leftleftarrows;", new[] { '\u21C7' } },
-            { "LeftRightArrow;", new[] { '\u2194' } },
-            { "Leftrightarrow;", new[] { '\u21D4' } },
-            { "leftrightarrow;", new[] { '\u2194' } },
-            { "leftrightarrows;", new[] { '\u21C6' } },
-            { "leftrightharpoons;", new[] { '\u21CB' } },
-            { "leftrightsquigarrow;", new[] { '\u21AD' } },
-            { "LeftRightVector;", new[] { '\u294E' } },
-            { "LeftTee;", new[] { '\u22A3' } },
-            { "LeftTeeArrow;", new[] { '\u21A4' } },
-            { "LeftTeeVector;", new[] { '\u295A' } },
-            { "leftthreetimes;", new[] { '\u22CB' } },
-            { "LeftTriangle;", new[] { '\u22B2' } },
-            { "LeftTriangleBar;", new[] { '\u29CF' } },
-            { "LeftTriangleEqual;", new[] { '\u22B4' } },
-            { "LeftUpDownVector;", new[] { '\u2951' } },
-            { "LeftUpTeeVector;", new[] { '\u2960' } },
-            { "LeftUpVector;", new[] { '\u21BF' } },
-            { "LeftUpVectorBar;", new[] { '\u2958' } },
-            { "LeftVector;", new[] { '\u21BC' } },
-            { "LeftVectorBar;", new[] { '\u2952' } },
-            { "lEg;", new[] { '\u2A8B' } },
-            { "leg;", new[] { '\u22DA' } },
-            { "leq;", new[] { '\u2264' } },
-            { "leqq;", new[] { '\u2266' } },
-            { "leqslant;", new[] { '\u2A7D' } },
-            { "les;", new[] { '\u2A7D' } },
-            { "lescc;", new[] { '\u2AA8' } },
-            { "lesdot;", new[] { '\u2A7F' } },
-            { "lesdoto;", new[] { '\u2A81' } },
-            { "lesdotor;", new[] { '\u2A83' } },
-            { "lesg;", new[] { '\u22DA', '\uFE00' } },
-            { "lesges;", new[] { '\u2A93' } },
-            { "lessapprox;", new[] { '\u2A85' } },
-            { "lessdot;", new[] { '\u22D6' } },
-            { "lesseqgtr;", new[] { '\u22DA' } },
-            { "lesseqqgtr;", new[] { '\u2A8B' } },
-            { "LessEqualGreater;", new[] { '\u22DA' } },
-            { "LessFullEqual;", new[] { '\u2266' } },
-            { "LessGreater;", new[] { '\u2276' } },
-            { "lessgtr;", new[] { '\u2276' } },
-            { "LessLess;", new[] { '\u2AA1' } },
-            { "lesssim;", new[] { '\u2272' } },
-            { "LessSlantEqual;", new[] { '\u2A7D' } },
-            { "LessTilde;", new[] { '\u2272' } },
-            { "lfisht;", new[] { '\u297C' } },
-            { "lfloor;", new[] { '\u230A' } },
-            { "Lfr;", new[] { '\uD835', '\uDD0F' } },
-            { "lfr;", new[] { '\uD835', '\uDD29' } },
-            { "lg;", new[] { '\u2276' } },
-            { "lgE;", new[] { '\u2A91' } },
-            { "lHar;", new[] { '\u2962' } },
-            { "lhard;", new[] { '\u21BD' } },
-            { "lharu;", new[] { '\u21BC' } },
-            { "lharul;", new[] { '\u296A' } },
-            { "lhblk;", new[] { '\u2584' } },
-            { "LJcy;", new[] { '\u0409' } },
-            { "ljcy;", new[] { '\u0459' } },
-            { "Ll;", new[] { '\u22D8' } },
-            { "ll;", new[] { '\u226A' } },
-            { "llarr;", new[] { '\u21C7' } },
-            { "llcorner;", new[] { '\u231E' } },
-            { "Lleftarrow;", new[] { '\u21DA' } },
-            { "llhard;", new[] { '\u296B' } },
-            { "lltri;", new[] { '\u25FA' } },
-            { "Lmidot;", new[] { '\u013F' } },
-            { "lmidot;", new[] { '\u0140' } },
-            { "lmoust;", new[] { '\u23B0' } },
-            { "lmoustache;", new[] { '\u23B0' } },
-            { "lnap;", new[] { '\u2A89' } },
-            { "lnapprox;", new[] { '\u2A89' } },
-            { "lnE;", new[] { '\u2268' } },
-            { "lne;", new[] { '\u2A87' } },
-            { "lneq;", new[] { '\u2A87' } },
-            { "lneqq;", new[] { '\u2268' } },
-            { "lnsim;", new[] { '\u22E6' } },
-            { "loang;", new[] { '\u27EC' } },
-            { "loarr;", new[] { '\u21FD' } },
-            { "lobrk;", new[] { '\u27E6' } },
-            { "LongLeftArrow;", new[] { '\u27F5' } },
-            { "Longleftarrow;", new[] { '\u27F8' } },
-            { "longleftarrow;", new[] { '\u27F5' } },
-            { "LongLeftRightArrow;", new[] { '\u27F7' } },
-            { "Longleftrightarrow;", new[] { '\u27FA' } },
-            { "longleftrightarrow;", new[] { '\u27F7' } },
-            { "longmapsto;", new[] { '\u27FC' } },
-            { "LongRightArrow;", new[] { '\u27F6' } },
-            { "Longrightarrow;", new[] { '\u27F9' } },
-            { "longrightarrow;", new[] { '\u27F6' } },
-            { "looparrowleft;", new[] { '\u21AB' } },
-            { "looparrowright;", new[] { '\u21AC' } },
-            { "lopar;", new[] { '\u2985' } },
-            { "Lopf;", new[] { '\uD835', '\uDD43' } },
-            { "lopf;", new[] { '\uD835', '\uDD5D' } },
-            { "loplus;", new[] { '\u2A2D' } },
-            { "lotimes;", new[] { '\u2A34' } },
-            { "lowast;", new[] { '\u2217' } },
-            { "lowbar;", new[] { '\u005F' } },
-            { "LowerLeftArrow;", new[] { '\u2199' } },
-            { "LowerRightArrow;", new[] { '\u2198' } },
-            { "loz;", new[] { '\u25CA' } },
-            { "lozenge;", new[] { '\u25CA' } },
-            { "lozf;", new[] { '\u29EB' } },
-            { "lpar;", new[] { '\u0028' } },
-            { "lparlt;", new[] { '\u2993' } },
-            { "lrarr;", new[] { '\u21C6' } },
-            { "lrcorner;", new[] { '\u231F' } },
-            { "lrhar;", new[] { '\u21CB' } },
-            { "lrhard;", new[] { '\u296D' } },
-            { "lrm;", new[] { '\u200E' } },
-            { "lrtri;", new[] { '\u22BF' } },
-            { "lsaquo;", new[] { '\u2039' } },
-            { "Lscr;", new[] { '\u2112' } },
-            { "lscr;", new[] { '\uD835', '\uDCC1' } },
-            { "Lsh;", new[] { '\u21B0' } },
-            { "lsh;", new[] { '\u21B0' } },
-            { "lsim;", new[] { '\u2272' } },
-            { "lsime;", new[] { '\u2A8D' } },
-            { "lsimg;", new[] { '\u2A8F' } },
-            { "lsqb;", new[] { '\u005B' } },
-            { "lsquo;", new[] { '\u2018' } },
-            { "lsquor;", new[] { '\u201A' } },
-            { "Lstrok;", new[] { '\u0141' } },
-            { "lstrok;", new[] { '\u0142' } },
-            { "LT;", new[] { '\u003C' } },
-            { "LT", new[] { '\u003C' } },
-            { "Lt;", new[] { '\u226A' } },
-            { "lt;", new[] { '\u003C' } },
-            { "lt", new[] { '\u003C' } },
-            { "ltcc;", new[] { '\u2AA6' } },
-            { "ltcir;", new[] { '\u2A79' } },
-            { "ltdot;", new[] { '\u22D6' } },
-            { "lthree;", new[] { '\u22CB' } },
-            { "ltimes;", new[] { '\u22C9' } },
-            { "ltlarr;", new[] { '\u2976' } },
-            { "ltquest;", new[] { '\u2A7B' } },
-            { "ltri;", new[] { '\u25C3' } },
-            { "ltrie;", new[] { '\u22B4' } },
-            { "ltrif;", new[] { '\u25C2' } },
-            { "ltrPar;", new[] { '\u2996' } },
-            { "lurdshar;", new[] { '\u294A' } },
-            { "luruhar;", new[] { '\u2966' } },
-            { "lvertneqq;", new[] { '\u2268', '\uFE00' } },
-            { "lvnE;", new[] { '\u2268', '\uFE00' } },
-            { "macr;", new[] { '\u00AF' } },
-            { "macr", new[] { '\u00AF' } },
-            { "male;", new[] { '\u2642' } },
-            { "malt;", new[] { '\u2720' } },
-            { "maltese;", new[] { '\u2720' } },
-            { "Map;", new[] { '\u2905' } },
-            { "map;", new[] { '\u21A6' } },
-            { "mapsto;", new[] { '\u21A6' } },
-            { "mapstodown;", new[] { '\u21A7' } },
-            { "mapstoleft;", new[] { '\u21A4' } },
-            { "mapstoup;", new[] { '\u21A5' } },
-            { "marker;", new[] { '\u25AE' } },
-            { "mcomma;", new[] { '\u2A29' } },
-            { "Mcy;", new[] { '\u041C' } },
-            { "mcy;", new[] { '\u043C' } },
-            { "mdash;", new[] { '\u2014' } },
-            { "mDDot;", new[] { '\u223A' } },
-            { "measuredangle;", new[] { '\u2221' } },
-            { "MediumSpace;", new[] { '\u205F' } },
-            { "Mellintrf;", new[] { '\u2133' } },
-            { "Mfr;", new[] { '\uD835', '\uDD10' } },
-            { "mfr;", new[] { '\uD835', '\uDD2A' } },
-            { "mho;", new[] { '\u2127' } },
-            { "micro;", new[] { '\u00B5' } },
-            { "micro", new[] { '\u00B5' } },
-            { "mid;", new[] { '\u2223' } },
-            { "midast;", new[] { '\u002A' } },
-            { "midcir;", new[] { '\u2AF0' } },
-            { "middot;", new[] { '\u00B7' } },
-            { "middot", new[] { '\u00B7' } },
-            { "minus;", new[] { '\u2212' } },
-            { "minusb;", new[] { '\u229F' } },
-            { "minusd;", new[] { '\u2238' } },
-            { "minusdu;", new[] { '\u2A2A' } },
-            { "MinusPlus;", new[] { '\u2213' } },
-            { "mlcp;", new[] { '\u2ADB' } },
-            { "mldr;", new[] { '\u2026' } },
-            { "mnplus;", new[] { '\u2213' } },
-            { "models;", new[] { '\u22A7' } },
-            { "Mopf;", new[] { '\uD835', '\uDD44' } },
-            { "mopf;", new[] { '\uD835', '\uDD5E' } },
-            { "mp;", new[] { '\u2213' } },
-            { "Mscr;", new[] { '\u2133' } },
-            { "mscr;", new[] { '\uD835', '\uDCC2' } },
-            { "mstpos;", new[] { '\u223E' } },
-            { "Mu;", new[] { '\u039C' } },
-            { "mu;", new[] { '\u03BC' } },
-            { "multimap;", new[] { '\u22B8' } },
-            { "mumap;", new[] { '\u22B8' } },
-            { "nabla;", new[] { '\u2207' } },
-            { "Nacute;", new[] { '\u0143' } },
-            { "nacute;", new[] { '\u0144' } },
-            { "nang;", new[] { '\u2220', '\u20D2' } },
-            { "nap;", new[] { '\u2249' } },
-            { "napE;", new[] { '\u2A70', '\u0338' } },
-            { "napid;", new[] { '\u224B', '\u0338' } },
-            { "napos;", new[] { '\u0149' } },
-            { "napprox;", new[] { '\u2249' } },
-            { "natur;", new[] { '\u266E' } },
-            { "natural;", new[] { '\u266E' } },
-            { "naturals;", new[] { '\u2115' } },
-            { "nbsp;", new[] { '\u00A0' } },
-            { "nbsp", new[] { '\u00A0' } },
-            { "nbump;", new[] { '\u224E', '\u0338' } },
-            { "nbumpe;", new[] { '\u224F', '\u0338' } },
-            { "ncap;", new[] { '\u2A43' } },
-            { "Ncaron;", new[] { '\u0147' } },
-            { "ncaron;", new[] { '\u0148' } },
-            { "Ncedil;", new[] { '\u0145' } },
-            { "ncedil;", new[] { '\u0146' } },
-            { "ncong;", new[] { '\u2247' } },
-            { "ncongdot;", new[] { '\u2A6D', '\u0338' } },
-            { "ncup;", new[] { '\u2A42' } },
-            { "Ncy;", new[] { '\u041D' } },
-            { "ncy;", new[] { '\u043D' } },
-            { "ndash;", new[] { '\u2013' } },
-            { "ne;", new[] { '\u2260' } },
-            { "nearhk;", new[] { '\u2924' } },
-            { "neArr;", new[] { '\u21D7' } },
-            { "nearr;", new[] { '\u2197' } },
-            { "nearrow;", new[] { '\u2197' } },
-            { "nedot;", new[] { '\u2250', '\u0338' } },
-            { "NegativeMediumSpace;", new[] { '\u200B' } },
-            { "NegativeThickSpace;", new[] { '\u200B' } },
-            { "NegativeThinSpace;", new[] { '\u200B' } },
-            { "NegativeVeryThinSpace;", new[] { '\u200B' } },
-            { "nequiv;", new[] { '\u2262' } },
-            { "nesear;", new[] { '\u2928' } },
-            { "nesim;", new[] { '\u2242', '\u0338' } },
-            { "NestedGreaterGreater;", new[] { '\u226B' } },
-            { "NestedLessLess;", new[] { '\u226A' } },
-            { "NewLine;", new[] { '\u000A' } },
-            { "nexist;", new[] { '\u2204' } },
-            { "nexists;", new[] { '\u2204' } },
-            { "Nfr;", new[] { '\uD835', '\uDD11' } },
-            { "nfr;", new[] { '\uD835', '\uDD2B' } },
-            { "ngE;", new[] { '\u2267', '\u0338' } },
-            { "nge;", new[] { '\u2271' } },
-            { "ngeq;", new[] { '\u2271' } },
-            { "ngeqq;", new[] { '\u2267', '\u0338' } },
-            { "ngeqslant;", new[] { '\u2A7E', '\u0338' } },
-            { "nges;", new[] { '\u2A7E', '\u0338' } },
-            { "nGg;", new[] { '\u22D9', '\u0338' } },
-            { "ngsim;", new[] { '\u2275' } },
-            { "nGt;", new[] { '\u226B', '\u20D2' } },
-            { "ngt;", new[] { '\u226F' } },
-            { "ngtr;", new[] { '\u226F' } },
-            { "nGtv;", new[] { '\u226B', '\u0338' } },
-            { "nhArr;", new[] { '\u21CE' } },
-            { "nharr;", new[] { '\u21AE' } },
-            { "nhpar;", new[] { '\u2AF2' } },
-            { "ni;", new[] { '\u220B' } },
-            { "nis;", new[] { '\u22FC' } },
-            { "nisd;", new[] { '\u22FA' } },
-            { "niv;", new[] { '\u220B' } },
-            { "NJcy;", new[] { '\u040A' } },
-            { "njcy;", new[] { '\u045A' } },
-            { "nlArr;", new[] { '\u21CD' } },
-            { "nlarr;", new[] { '\u219A' } },
-            { "nldr;", new[] { '\u2025' } },
-            { "nlE;", new[] { '\u2266', '\u0338' } },
-            { "nle;", new[] { '\u2270' } },
-            { "nLeftarrow;", new[] { '\u21CD' } },
-            { "nleftarrow;", new[] { '\u219A' } },
-            { "nLeftrightarrow;", new[] { '\u21CE' } },
-            { "nleftrightarrow;", new[] { '\u21AE' } },
-            { "nleq;", new[] { '\u2270' } },
-            { "nleqq;", new[] { '\u2266', '\u0338' } },
-            { "nleqslant;", new[] { '\u2A7D', '\u0338' } },
-            { "nles;", new[] { '\u2A7D', '\u0338' } },
-            { "nless;", new[] { '\u226E' } },
-            { "nLl;", new[] { '\u22D8', '\u0338' } },
-            { "nlsim;", new[] { '\u2274' } },
-            { "nLt;", new[] { '\u226A', '\u20D2' } },
-            { "nlt;", new[] { '\u226E' } },
-            { "nltri;", new[] { '\u22EA' } },
-            { "nltrie;", new[] { '\u22EC' } },
-            { "nLtv;", new[] { '\u226A', '\u0338' } },
-            { "nmid;", new[] { '\u2224' } },
-            { "NoBreak;", new[] { '\u2060' } },
-            { "NonBreakingSpace;", new[] { '\u00A0' } },
-            { "Nopf;", new[] { '\u2115' } },
-            { "nopf;", new[] { '\uD835', '\uDD5F' } },
-            { "Not;", new[] { '\u2AEC' } },
-            { "not;", new[] { '\u00AC' } },
-            { "not", new[] { '\u00AC' } },
-            { "NotCongruent;", new[] { '\u2262' } },
-            { "NotCupCap;", new[] { '\u226D' } },
-            { "NotDoubleVerticalBar;", new[] { '\u2226' } },
-            { "NotElement;", new[] { '\u2209' } },
-            { "NotEqual;", new[] { '\u2260' } },
-            { "NotEqualTilde;", new[] { '\u2242', '\u0338' } },
-            { "NotExists;", new[] { '\u2204' } },
-            { "NotGreater;", new[] { '\u226F' } },
-            { "NotGreaterEqual;", new[] { '\u2271' } },
-            { "NotGreaterFullEqual;", new[] { '\u2267', '\u0338' } },
-            { "NotGreaterGreater;", new[] { '\u226B', '\u0338' } },
-            { "NotGreaterLess;", new[] { '\u2279' } },
-            { "NotGreaterSlantEqual;", new[] { '\u2A7E', '\u0338' } },
-            { "NotGreaterTilde;", new[] { '\u2275' } },
-            { "NotHumpDownHump;", new[] { '\u224E', '\u0338' } },
-            { "NotHumpEqual;", new[] { '\u224F', '\u0338' } },
-            { "notin;", new[] { '\u2209' } },
-            { "notindot;", new[] { '\u22F5', '\u0338' } },
-            { "notinE;", new[] { '\u22F9', '\u0338' } },
-            { "notinva;", new[] { '\u2209' } },
-            { "notinvb;", new[] { '\u22F7' } },
-            { "notinvc;", new[] { '\u22F6' } },
-            { "NotLeftTriangle;", new[] { '\u22EA' } },
-            { "NotLeftTriangleBar;", new[] { '\u29CF', '\u0338' } },
-            { "NotLeftTriangleEqual;", new[] { '\u22EC' } },
-            { "NotLess;", new[] { '\u226E' } },
-            { "NotLessEqual;", new[] { '\u2270' } },
-            { "NotLessGreater;", new[] { '\u2278' } },
-            { "NotLessLess;", new[] { '\u226A', '\u0338' } },
-            { "NotLessSlantEqual;", new[] { '\u2A7D', '\u0338' } },
-            { "NotLessTilde;", new[] { '\u2274' } },
-            { "NotNestedGreaterGreater;", new[] { '\u2AA2', '\u0338' } },
-            { "NotNestedLessLess;", new[] { '\u2AA1', '\u0338' } },
-            { "notni;", new[] { '\u220C' } },
-            { "notniva;", new[] { '\u220C' } },
-            { "notnivb;", new[] { '\u22FE' } },
-            { "notnivc;", new[] { '\u22FD' } },
-            { "NotPrecedes;", new[] { '\u2280' } },
-            { "NotPrecedesEqual;", new[] { '\u2AAF', '\u0338' } },
-            { "NotPrecedesSlantEqual;", new[] { '\u22E0' } },
-            { "NotReverseElement;", new[] { '\u220C' } },
-            { "NotRightTriangle;", new[] { '\u22EB' } },
-            { "NotRightTriangleBar;", new[] { '\u29D0', '\u0338' } },
-            { "NotRightTriangleEqual;", new[] { '\u22ED' } },
-            { "NotSquareSubset;", new[] { '\u228F', '\u0338' } },
-            { "NotSquareSubsetEqual;", new[] { '\u22E2' } },
-            { "NotSquareSuperset;", new[] { '\u2290', '\u0338' } },
-            { "NotSquareSupersetEqual;", new[] { '\u22E3' } },
-            { "NotSubset;", new[] { '\u2282', '\u20D2' } },
-            { "NotSubsetEqual;", new[] { '\u2288' } },
-            { "NotSucceeds;", new[] { '\u2281' } },
-            { "NotSucceedsEqual;", new[] { '\u2AB0', '\u0338' } },
-            { "NotSucceedsSlantEqual;", new[] { '\u22E1' } },
-            { "NotSucceedsTilde;", new[] { '\u227F', '\u0338' } },
-            { "NotSuperset;", new[] { '\u2283', '\u20D2' } },
-            { "NotSupersetEqual;", new[] { '\u2289' } },
-            { "NotTilde;", new[] { '\u2241' } },
-            { "NotTildeEqual;", new[] { '\u2244' } },
-            { "NotTildeFullEqual;", new[] { '\u2247' } },
-            { "NotTildeTilde;", new[] { '\u2249' } },
-            { "NotVerticalBar;", new[] { '\u2224' } },
-            { "npar;", new[] { '\u2226' } },
-            { "nparallel;", new[] { '\u2226' } },
-            { "nparsl;", new[] { '\u2AFD', '\u20E5' } },
-            { "npart;", new[] { '\u2202', '\u0338' } },
-            { "npolint;", new[] { '\u2A14' } },
-            { "npr;", new[] { '\u2280' } },
-            { "nprcue;", new[] { '\u22E0' } },
-            { "npre;", new[] { '\u2AAF', '\u0338' } },
-            { "nprec;", new[] { '\u2280' } },
-            { "npreceq;", new[] { '\u2AAF', '\u0338' } },
-            { "nrArr;", new[] { '\u21CF' } },
-            { "nrarr;", new[] { '\u219B' } },
-            { "nrarrc;", new[] { '\u2933', '\u0338' } },
-            { "nrarrw;", new[] { '\u219D', '\u0338' } },
-            { "nRightarrow;", new[] { '\u21CF' } },
-            { "nrightarrow;", new[] { '\u219B' } },
-            { "nrtri;", new[] { '\u22EB' } },
-            { "nrtrie;", new[] { '\u22ED' } },
-            { "nsc;", new[] { '\u2281' } },
-            { "nsccue;", new[] { '\u22E1' } },
-            { "nsce;", new[] { '\u2AB0', '\u0338' } },
-            { "Nscr;", new[] { '\uD835', '\uDCA9' } },
-            { "nscr;", new[] { '\uD835', '\uDCC3' } },
-            { "nshortmid;", new[] { '\u2224' } },
-            { "nshortparallel;", new[] { '\u2226' } },
-            { "nsim;", new[] { '\u2241' } },
-            { "nsime;", new[] { '\u2244' } },
-            { "nsimeq;", new[] { '\u2244' } },
-            { "nsmid;", new[] { '\u2224' } },
-            { "nspar;", new[] { '\u2226' } },
-            { "nsqsube;", new[] { '\u22E2' } },
-            { "nsqsupe;", new[] { '\u22E3' } },
-            { "nsub;", new[] { '\u2284' } },
-            { "nsubE;", new[] { '\u2AC5', '\u0338' } },
-            { "nsube;", new[] { '\u2288' } },
-            { "nsubset;", new[] { '\u2282', '\u20D2' } },
-            { "nsubseteq;", new[] { '\u2288' } },
-            { "nsubseteqq;", new[] { '\u2AC5', '\u0338' } },
-            { "nsucc;", new[] { '\u2281' } },
-            { "nsucceq;", new[] { '\u2AB0', '\u0338' } },
-            { "nsup;", new[] { '\u2285' } },
-            { "nsupE;", new[] { '\u2AC6', '\u0338' } },
-            { "nsupe;", new[] { '\u2289' } },
-            { "nsupset;", new[] { '\u2283', '\u20D2' } },
-            { "nsupseteq;", new[] { '\u2289' } },
-            { "nsupseteqq;", new[] { '\u2AC6', '\u0338' } },
-            { "ntgl;", new[] { '\u2279' } },
-            { "Ntilde;", new[] { '\u00D1' } },
-            { "Ntilde", new[] { '\u00D1' } },
-            { "ntilde;", new[] { '\u00F1' } },
-            { "ntilde", new[] { '\u00F1' } },
-            { "ntlg;", new[] { '\u2278' } },
-            { "ntriangleleft;", new[] { '\u22EA' } },
-            { "ntrianglelefteq;", new[] { '\u22EC' } },
-            { "ntriangleright;", new[] { '\u22EB' } },
-            { "ntrianglerighteq;", new[] { '\u22ED' } },
-            { "Nu;", new[] { '\u039D' } },
-            { "nu;", new[] { '\u03BD' } },
-            { "num;", new[] { '\u0023' } },
-            { "numero;", new[] { '\u2116' } },
-            { "numsp;", new[] { '\u2007' } },
-            { "nvap;", new[] { '\u224D', '\u20D2' } },
-            { "nVDash;", new[] { '\u22AF' } },
-            { "nVdash;", new[] { '\u22AE' } },
-            { "nvDash;", new[] { '\u22AD' } },
-            { "nvdash;", new[] { '\u22AC' } },
-            { "nvge;", new[] { '\u2265', '\u20D2' } },
-            { "nvgt;", new[] { '\u003E', '\u20D2' } },
-            { "nvHarr;", new[] { '\u2904' } },
-            { "nvinfin;", new[] { '\u29DE' } },
-            { "nvlArr;", new[] { '\u2902' } },
-            { "nvle;", new[] { '\u2264', '\u20D2' } },
-            { "nvlt;", new[] { '\u003C', '\u20D2' } },
-            { "nvltrie;", new[] { '\u22B4', '\u20D2' } },
-            { "nvrArr;", new[] { '\u2903' } },
-            { "nvrtrie;", new[] { '\u22B5', '\u20D2' } },
-            { "nvsim;", new[] { '\u223C', '\u20D2' } },
-            { "nwarhk;", new[] { '\u2923' } },
-            { "nwArr;", new[] { '\u21D6' } },
-            { "nwarr;", new[] { '\u2196' } },
-            { "nwarrow;", new[] { '\u2196' } },
-            { "nwnear;", new[] { '\u2927' } },
-            { "Oacute;", new[] { '\u00D3' } },
-            { "Oacute", new[] { '\u00D3' } },
-            { "oacute;", new[] { '\u00F3' } },
-            { "oacute", new[] { '\u00F3' } },
-            { "oast;", new[] { '\u229B' } },
-            { "ocir;", new[] { '\u229A' } },
-            { "Ocirc;", new[] { '\u00D4' } },
-            { "Ocirc", new[] { '\u00D4' } },
-            { "ocirc;", new[] { '\u00F4' } },
-            { "ocirc", new[] { '\u00F4' } },
-            { "Ocy;", new[] { '\u041E' } },
-            { "ocy;", new[] { '\u043E' } },
-            { "odash;", new[] { '\u229D' } },
-            { "Odblac;", new[] { '\u0150' } },
-            { "odblac;", new[] { '\u0151' } },
-            { "odiv;", new[] { '\u2A38' } },
-            { "odot;", new[] { '\u2299' } },
-            { "odsold;", new[] { '\u29BC' } },
-            { "OElig;", new[] { '\u0152' } },
-            { "oelig;", new[] { '\u0153' } },
-            { "ofcir;", new[] { '\u29BF' } },
-            { "Ofr;", new[] { '\uD835', '\uDD12' } },
-            { "ofr;", new[] { '\uD835', '\uDD2C' } },
-            { "ogon;", new[] { '\u02DB' } },
-            { "Ograve;", new[] { '\u00D2' } },
-            { "Ograve", new[] { '\u00D2' } },
-            { "ograve;", new[] { '\u00F2' } },
-            { "ograve", new[] { '\u00F2' } },
-            { "ogt;", new[] { '\u29C1' } },
-            { "ohbar;", new[] { '\u29B5' } },
-            { "ohm;", new[] { '\u03A9' } },
-            { "oint;", new[] { '\u222E' } },
-            { "olarr;", new[] { '\u21BA' } },
-            { "olcir;", new[] { '\u29BE' } },
-            { "olcross;", new[] { '\u29BB' } },
-            { "oline;", new[] { '\u203E' } },
-            { "olt;", new[] { '\u29C0' } },
-            { "Omacr;", new[] { '\u014C' } },
-            { "omacr;", new[] { '\u014D' } },
-            { "Omega;", new[] { '\u03A9' } },
-            { "omega;", new[] { '\u03C9' } },
-            { "Omicron;", new[] { '\u039F' } },
-            { "omicron;", new[] { '\u03BF' } },
-            { "omid;", new[] { '\u29B6' } },
-            { "ominus;", new[] { '\u2296' } },
-            { "Oopf;", new[] { '\uD835', '\uDD46' } },
-            { "oopf;", new[] { '\uD835', '\uDD60' } },
-            { "opar;", new[] { '\u29B7' } },
-            { "OpenCurlyDoubleQuote;", new[] { '\u201C' } },
-            { "OpenCurlyQuote;", new[] { '\u2018' } },
-            { "operp;", new[] { '\u29B9' } },
-            { "oplus;", new[] { '\u2295' } },
-            { "Or;", new[] { '\u2A54' } },
-            { "or;", new[] { '\u2228' } },
-            { "orarr;", new[] { '\u21BB' } },
-            { "ord;", new[] { '\u2A5D' } },
-            { "order;", new[] { '\u2134' } },
-            { "orderof;", new[] { '\u2134' } },
-            { "ordf;", new[] { '\u00AA' } },
-            { "ordf", new[] { '\u00AA' } },
-            { "ordm;", new[] { '\u00BA' } },
-            { "ordm", new[] { '\u00BA' } },
-            { "origof;", new[] { '\u22B6' } },
-            { "oror;", new[] { '\u2A56' } },
-            { "orslope;", new[] { '\u2A57' } },
-            { "orv;", new[] { '\u2A5B' } },
-            { "oS;", new[] { '\u24C8' } },
-            { "Oscr;", new[] { '\uD835', '\uDCAA' } },
-            { "oscr;", new[] { '\u2134' } },
-            { "Oslash;", new[] { '\u00D8' } },
-            { "Oslash", new[] { '\u00D8' } },
-            { "oslash;", new[] { '\u00F8' } },
-            { "oslash", new[] { '\u00F8' } },
-            { "osol;", new[] { '\u2298' } },
-            { "Otilde;", new[] { '\u00D5' } },
-            { "Otilde", new[] { '\u00D5' } },
-            { "otilde;", new[] { '\u00F5' } },
-            { "otilde", new[] { '\u00F5' } },
-            { "Otimes;", new[] { '\u2A37' } },
-            { "otimes;", new[] { '\u2297' } },
-            { "otimesas;", new[] { '\u2A36' } },
-            { "Ouml;", new[] { '\u00D6' } },
-            { "Ouml", new[] { '\u00D6' } },
-            { "ouml;", new[] { '\u00F6' } },
-            { "ouml", new[] { '\u00F6' } },
-            { "ovbar;", new[] { '\u233D' } },
-            { "OverBar;", new[] { '\u203E' } },
-            { "OverBrace;", new[] { '\u23DE' } },
-            { "OverBracket;", new[] { '\u23B4' } },
-            { "OverParenthesis;", new[] { '\u23DC' } },
-            { "par;", new[] { '\u2225' } },
-            { "para;", new[] { '\u00B6' } },
-            { "para", new[] { '\u00B6' } },
-            { "parallel;", new[] { '\u2225' } },
-            { "parsim;", new[] { '\u2AF3' } },
-            { "parsl;", new[] { '\u2AFD' } },
-            { "part;", new[] { '\u2202' } },
-            { "PartialD;", new[] { '\u2202' } },
-            { "Pcy;", new[] { '\u041F' } },
-            { "pcy;", new[] { '\u043F' } },
-            { "percnt;", new[] { '\u0025' } },
-            { "period;", new[] { '\u002E' } },
-            { "permil;", new[] { '\u2030' } },
-            { "perp;", new[] { '\u22A5' } },
-            { "pertenk;", new[] { '\u2031' } },
-            { "Pfr;", new[] { '\uD835', '\uDD13' } },
-            { "pfr;", new[] { '\uD835', '\uDD2D' } },
-            { "Phi;", new[] { '\u03A6' } },
-            { "phi;", new[] { '\u03C6' } },
-            { "phiv;", new[] { '\u03D5' } },
-            { "phmmat;", new[] { '\u2133' } },
-            { "phone;", new[] { '\u260E' } },
-            { "Pi;", new[] { '\u03A0' } },
-            { "pi;", new[] { '\u03C0' } },
-            { "pitchfork;", new[] { '\u22D4' } },
-            { "piv;", new[] { '\u03D6' } },
-            { "planck;", new[] { '\u210F' } },
-            { "planckh;", new[] { '\u210E' } },
-            { "plankv;", new[] { '\u210F' } },
-            { "plus;", new[] { '\u002B' } },
-            { "plusacir;", new[] { '\u2A23' } },
-            { "plusb;", new[] { '\u229E' } },
-            { "pluscir;", new[] { '\u2A22' } },
-            { "plusdo;", new[] { '\u2214' } },
-            { "plusdu;", new[] { '\u2A25' } },
-            { "pluse;", new[] { '\u2A72' } },
-            { "PlusMinus;", new[] { '\u00B1' } },
-            { "plusmn;", new[] { '\u00B1' } },
-            { "plusmn", new[] { '\u00B1' } },
-            { "plussim;", new[] { '\u2A26' } },
-            { "plustwo;", new[] { '\u2A27' } },
-            { "pm;", new[] { '\u00B1' } },
-            { "Poincareplane;", new[] { '\u210C' } },
-            { "pointint;", new[] { '\u2A15' } },
-            { "Popf;", new[] { '\u2119' } },
-            { "popf;", new[] { '\uD835', '\uDD61' } },
-            { "pound;", new[] { '\u00A3' } },
-            { "pound", new[] { '\u00A3' } },
-            { "Pr;", new[] { '\u2ABB' } },
-            { "pr;", new[] { '\u227A' } },
-            { "prap;", new[] { '\u2AB7' } },
-            { "prcue;", new[] { '\u227C' } },
-            { "prE;", new[] { '\u2AB3' } },
-            { "pre;", new[] { '\u2AAF' } },
-            { "prec;", new[] { '\u227A' } },
-            { "precapprox;", new[] { '\u2AB7' } },
-            { "preccurlyeq;", new[] { '\u227C' } },
-            { "Precedes;", new[] { '\u227A' } },
-            { "PrecedesEqual;", new[] { '\u2AAF' } },
-            { "PrecedesSlantEqual;", new[] { '\u227C' } },
-            { "PrecedesTilde;", new[] { '\u227E' } },
-            { "preceq;", new[] { '\u2AAF' } },
-            { "precnapprox;", new[] { '\u2AB9' } },
-            { "precneqq;", new[] { '\u2AB5' } },
-            { "precnsim;", new[] { '\u22E8' } },
-            { "precsim;", new[] { '\u227E' } },
-            { "Prime;", new[] { '\u2033' } },
-            { "prime;", new[] { '\u2032' } },
-            { "primes;", new[] { '\u2119' } },
-            { "prnap;", new[] { '\u2AB9' } },
-            { "prnE;", new[] { '\u2AB5' } },
-            { "prnsim;", new[] { '\u22E8' } },
-            { "prod;", new[] { '\u220F' } },
-            { "Product;", new[] { '\u220F' } },
-            { "profalar;", new[] { '\u232E' } },
-            { "profline;", new[] { '\u2312' } },
-            { "profsurf;", new[] { '\u2313' } },
-            { "prop;", new[] { '\u221D' } },
-            { "Proportion;", new[] { '\u2237' } },
-            { "Proportional;", new[] { '\u221D' } },
-            { "propto;", new[] { '\u221D' } },
-            { "prsim;", new[] { '\u227E' } },
-            { "prurel;", new[] { '\u22B0' } },
-            { "Pscr;", new[] { '\uD835', '\uDCAB' } },
-            { "pscr;", new[] { '\uD835', '\uDCC5' } },
-            { "Psi;", new[] { '\u03A8' } },
-            { "psi;", new[] { '\u03C8' } },
-            { "puncsp;", new[] { '\u2008' } },
-            { "Qfr;", new[] { '\uD835', '\uDD14' } },
-            { "qfr;", new[] { '\uD835', '\uDD2E' } },
-            { "qint;", new[] { '\u2A0C' } },
-            { "Qopf;", new[] { '\u211A' } },
-            { "qopf;", new[] { '\uD835', '\uDD62' } },
-            { "qprime;", new[] { '\u2057' } },
-            { "Qscr;", new[] { '\uD835', '\uDCAC' } },
-            { "qscr;", new[] { '\uD835', '\uDCC6' } },
-            { "quaternions;", new[] { '\u210D' } },
-            { "quatint;", new[] { '\u2A16' } },
-            { "quest;", new[] { '\u003F' } },
-            { "questeq;", new[] { '\u225F' } },
-            { "QUOT;", new[] { '\u0022' } },
-            { "QUOT", new[] { '\u0022' } },
-            { "quot;", new[] { '\u0022' } },
-            { "quot", new[] { '\u0022' } },
-            { "rAarr;", new[] { '\u21DB' } },
-            { "race;", new[] { '\u223D', '\u0331' } },
-            { "Racute;", new[] { '\u0154' } },
-            { "racute;", new[] { '\u0155' } },
-            { "radic;", new[] { '\u221A' } },
-            { "raemptyv;", new[] { '\u29B3' } },
-            { "Rang;", new[] { '\u27EB' } },
-            { "rang;", new[] { '\u27E9' } },
-            { "rangd;", new[] { '\u2992' } },
-            { "range;", new[] { '\u29A5' } },
-            { "rangle;", new[] { '\u27E9' } },
-            { "raquo;", new[] { '\u00BB' } },
-            { "raquo", new[] { '\u00BB' } },
-            { "Rarr;", new[] { '\u21A0' } },
-            { "rArr;", new[] { '\u21D2' } },
-            { "rarr;", new[] { '\u2192' } },
-            { "rarrap;", new[] { '\u2975' } },
-            { "rarrb;", new[] { '\u21E5' } },
-            { "rarrbfs;", new[] { '\u2920' } },
-            { "rarrc;", new[] { '\u2933' } },
-            { "rarrfs;", new[] { '\u291E' } },
-            { "rarrhk;", new[] { '\u21AA' } },
-            { "rarrlp;", new[] { '\u21AC' } },
-            { "rarrpl;", new[] { '\u2945' } },
-            { "rarrsim;", new[] { '\u2974' } },
-            { "Rarrtl;", new[] { '\u2916' } },
-            { "rarrtl;", new[] { '\u21A3' } },
-            { "rarrw;", new[] { '\u219D' } },
-            { "rAtail;", new[] { '\u291C' } },
-            { "ratail;", new[] { '\u291A' } },
-            { "ratio;", new[] { '\u2236' } },
-            { "rationals;", new[] { '\u211A' } },
-            { "RBarr;", new[] { '\u2910' } },
-            { "rBarr;", new[] { '\u290F' } },
-            { "rbarr;", new[] { '\u290D' } },
-            { "rbbrk;", new[] { '\u2773' } },
-            { "rbrace;", new[] { '\u007D' } },
-            { "rbrack;", new[] { '\u005D' } },
-            { "rbrke;", new[] { '\u298C' } },
-            { "rbrksld;", new[] { '\u298E' } },
-            { "rbrkslu;", new[] { '\u2990' } },
-            { "Rcaron;", new[] { '\u0158' } },
-            { "rcaron;", new[] { '\u0159' } },
-            { "Rcedil;", new[] { '\u0156' } },
-            { "rcedil;", new[] { '\u0157' } },
-            { "rceil;", new[] { '\u2309' } },
-            { "rcub;", new[] { '\u007D' } },
-            { "Rcy;", new[] { '\u0420' } },
-            { "rcy;", new[] { '\u0440' } },
-            { "rdca;", new[] { '\u2937' } },
-            { "rdldhar;", new[] { '\u2969' } },
-            { "rdquo;", new[] { '\u201D' } },
-            { "rdquor;", new[] { '\u201D' } },
-            { "rdsh;", new[] { '\u21B3' } },
-            { "Re;", new[] { '\u211C' } },
-            { "real;", new[] { '\u211C' } },
-            { "realine;", new[] { '\u211B' } },
-            { "realpart;", new[] { '\u211C' } },
-            { "reals;", new[] { '\u211D' } },
-            { "rect;", new[] { '\u25AD' } },
-            { "REG;", new[] { '\u00AE' } },
-            { "REG", new[] { '\u00AE' } },
-            { "reg;", new[] { '\u00AE' } },
-            { "reg", new[] { '\u00AE' } },
-            { "ReverseElement;", new[] { '\u220B' } },
-            { "ReverseEquilibrium;", new[] { '\u21CB' } },
-            { "ReverseUpEquilibrium;", new[] { '\u296F' } },
-            { "rfisht;", new[] { '\u297D' } },
-            { "rfloor;", new[] { '\u230B' } },
-            { "Rfr;", new[] { '\u211C' } },
-            { "rfr;", new[] { '\uD835', '\uDD2F' } },
-            { "rHar;", new[] { '\u2964' } },
-            { "rhard;", new[] { '\u21C1' } },
-            { "rharu;", new[] { '\u21C0' } },
-            { "rharul;", new[] { '\u296C' } },
-            { "Rho;", new[] { '\u03A1' } },
-            { "rho;", new[] { '\u03C1' } },
-            { "rhov;", new[] { '\u03F1' } },
-            { "RightAngleBracket;", new[] { '\u27E9' } },
-            { "RightArrow;", new[] { '\u2192' } },
-            { "Rightarrow;", new[] { '\u21D2' } },
-            { "rightarrow;", new[] { '\u2192' } },
-            { "RightArrowBar;", new[] { '\u21E5' } },
-            { "RightArrowLeftArrow;", new[] { '\u21C4' } },
-            { "rightarrowtail;", new[] { '\u21A3' } },
-            { "RightCeiling;", new[] { '\u2309' } },
-            { "RightDoubleBracket;", new[] { '\u27E7' } },
-            { "RightDownTeeVector;", new[] { '\u295D' } },
-            { "RightDownVector;", new[] { '\u21C2' } },
-            { "RightDownVectorBar;", new[] { '\u2955' } },
-            { "RightFloor;", new[] { '\u230B' } },
-            { "rightharpoondown;", new[] { '\u21C1' } },
-            { "rightharpoonup;", new[] { '\u21C0' } },
-            { "rightleftarrows;", new[] { '\u21C4' } },
-            { "rightleftharpoons;", new[] { '\u21CC' } },
-            { "rightrightarrows;", new[] { '\u21C9' } },
-            { "rightsquigarrow;", new[] { '\u219D' } },
-            { "RightTee;", new[] { '\u22A2' } },
-            { "RightTeeArrow;", new[] { '\u21A6' } },
-            { "RightTeeVector;", new[] { '\u295B' } },
-            { "rightthreetimes;", new[] { '\u22CC' } },
-            { "RightTriangle;", new[] { '\u22B3' } },
-            { "RightTriangleBar;", new[] { '\u29D0' } },
-            { "RightTriangleEqual;", new[] { '\u22B5' } },
-            { "RightUpDownVector;", new[] { '\u294F' } },
-            { "RightUpTeeVector;", new[] { '\u295C' } },
-            { "RightUpVector;", new[] { '\u21BE' } },
-            { "RightUpVectorBar;", new[] { '\u2954' } },
-            { "RightVector;", new[] { '\u21C0' } },
-            { "RightVectorBar;", new[] { '\u2953' } },
-            { "ring;", new[] { '\u02DA' } },
-            { "risingdotseq;", new[] { '\u2253' } },
-            { "rlarr;", new[] { '\u21C4' } },
-            { "rlhar;", new[] { '\u21CC' } },
-            { "rlm;", new[] { '\u200F' } },
-            { "rmoust;", new[] { '\u23B1' } },
-            { "rmoustache;", new[] { '\u23B1' } },
-            { "rnmid;", new[] { '\u2AEE' } },
-            { "roang;", new[] { '\u27ED' } },
-            { "roarr;", new[] { '\u21FE' } },
-            { "robrk;", new[] { '\u27E7' } },
-            { "ropar;", new[] { '\u2986' } },
-            { "Ropf;", new[] { '\u211D' } },
-            { "ropf;", new[] { '\uD835', '\uDD63' } },
-            { "roplus;", new[] { '\u2A2E' } },
-            { "rotimes;", new[] { '\u2A35' } },
-            { "RoundImplies;", new[] { '\u2970' } },
-            { "rpar;", new[] { '\u0029' } },
-            { "rpargt;", new[] { '\u2994' } },
-            { "rppolint;", new[] { '\u2A12' } },
-            { "rrarr;", new[] { '\u21C9' } },
-            { "Rrightarrow;", new[] { '\u21DB' } },
-            { "rsaquo;", new[] { '\u203A' } },
-            { "Rscr;", new[] { '\u211B' } },
-            { "rscr;", new[] { '\uD835', '\uDCC7' } },
-            { "Rsh;", new[] { '\u21B1' } },
-            { "rsh;", new[] { '\u21B1' } },
-            { "rsqb;", new[] { '\u005D' } },
-            { "rsquo;", new[] { '\u2019' } },
-            { "rsquor;", new[] { '\u2019' } },
-            { "rthree;", new[] { '\u22CC' } },
-            { "rtimes;", new[] { '\u22CA' } },
-            { "rtri;", new[] { '\u25B9' } },
-            { "rtrie;", new[] { '\u22B5' } },
-            { "rtrif;", new[] { '\u25B8' } },
-            { "rtriltri;", new[] { '\u29CE' } },
-            { "RuleDelayed;", new[] { '\u29F4' } },
-            { "ruluhar;", new[] { '\u2968' } },
-            { "rx;", new[] { '\u211E' } },
-            { "Sacute;", new[] { '\u015A' } },
-            { "sacute;", new[] { '\u015B' } },
-            { "sbquo;", new[] { '\u201A' } },
-            { "Sc;", new[] { '\u2ABC' } },
-            { "sc;", new[] { '\u227B' } },
-            { "scap;", new[] { '\u2AB8' } },
-            { "Scaron;", new[] { '\u0160' } },
-            { "scaron;", new[] { '\u0161' } },
-            { "sccue;", new[] { '\u227D' } },
-            { "scE;", new[] { '\u2AB4' } },
-            { "sce;", new[] { '\u2AB0' } },
-            { "Scedil;", new[] { '\u015E' } },
-            { "scedil;", new[] { '\u015F' } },
-            { "Scirc;", new[] { '\u015C' } },
-            { "scirc;", new[] { '\u015D' } },
-            { "scnap;", new[] { '\u2ABA' } },
-            { "scnE;", new[] { '\u2AB6' } },
-            { "scnsim;", new[] { '\u22E9' } },
-            { "scpolint;", new[] { '\u2A13' } },
-            { "scsim;", new[] { '\u227F' } },
-            { "Scy;", new[] { '\u0421' } },
-            { "scy;", new[] { '\u0441' } },
-            { "sdot;", new[] { '\u22C5' } },
-            { "sdotb;", new[] { '\u22A1' } },
-            { "sdote;", new[] { '\u2A66' } },
-            { "searhk;", new[] { '\u2925' } },
-            { "seArr;", new[] { '\u21D8' } },
-            { "searr;", new[] { '\u2198' } },
-            { "searrow;", new[] { '\u2198' } },
-            { "sect;", new[] { '\u00A7' } },
-            { "sect", new[] { '\u00A7' } },
-            { "semi;", new[] { '\u003B' } },
-            { "seswar;", new[] { '\u2929' } },
-            { "setminus;", new[] { '\u2216' } },
-            { "setmn;", new[] { '\u2216' } },
-            { "sext;", new[] { '\u2736' } },
-            { "Sfr;", new[] { '\uD835', '\uDD16' } },
-            { "sfr;", new[] { '\uD835', '\uDD30' } },
-            { "sfrown;", new[] { '\u2322' } },
-            { "sharp;", new[] { '\u266F' } },
-            { "SHCHcy;", new[] { '\u0429' } },
-            { "shchcy;", new[] { '\u0449' } },
-            { "SHcy;", new[] { '\u0428' } },
-            { "shcy;", new[] { '\u0448' } },
-            { "ShortDownArrow;", new[] { '\u2193' } },
-            { "ShortLeftArrow;", new[] { '\u2190' } },
-            { "shortmid;", new[] { '\u2223' } },
-            { "shortparallel;", new[] { '\u2225' } },
-            { "ShortRightArrow;", new[] { '\u2192' } },
-            { "ShortUpArrow;", new[] { '\u2191' } },
-            { "shy;", new[] { '\u00AD' } },
-            { "shy", new[] { '\u00AD' } },
-            { "Sigma;", new[] { '\u03A3' } },
-            { "sigma;", new[] { '\u03C3' } },
-            { "sigmaf;", new[] { '\u03C2' } },
-            { "sigmav;", new[] { '\u03C2' } },
-            { "sim;", new[] { '\u223C' } },
-            { "simdot;", new[] { '\u2A6A' } },
-            { "sime;", new[] { '\u2243' } },
-            { "simeq;", new[] { '\u2243' } },
-            { "simg;", new[] { '\u2A9E' } },
-            { "simgE;", new[] { '\u2AA0' } },
-            { "siml;", new[] { '\u2A9D' } },
-            { "simlE;", new[] { '\u2A9F' } },
-            { "simne;", new[] { '\u2246' } },
-            { "simplus;", new[] { '\u2A24' } },
-            { "simrarr;", new[] { '\u2972' } },
-            { "slarr;", new[] { '\u2190' } },
-            { "SmallCircle;", new[] { '\u2218' } },
-            { "smallsetminus;", new[] { '\u2216' } },
-            { "smashp;", new[] { '\u2A33' } },
-            { "smeparsl;", new[] { '\u29E4' } },
-            { "smid;", new[] { '\u2223' } },
-            { "smile;", new[] { '\u2323' } },
-            { "smt;", new[] { '\u2AAA' } },
-            { "smte;", new[] { '\u2AAC' } },
-            { "smtes;", new[] { '\u2AAC', '\uFE00' } },
-            { "SOFTcy;", new[] { '\u042C' } },
-            { "softcy;", new[] { '\u044C' } },
-            { "sol;", new[] { '\u002F' } },
-            { "solb;", new[] { '\u29C4' } },
-            { "solbar;", new[] { '\u233F' } },
-            { "Sopf;", new[] { '\uD835', '\uDD4A' } },
-            { "sopf;", new[] { '\uD835', '\uDD64' } },
-            { "spades;", new[] { '\u2660' } },
-            { "spadesuit;", new[] { '\u2660' } },
-            { "spar;", new[] { '\u2225' } },
-            { "sqcap;", new[] { '\u2293' } },
-            { "sqcaps;", new[] { '\u2293', '\uFE00' } },
-            { "sqcup;", new[] { '\u2294' } },
-            { "sqcups;", new[] { '\u2294', '\uFE00' } },
-            { "Sqrt;", new[] { '\u221A' } },
-            { "sqsub;", new[] { '\u228F' } },
-            { "sqsube;", new[] { '\u2291' } },
-            { "sqsubset;", new[] { '\u228F' } },
-            { "sqsubseteq;", new[] { '\u2291' } },
-            { "sqsup;", new[] { '\u2290' } },
-            { "sqsupe;", new[] { '\u2292' } },
-            { "sqsupset;", new[] { '\u2290' } },
-            { "sqsupseteq;", new[] { '\u2292' } },
-            { "squ;", new[] { '\u25A1' } },
-            { "Square;", new[] { '\u25A1' } },
-            { "square;", new[] { '\u25A1' } },
-            { "SquareIntersection;", new[] { '\u2293' } },
-            { "SquareSubset;", new[] { '\u228F' } },
-            { "SquareSubsetEqual;", new[] { '\u2291' } },
-            { "SquareSuperset;", new[] { '\u2290' } },
-            { "SquareSupersetEqual;", new[] { '\u2292' } },
-            { "SquareUnion;", new[] { '\u2294' } },
-            { "squarf;", new[] { '\u25AA' } },
-            { "squf;", new[] { '\u25AA' } },
-            { "srarr;", new[] { '\u2192' } },
-            { "Sscr;", new[] { '\uD835', '\uDCAE' } },
-            { "sscr;", new[] { '\uD835', '\uDCC8' } },
-            { "ssetmn;", new[] { '\u2216' } },
-            { "ssmile;", new[] { '\u2323' } },
-            { "sstarf;", new[] { '\u22C6' } },
-            { "Star;", new[] { '\u22C6' } },
-            { "star;", new[] { '\u2606' } },
-            { "starf;", new[] { '\u2605' } },
-            { "straightepsilon;", new[] { '\u03F5' } },
-            { "straightphi;", new[] { '\u03D5' } },
-            { "strns;", new[] { '\u00AF' } },
-            { "Sub;", new[] { '\u22D0' } },
-            { "sub;", new[] { '\u2282' } },
-            { "subdot;", new[] { '\u2ABD' } },
-            { "subE;", new[] { '\u2AC5' } },
-            { "sube;", new[] { '\u2286' } },
-            { "subedot;", new[] { '\u2AC3' } },
-            { "submult;", new[] { '\u2AC1' } },
-            { "subnE;", new[] { '\u2ACB' } },
-            { "subne;", new[] { '\u228A' } },
-            { "subplus;", new[] { '\u2ABF' } },
-            { "subrarr;", new[] { '\u2979' } },
-            { "Subset;", new[] { '\u22D0' } },
-            { "subset;", new[] { '\u2282' } },
-            { "subseteq;", new[] { '\u2286' } },
-            { "subseteqq;", new[] { '\u2AC5' } },
-            { "SubsetEqual;", new[] { '\u2286' } },
-            { "subsetneq;", new[] { '\u228A' } },
-            { "subsetneqq;", new[] { '\u2ACB' } },
-            { "subsim;", new[] { '\u2AC7' } },
-            { "subsub;", new[] { '\u2AD5' } },
-            { "subsup;", new[] { '\u2AD3' } },
-            { "succ;", new[] { '\u227B' } },
-            { "succapprox;", new[] { '\u2AB8' } },
-            { "succcurlyeq;", new[] { '\u227D' } },
-            { "Succeeds;", new[] { '\u227B' } },
-            { "SucceedsEqual;", new[] { '\u2AB0' } },
-            { "SucceedsSlantEqual;", new[] { '\u227D' } },
-            { "SucceedsTilde;", new[] { '\u227F' } },
-            { "succeq;", new[] { '\u2AB0' } },
-            { "succnapprox;", new[] { '\u2ABA' } },
-            { "succneqq;", new[] { '\u2AB6' } },
-            { "succnsim;", new[] { '\u22E9' } },
-            { "succsim;", new[] { '\u227F' } },
-            { "SuchThat;", new[] { '\u220B' } },
-            { "Sum;", new[] { '\u2211' } },
-            { "sum;", new[] { '\u2211' } },
-            { "sung;", new[] { '\u266A' } },
-            { "Sup;", new[] { '\u22D1' } },
-            { "sup;", new[] { '\u2283' } },
-            { "sup1;", new[] { '\u00B9' } },
-            { "sup1", new[] { '\u00B9' } },
-            { "sup2;", new[] { '\u00B2' } },
-            { "sup2", new[] { '\u00B2' } },
-            { "sup3;", new[] { '\u00B3' } },
-            { "sup3", new[] { '\u00B3' } },
-            { "supdot;", new[] { '\u2ABE' } },
-            { "supdsub;", new[] { '\u2AD8' } },
-            { "supE;", new[] { '\u2AC6' } },
-            { "supe;", new[] { '\u2287' } },
-            { "supedot;", new[] { '\u2AC4' } },
-            { "Superset;", new[] { '\u2283' } },
-            { "SupersetEqual;", new[] { '\u2287' } },
-            { "suphsol;", new[] { '\u27C9' } },
-            { "suphsub;", new[] { '\u2AD7' } },
-            { "suplarr;", new[] { '\u297B' } },
-            { "supmult;", new[] { '\u2AC2' } },
-            { "supnE;", new[] { '\u2ACC' } },
-            { "supne;", new[] { '\u228B' } },
-            { "supplus;", new[] { '\u2AC0' } },
-            { "Supset;", new[] { '\u22D1' } },
-            { "supset;", new[] { '\u2283' } },
-            { "supseteq;", new[] { '\u2287' } },
-            { "supseteqq;", new[] { '\u2AC6' } },
-            { "supsetneq;", new[] { '\u228B' } },
-            { "supsetneqq;", new[] { '\u2ACC' } },
-            { "supsim;", new[] { '\u2AC8' } },
-            { "supsub;", new[] { '\u2AD4' } },
-            { "supsup;", new[] { '\u2AD6' } },
-            { "swarhk;", new[] { '\u2926' } },
-            { "swArr;", new[] { '\u21D9' } },
-            { "swarr;", new[] { '\u2199' } },
-            { "swarrow;", new[] { '\u2199' } },
-            { "swnwar;", new[] { '\u292A' } },
-            { "szlig;", new[] { '\u00DF' } },
-            { "szlig", new[] { '\u00DF' } },
-            { "Tab;", new[] { '\u0009' } },
-            { "target;", new[] { '\u2316' } },
-            { "Tau;", new[] { '\u03A4' } },
-            { "tau;", new[] { '\u03C4' } },
-            { "tbrk;", new[] { '\u23B4' } },
-            { "Tcaron;", new[] { '\u0164' } },
-            { "tcaron;", new[] { '\u0165' } },
-            { "Tcedil;", new[] { '\u0162' } },
-            { "tcedil;", new[] { '\u0163' } },
-            { "Tcy;", new[] { '\u0422' } },
-            { "tcy;", new[] { '\u0442' } },
-            { "tdot;", new[] { '\u20DB' } },
-            { "telrec;", new[] { '\u2315' } },
-            { "Tfr;", new[] { '\uD835', '\uDD17' } },
-            { "tfr;", new[] { '\uD835', '\uDD31' } },
-            { "there4;", new[] { '\u2234' } },
-            { "Therefore;", new[] { '\u2234' } },
-            { "therefore;", new[] { '\u2234' } },
-            { "Theta;", new[] { '\u0398' } },
-            { "theta;", new[] { '\u03B8' } },
-            { "thetasym;", new[] { '\u03D1' } },
-            { "thetav;", new[] { '\u03D1' } },
-            { "thickapprox;", new[] { '\u2248' } },
-            { "thicksim;", new[] { '\u223C' } },
-            { "ThickSpace;", new[] { '\u205F', '\u200A' } },
-            { "thinsp;", new[] { '\u2009' } },
-            { "ThinSpace;", new[] { '\u2009' } },
-            { "thkap;", new[] { '\u2248' } },
-            { "thksim;", new[] { '\u223C' } },
-            { "THORN;", new[] { '\u00DE' } },
-            { "THORN", new[] { '\u00DE' } },
-            { "thorn;", new[] { '\u00FE' } },
-            { "thorn", new[] { '\u00FE' } },
-            { "Tilde;", new[] { '\u223C' } },
-            { "tilde;", new[] { '\u02DC' } },
-            { "TildeEqual;", new[] { '\u2243' } },
-            { "TildeFullEqual;", new[] { '\u2245' } },
-            { "TildeTilde;", new[] { '\u2248' } },
-            { "times;", new[] { '\u00D7' } },
-            { "times", new[] { '\u00D7' } },
-            { "timesb;", new[] { '\u22A0' } },
-            { "timesbar;", new[] { '\u2A31' } },
-            { "timesd;", new[] { '\u2A30' } },
-            { "tint;", new[] { '\u222D' } },
-            { "toea;", new[] { '\u2928' } },
-            { "top;", new[] { '\u22A4' } },
-            { "topbot;", new[] { '\u2336' } },
-            { "topcir;", new[] { '\u2AF1' } },
-            { "Topf;", new[] { '\uD835', '\uDD4B' } },
-            { "topf;", new[] { '\uD835', '\uDD65' } },
-            { "topfork;", new[] { '\u2ADA' } },
-            { "tosa;", new[] { '\u2929' } },
-            { "tprime;", new[] { '\u2034' } },
-            { "TRADE;", new[] { '\u2122' } },
-            { "trade;", new[] { '\u2122' } },
-            { "triangle;", new[] { '\u25B5' } },
-            { "triangledown;", new[] { '\u25BF' } },
-            { "triangleleft;", new[] { '\u25C3' } },
-            { "trianglelefteq;", new[] { '\u22B4' } },
-            { "triangleq;", new[] { '\u225C' } },
-            { "triangleright;", new[] { '\u25B9' } },
-            { "trianglerighteq;", new[] { '\u22B5' } },
-            { "tridot;", new[] { '\u25EC' } },
-            { "trie;", new[] { '\u225C' } },
-            { "triminus;", new[] { '\u2A3A' } },
-            { "TripleDot;", new[] { '\u20DB' } },
-            { "triplus;", new[] { '\u2A39' } },
-            { "trisb;", new[] { '\u29CD' } },
-            { "tritime;", new[] { '\u2A3B' } },
-            { "trpezium;", new[] { '\u23E2' } },
-            { "Tscr;", new[] { '\uD835', '\uDCAF' } },
-            { "tscr;", new[] { '\uD835', '\uDCC9' } },
-            { "TScy;", new[] { '\u0426' } },
-            { "tscy;", new[] { '\u0446' } },
-            { "TSHcy;", new[] { '\u040B' } },
-            { "tshcy;", new[] { '\u045B' } },
-            { "Tstrok;", new[] { '\u0166' } },
-            { "tstrok;", new[] { '\u0167' } },
-            { "twixt;", new[] { '\u226C' } },
-            { "twoheadleftarrow;", new[] { '\u219E' } },
-            { "twoheadrightarrow;", new[] { '\u21A0' } },
-            { "Uacute;", new[] { '\u00DA' } },
-            { "Uacute", new[] { '\u00DA' } },
-            { "uacute;", new[] { '\u00FA' } },
-            { "uacute", new[] { '\u00FA' } },
-            { "Uarr;", new[] { '\u219F' } },
-            { "uArr;", new[] { '\u21D1' } },
-            { "uarr;", new[] { '\u2191' } },
-            { "Uarrocir;", new[] { '\u2949' } },
-            { "Ubrcy;", new[] { '\u040E' } },
-            { "ubrcy;", new[] { '\u045E' } },
-            { "Ubreve;", new[] { '\u016C' } },
-            { "ubreve;", new[] { '\u016D' } },
-            { "Ucirc;", new[] { '\u00DB' } },
-            { "Ucirc", new[] { '\u00DB' } },
-            { "ucirc;", new[] { '\u00FB' } },
-            { "ucirc", new[] { '\u00FB' } },
-            { "Ucy;", new[] { '\u0423' } },
-            { "ucy;", new[] { '\u0443' } },
-            { "udarr;", new[] { '\u21C5' } },
-            { "Udblac;", new[] { '\u0170' } },
-            { "udblac;", new[] { '\u0171' } },
-            { "udhar;", new[] { '\u296E' } },
-            { "ufisht;", new[] { '\u297E' } },
-            { "Ufr;", new[] { '\uD835', '\uDD18' } },
-            { "ufr;", new[] { '\uD835', '\uDD32' } },
-            { "Ugrave;", new[] { '\u00D9' } },
-            { "Ugrave", new[] { '\u00D9' } },
-            { "ugrave;", new[] { '\u00F9' } },
-            { "ugrave", new[] { '\u00F9' } },
-            { "uHar;", new[] { '\u2963' } },
-            { "uharl;", new[] { '\u21BF' } },
-            { "uharr;", new[] { '\u21BE' } },
-            { "uhblk;", new[] { '\u2580' } },
-            { "ulcorn;", new[] { '\u231C' } },
-            { "ulcorner;", new[] { '\u231C' } },
-            { "ulcrop;", new[] { '\u230F' } },
-            { "ultri;", new[] { '\u25F8' } },
-            { "Umacr;", new[] { '\u016A' } },
-            { "umacr;", new[] { '\u016B' } },
-            { "uml;", new[] { '\u00A8' } },
-            { "uml", new[] { '\u00A8' } },
-            { "UnderBar;", new[] { '\u005F' } },
-            { "UnderBrace;", new[] { '\u23DF' } },
-            { "UnderBracket;", new[] { '\u23B5' } },
-            { "UnderParenthesis;", new[] { '\u23DD' } },
-            { "Union;", new[] { '\u22C3' } },
-            { "UnionPlus;", new[] { '\u228E' } },
-            { "Uogon;", new[] { '\u0172' } },
-            { "uogon;", new[] { '\u0173' } },
-            { "Uopf;", new[] { '\uD835', '\uDD4C' } },
-            { "uopf;", new[] { '\uD835', '\uDD66' } },
-            { "UpArrow;", new[] { '\u2191' } },
-            { "Uparrow;", new[] { '\u21D1' } },
-            { "uparrow;", new[] { '\u2191' } },
-            { "UpArrowBar;", new[] { '\u2912' } },
-            { "UpArrowDownArrow;", new[] { '\u21C5' } },
-            { "UpDownArrow;", new[] { '\u2195' } },
-            { "Updownarrow;", new[] { '\u21D5' } },
-            { "updownarrow;", new[] { '\u2195' } },
-            { "UpEquilibrium;", new[] { '\u296E' } },
-            { "upharpoonleft;", new[] { '\u21BF' } },
-            { "upharpoonright;", new[] { '\u21BE' } },
-            { "uplus;", new[] { '\u228E' } },
-            { "UpperLeftArrow;", new[] { '\u2196' } },
-            { "UpperRightArrow;", new[] { '\u2197' } },
-            { "Upsi;", new[] { '\u03D2' } },
-            { "upsi;", new[] { '\u03C5' } },
-            { "upsih;", new[] { '\u03D2' } },
-            { "Upsilon;", new[] { '\u03A5' } },
-            { "upsilon;", new[] { '\u03C5' } },
-            { "UpTee;", new[] { '\u22A5' } },
-            { "UpTeeArrow;", new[] { '\u21A5' } },
-            { "upuparrows;", new[] { '\u21C8' } },
-            { "urcorn;", new[] { '\u231D' } },
-            { "urcorner;", new[] { '\u231D' } },
-            { "urcrop;", new[] { '\u230E' } },
-            { "Uring;", new[] { '\u016E' } },
-            { "uring;", new[] { '\u016F' } },
-            { "urtri;", new[] { '\u25F9' } },
-            { "Uscr;", new[] { '\uD835', '\uDCB0' } },
-            { "uscr;", new[] { '\uD835', '\uDCCA' } },
-            { "utdot;", new[] { '\u22F0' } },
-            { "Utilde;", new[] { '\u0168' } },
-            { "utilde;", new[] { '\u0169' } },
-            { "utri;", new[] { '\u25B5' } },
-            { "utrif;", new[] { '\u25B4' } },
-            { "uuarr;", new[] { '\u21C8' } },
-            { "Uuml;", new[] { '\u00DC' } },
-            { "Uuml", new[] { '\u00DC' } },
-            { "uuml;", new[] { '\u00FC' } },
-            { "uuml", new[] { '\u00FC' } },
-            { "uwangle;", new[] { '\u29A7' } },
-            { "vangrt;", new[] { '\u299C' } },
-            { "varepsilon;", new[] { '\u03F5' } },
-            { "varkappa;", new[] { '\u03F0' } },
-            { "varnothing;", new[] { '\u2205' } },
-            { "varphi;", new[] { '\u03D5' } },
-            { "varpi;", new[] { '\u03D6' } },
-            { "varpropto;", new[] { '\u221D' } },
-            { "vArr;", new[] { '\u21D5' } },
-            { "varr;", new[] { '\u2195' } },
-            { "varrho;", new[] { '\u03F1' } },
-            { "varsigma;", new[] { '\u03C2' } },
-            { "varsubsetneq;", new[] { '\u228A', '\uFE00' } },
-            { "varsubsetneqq;", new[] { '\u2ACB', '\uFE00' } },
-            { "varsupsetneq;", new[] { '\u228B', '\uFE00' } },
-            { "varsupsetneqq;", new[] { '\u2ACC', '\uFE00' } },
-            { "vartheta;", new[] { '\u03D1' } },
-            { "vartriangleleft;", new[] { '\u22B2' } },
-            { "vartriangleright;", new[] { '\u22B3' } },
-            { "Vbar;", new[] { '\u2AEB' } },
-            { "vBar;", new[] { '\u2AE8' } },
-            { "vBarv;", new[] { '\u2AE9' } },
-            { "Vcy;", new[] { '\u0412' } },
-            { "vcy;", new[] { '\u0432' } },
-            { "VDash;", new[] { '\u22AB' } },
-            { "Vdash;", new[] { '\u22A9' } },
-            { "vDash;", new[] { '\u22A8' } },
-            { "vdash;", new[] { '\u22A2' } },
-            { "Vdashl;", new[] { '\u2AE6' } },
-            { "Vee;", new[] { '\u22C1' } },
-            { "vee;", new[] { '\u2228' } },
-            { "veebar;", new[] { '\u22BB' } },
-            { "veeeq;", new[] { '\u225A' } },
-            { "vellip;", new[] { '\u22EE' } },
-            { "Verbar;", new[] { '\u2016' } },
-            { "verbar;", new[] { '\u007C' } },
-            { "Vert;", new[] { '\u2016' } },
-            { "vert;", new[] { '\u007C' } },
-            { "VerticalBar;", new[] { '\u2223' } },
-            { "VerticalLine;", new[] { '\u007C' } },
-            { "VerticalSeparator;", new[] { '\u2758' } },
-            { "VerticalTilde;", new[] { '\u2240' } },
-            { "VeryThinSpace;", new[] { '\u200A' } },
-            { "Vfr;", new[] { '\uD835', '\uDD19' } },
-            { "vfr;", new[] { '\uD835', '\uDD33' } },
-            { "vltri;", new[] { '\u22B2' } },
-            { "vnsub;", new[] { '\u2282', '\u20D2' } },
-            { "vnsup;", new[] { '\u2283', '\u20D2' } },
-            { "Vopf;", new[] { '\uD835', '\uDD4D' } },
-            { "vopf;", new[] { '\uD835', '\uDD67' } },
-            { "vprop;", new[] { '\u221D' } },
-            { "vrtri;", new[] { '\u22B3' } },
-            { "Vscr;", new[] { '\uD835', '\uDCB1' } },
-            { "vscr;", new[] { '\uD835', '\uDCCB' } },
-            { "vsubnE;", new[] { '\u2ACB', '\uFE00' } },
-            { "vsubne;", new[] { '\u228A', '\uFE00' } },
-            { "vsupnE;", new[] { '\u2ACC', '\uFE00' } },
-            { "vsupne;", new[] { '\u228B', '\uFE00' } },
-            { "Vvdash;", new[] { '\u22AA' } },
-            { "vzigzag;", new[] { '\u299A' } },
-            { "Wcirc;", new[] { '\u0174' } },
-            { "wcirc;", new[] { '\u0175' } },
-            { "wedbar;", new[] { '\u2A5F' } },
-            { "Wedge;", new[] { '\u22C0' } },
-            { "wedge;", new[] { '\u2227' } },
-            { "wedgeq;", new[] { '\u2259' } },
-            { "weierp;", new[] { '\u2118' } },
-            { "Wfr;", new[] { '\uD835', '\uDD1A' } },
-            { "wfr;", new[] { '\uD835', '\uDD34' } },
-            { "Wopf;", new[] { '\uD835', '\uDD4E' } },
-            { "wopf;", new[] { '\uD835', '\uDD68' } },
-            { "wp;", new[] { '\u2118' } },
-            { "wr;", new[] { '\u2240' } },
-            { "wreath;", new[] { '\u2240' } },
-            { "Wscr;", new[] { '\uD835', '\uDCB2' } },
-            { "wscr;", new[] { '\uD835', '\uDCCC' } },
-            { "xcap;", new[] { '\u22C2' } },
-            { "xcirc;", new[] { '\u25EF' } },
-            { "xcup;", new[] { '\u22C3' } },
-            { "xdtri;", new[] { '\u25BD' } },
-            { "Xfr;", new[] { '\uD835', '\uDD1B' } },
-            { "xfr;", new[] { '\uD835', '\uDD35' } },
-            { "xhArr;", new[] { '\u27FA' } },
-            { "xharr;", new[] { '\u27F7' } },
-            { "Xi;", new[] { '\u039E' } },
-            { "xi;", new[] { '\u03BE' } },
-            { "xlArr;", new[] { '\u27F8' } },
-            { "xlarr;", new[] { '\u27F5' } },
-            { "xmap;", new[] { '\u27FC' } },
-            { "xnis;", new[] { '\u22FB' } },
-            { "xodot;", new[] { '\u2A00' } },
-            { "Xopf;", new[] { '\uD835', '\uDD4F' } },
-            { "xopf;", new[] { '\uD835', '\uDD69' } },
-            { "xoplus;", new[] { '\u2A01' } },
-            { "xotime;", new[] { '\u2A02' } },
-            { "xrArr;", new[] { '\u27F9' } },
-            { "xrarr;", new[] { '\u27F6' } },
-            { "Xscr;", new[] { '\uD835', '\uDCB3' } },
-            { "xscr;", new[] { '\uD835', '\uDCCD' } },
-            { "xsqcup;", new[] { '\u2A06' } },
-            { "xuplus;", new[] { '\u2A04' } },
-            { "xutri;", new[] { '\u25B3' } },
-            { "xvee;", new[] { '\u22C1' } },
-            { "xwedge;", new[] { '\u22C0' } },
-            { "Yacute;", new[] { '\u00DD' } },
-            { "Yacute", new[] { '\u00DD' } },
-            { "yacute;", new[] { '\u00FD' } },
-            { "yacute", new[] { '\u00FD' } },
-            { "YAcy;", new[] { '\u042F' } },
-            { "yacy;", new[] { '\u044F' } },
-            { "Ycirc;", new[] { '\u0176' } },
-            { "ycirc;", new[] { '\u0177' } },
-            { "Ycy;", new[] { '\u042B' } },
-            { "ycy;", new[] { '\u044B' } },
-            { "yen;", new[] { '\u00A5' } },
-            { "yen", new[] { '\u00A5' } },
-            { "Yfr;", new[] { '\uD835', '\uDD1C' } },
-            { "yfr;", new[] { '\uD835', '\uDD36' } },
-            { "YIcy;", new[] { '\u0407' } },
-            { "yicy;", new[] { '\u0457' } },
-            { "Yopf;", new[] { '\uD835', '\uDD50' } },
-            { "yopf;", new[] { '\uD835', '\uDD6A' } },
-            { "Yscr;", new[] { '\uD835', '\uDCB4' } },
-            { "yscr;", new[] { '\uD835', '\uDCCE' } },
-            { "YUcy;", new[] { '\u042E' } },
-            { "yucy;", new[] { '\u044E' } },
-            { "Yuml;", new[] { '\u0178' } },
-            { "yuml;", new[] { '\u00FF' } },
-            { "yuml", new[] { '\u00FF' } },
-            { "Zacute;", new[] { '\u0179' } },
-            { "zacute;", new[] { '\u017A' } },
-            { "Zcaron;", new[] { '\u017D' } },
-            { "zcaron;", new[] { '\u017E' } },
-            { "Zcy;", new[] { '\u0417' } },
-            { "zcy;", new[] { '\u0437' } },
-            { "Zdot;", new[] { '\u017B' } },
-            { "zdot;", new[] { '\u017C' } },
-            { "zeetrf;", new[] { '\u2128' } },
-            { "ZeroWidthSpace;", new[] { '\u200B' } },
-            { "Zeta;", new[] { '\u0396' } },
-            { "zeta;", new[] { '\u03B6' } },
-            { "Zfr;", new[] { '\u2128' } },
-            { "zfr;", new[] { '\uD835', '\uDD37' } },
-            { "ZHcy;", new[] { '\u0416' } },
-            { "zhcy;", new[] { '\u0436' } },
-            { "zigrarr;", new[] { '\u21DD' } },
-            { "Zopf;", new[] { '\u2124' } },
-            { "zopf;", new[] { '\uD835', '\uDD6B' } },
-            { "Zscr;", new[] { '\uD835', '\uDCB5' } },
-            { "zscr;", new[] { '\uD835', '\uDCCF' } },
-            { "zwj;", new[] { '\u200D' } },
-            { "zwnj;", new[] { '\u200C' } }
-        };
+            public static readonly ReadOnlyMemoryComparer Instance = new ReadOnlyMemoryComparer();
 
-        internal static char[] GetCharactersByCharacterReference(string characterReference)
+            public bool Equals(ReadOnlyMemory<char> x, ReadOnlyMemory<char> y)
+            {
+                return x.Span.Equals(y.Span, StringComparison.Ordinal);
+            }
+
+            public int GetHashCode(ReadOnlyMemory<char> obj)
+            {
+#if NET8_0_OR_GREATER
+                return string.GetHashCode(obj.Span, StringComparison.Ordinal);
+#else
+                var span = obj.Span;
+                unchecked
+                {
+                    int hash = 19;
+                    for (var i = 0; i < span.Length; i++)
+                    {
+                        hash = hash * 31 + span[i].GetHashCode();
+                    }
+                    return hash;
+                }
+#endif
+            }
+        }
+
+        private static readonly Dictionary<ReadOnlyMemory<char>, char[]> HtmlCharacterReferences = new Dictionary<ReadOnlyMemory<char>, char[]>(new ReadOnlyMemoryComparer());
+
+        static void Add(string name, params char[] code)
+        {
+            HtmlCharacterReferences[name.AsMemory()] = code;
+        }
+
+        static HtmlChar()
+        {
+            Add("Aacute;", new[] { '\u00C1', });
+            Add("Aacute", new[] { '\u00C1', });
+            Add("aacute;", new[] { '\u00E1', });
+            Add("aacute", new[] { '\u00E1', });
+            Add("Abreve;", new[] { '\u0102', });
+            Add("abreve;", new[] { '\u0103', });
+            Add("ac;", new[] { '\u223E', });
+            Add("acd;", new[] { '\u223F', });
+            Add("acE;", new[] { '\u223E', '\u0333', });
+            Add("Acirc;", new[] { '\u00C2', });
+            Add("Acirc", new[] { '\u00C2', });
+            Add("acirc;", new[] { '\u00E2', });
+            Add("acirc", new[] { '\u00E2', });
+            Add("acute;", new[] { '\u00B4', });
+            Add("acute", new[] { '\u00B4', });
+            Add("Acy;", new[] { '\u0410', });
+            Add("acy;", new[] { '\u0430', });
+            Add("AElig;", new[] { '\u00C6', });
+            Add("AElig", new[] { '\u00C6', });
+            Add("aelig;", new[] { '\u00E6', });
+            Add("aelig", new[] { '\u00E6', });
+            Add("af;", new[] { '\u2061', });
+            Add("Afr;", new[] { '\uD835', '\uDD04', });
+            Add("afr;", new[] { '\uD835', '\uDD1E', });
+            Add("Agrave;", new[] { '\u00C0', });
+            Add("Agrave", new[] { '\u00C0', });
+            Add("agrave;", new[] { '\u00E0', });
+            Add("agrave", new[] { '\u00E0', });
+            Add("alefsym;", new[] { '\u2135', });
+            Add("aleph;", new[] { '\u2135', });
+            Add("Alpha;", new[] { '\u0391', });
+            Add("alpha;", new[] { '\u03B1', });
+            Add("Amacr;", new[] { '\u0100', });
+            Add("amacr;", new[] { '\u0101', });
+            Add("amalg;", new[] { '\u2A3F', });
+            Add("AMP;", new[] { '\u0026', });
+            Add("AMP", new[] { '\u0026', });
+            Add("amp;", new[] { '\u0026', });
+            Add("amp", new[] { '\u0026', });
+            Add("And;", new[] { '\u2A53', });
+            Add("and;", new[] { '\u2227', });
+            Add("andand;", new[] { '\u2A55', });
+            Add("andd;", new[] { '\u2A5C', });
+            Add("andslope;", new[] { '\u2A58', });
+            Add("andv;", new[] { '\u2A5A', });
+            Add("ang;", new[] { '\u2220', });
+            Add("ange;", new[] { '\u29A4', });
+            Add("angle;", new[] { '\u2220', });
+            Add("angmsd;", new[] { '\u2221', });
+            Add("angmsdaa;", new[] { '\u29A8', });
+            Add("angmsdab;", new[] { '\u29A9', });
+            Add("angmsdac;", new[] { '\u29AA', });
+            Add("angmsdad;", new[] { '\u29AB', });
+            Add("angmsdae;", new[] { '\u29AC', });
+            Add("angmsdaf;", new[] { '\u29AD', });
+            Add("angmsdag;", new[] { '\u29AE', });
+            Add("angmsdah;", new[] { '\u29AF', });
+            Add("angrt;", new[] { '\u221F', });
+            Add("angrtvb;", new[] { '\u22BE', });
+            Add("angrtvbd;", new[] { '\u299D', });
+            Add("angsph;", new[] { '\u2222', });
+            Add("angst;", new[] { '\u00C5', });
+            Add("angzarr;", new[] { '\u237C', });
+            Add("Aogon;", new[] { '\u0104', });
+            Add("aogon;", new[] { '\u0105', });
+            Add("Aopf;", new[] { '\uD835', '\uDD38', });
+            Add("aopf;", new[] { '\uD835', '\uDD52', });
+            Add("ap;", new[] { '\u2248', });
+            Add("apacir;", new[] { '\u2A6F', });
+            Add("apE;", new[] { '\u2A70', });
+            Add("ape;", new[] { '\u224A', });
+            Add("apid;", new[] { '\u224B', });
+            Add("apos;", new[] { '\u0027', });
+            Add("ApplyFunction;", new[] { '\u2061', });
+            Add("approx;", new[] { '\u2248', });
+            Add("approxeq;", new[] { '\u224A', });
+            Add("Aring;", new[] { '\u00C5', });
+            Add("Aring", new[] { '\u00C5', });
+            Add("aring;", new[] { '\u00E5', });
+            Add("aring", new[] { '\u00E5', });
+            Add("Ascr;", new[] { '\uD835', '\uDC9C', });
+            Add("ascr;", new[] { '\uD835', '\uDCB6', });
+            Add("Assign;", new[] { '\u2254', });
+            Add("ast;", new[] { '\u002A', });
+            Add("asymp;", new[] { '\u2248', });
+            Add("asympeq;", new[] { '\u224D', });
+            Add("Atilde;", new[] { '\u00C3', });
+            Add("Atilde", new[] { '\u00C3', });
+            Add("atilde;", new[] { '\u00E3', });
+            Add("atilde", new[] { '\u00E3', });
+            Add("Auml;", new[] { '\u00C4', });
+            Add("Auml", new[] { '\u00C4', });
+            Add("auml;", new[] { '\u00E4', });
+            Add("auml", new[] { '\u00E4', });
+            Add("awconint;", new[] { '\u2233', });
+            Add("awint;", new[] { '\u2A11', });
+            Add("backcong;", new[] { '\u224C', });
+            Add("backepsilon;", new[] { '\u03F6', });
+            Add("backprime;", new[] { '\u2035', });
+            Add("backsim;", new[] { '\u223D', });
+            Add("backsimeq;", new[] { '\u22CD', });
+            Add("Backslash;", new[] { '\u2216', });
+            Add("Barv;", new[] { '\u2AE7', });
+            Add("barvee;", new[] { '\u22BD', });
+            Add("Barwed;", new[] { '\u2306', });
+            Add("barwed;", new[] { '\u2305', });
+            Add("barwedge;", new[] { '\u2305', });
+            Add("bbrk;", new[] { '\u23B5', });
+            Add("bbrktbrk;", new[] { '\u23B6', });
+            Add("bcong;", new[] { '\u224C', });
+            Add("Bcy;", new[] { '\u0411', });
+            Add("bcy;", new[] { '\u0431', });
+            Add("bdquo;", new[] { '\u201E', });
+            Add("becaus;", new[] { '\u2235', });
+            Add("Because;", new[] { '\u2235', });
+            Add("because;", new[] { '\u2235', });
+            Add("bemptyv;", new[] { '\u29B0', });
+            Add("bepsi;", new[] { '\u03F6', });
+            Add("bernou;", new[] { '\u212C', });
+            Add("Bernoullis;", new[] { '\u212C', });
+            Add("Beta;", new[] { '\u0392', });
+            Add("beta;", new[] { '\u03B2', });
+            Add("beth;", new[] { '\u2136', });
+            Add("between;", new[] { '\u226C', });
+            Add("Bfr;", new[] { '\uD835', '\uDD05', });
+            Add("bfr;", new[] { '\uD835', '\uDD1F', });
+            Add("bigcap;", new[] { '\u22C2', });
+            Add("bigcirc;", new[] { '\u25EF', });
+            Add("bigcup;", new[] { '\u22C3', });
+            Add("bigodot;", new[] { '\u2A00', });
+            Add("bigoplus;", new[] { '\u2A01', });
+            Add("bigotimes;", new[] { '\u2A02', });
+            Add("bigsqcup;", new[] { '\u2A06', });
+            Add("bigstar;", new[] { '\u2605', });
+            Add("bigtriangledown;", new[] { '\u25BD', });
+            Add("bigtriangleup;", new[] { '\u25B3', });
+            Add("biguplus;", new[] { '\u2A04', });
+            Add("bigvee;", new[] { '\u22C1', });
+            Add("bigwedge;", new[] { '\u22C0', });
+            Add("bkarow;", new[] { '\u290D', });
+            Add("blacklozenge;", new[] { '\u29EB', });
+            Add("blacksquare;", new[] { '\u25AA', });
+            Add("blacktriangle;", new[] { '\u25B4', });
+            Add("blacktriangledown;", new[] { '\u25BE', });
+            Add("blacktriangleleft;", new[] { '\u25C2', });
+            Add("blacktriangleright;", new[] { '\u25B8', });
+            Add("blank;", new[] { '\u2423', });
+            Add("blk12;", new[] { '\u2592', });
+            Add("blk14;", new[] { '\u2591', });
+            Add("blk34;", new[] { '\u2593', });
+            Add("block;", new[] { '\u2588', });
+            Add("bne;", new[] { '\u003D', '\u20E5', });
+            Add("bnequiv;", new[] { '\u2261', '\u20E5', });
+            Add("bNot;", new[] { '\u2AED', });
+            Add("bnot;", new[] { '\u2310', });
+            Add("Bopf;", new[] { '\uD835', '\uDD39', });
+            Add("bopf;", new[] { '\uD835', '\uDD53', });
+            Add("bot;", new[] { '\u22A5', });
+            Add("bottom;", new[] { '\u22A5', });
+            Add("bowtie;", new[] { '\u22C8', });
+            Add("boxbox;", new[] { '\u29C9', });
+            Add("boxDL;", new[] { '\u2557', });
+            Add("boxDl;", new[] { '\u2556', });
+            Add("boxdL;", new[] { '\u2555', });
+            Add("boxdl;", new[] { '\u2510', });
+            Add("boxDR;", new[] { '\u2554', });
+            Add("boxDr;", new[] { '\u2553', });
+            Add("boxdR;", new[] { '\u2552', });
+            Add("boxdr;", new[] { '\u250C', });
+            Add("boxH;", new[] { '\u2550', });
+            Add("boxh;", new[] { '\u2500', });
+            Add("boxHD;", new[] { '\u2566', });
+            Add("boxHd;", new[] { '\u2564', });
+            Add("boxhD;", new[] { '\u2565', });
+            Add("boxhd;", new[] { '\u252C', });
+            Add("boxHU;", new[] { '\u2569', });
+            Add("boxHu;", new[] { '\u2567', });
+            Add("boxhU;", new[] { '\u2568', });
+            Add("boxhu;", new[] { '\u2534', });
+            Add("boxminus;", new[] { '\u229F', });
+            Add("boxplus;", new[] { '\u229E', });
+            Add("boxtimes;", new[] { '\u22A0', });
+            Add("boxUL;", new[] { '\u255D', });
+            Add("boxUl;", new[] { '\u255C', });
+            Add("boxuL;", new[] { '\u255B', });
+            Add("boxul;", new[] { '\u2518', });
+            Add("boxUR;", new[] { '\u255A', });
+            Add("boxUr;", new[] { '\u2559', });
+            Add("boxuR;", new[] { '\u2558', });
+            Add("boxur;", new[] { '\u2514', });
+            Add("boxV;", new[] { '\u2551', });
+            Add("boxv;", new[] { '\u2502', });
+            Add("boxVH;", new[] { '\u256C', });
+            Add("boxVh;", new[] { '\u256B', });
+            Add("boxvH;", new[] { '\u256A', });
+            Add("boxvh;", new[] { '\u253C', });
+            Add("boxVL;", new[] { '\u2563', });
+            Add("boxVl;", new[] { '\u2562', });
+            Add("boxvL;", new[] { '\u2561', });
+            Add("boxvl;", new[] { '\u2524', });
+            Add("boxVR;", new[] { '\u2560', });
+            Add("boxVr;", new[] { '\u255F', });
+            Add("boxvR;", new[] { '\u255E', });
+            Add("boxvr;", new[] { '\u251C', });
+            Add("bprime;", new[] { '\u2035', });
+            Add("Breve;", new[] { '\u02D8', });
+            Add("breve;", new[] { '\u02D8', });
+            Add("brvbar;", new[] { '\u00A6', });
+            Add("brvbar", new[] { '\u00A6', });
+            Add("Bscr;", new[] { '\u212C', });
+            Add("bscr;", new[] { '\uD835', '\uDCB7', });
+            Add("bsemi;", new[] { '\u204F', });
+            Add("bsim;", new[] { '\u223D', });
+            Add("bsime;", new[] { '\u22CD', });
+            Add("bsol;", new[] { '\u005C', });
+            Add("bsolb;", new[] { '\u29C5', });
+            Add("bsolhsub;", new[] { '\u27C8', });
+            Add("bull;", new[] { '\u2022', });
+            Add("bullet;", new[] { '\u2022', });
+            Add("bump;", new[] { '\u224E', });
+            Add("bumpE;", new[] { '\u2AAE', });
+            Add("bumpe;", new[] { '\u224F', });
+            Add("Bumpeq;", new[] { '\u224E', });
+            Add("bumpeq;", new[] { '\u224F', });
+            Add("Cacute;", new[] { '\u0106', });
+            Add("cacute;", new[] { '\u0107', });
+            Add("Cap;", new[] { '\u22D2', });
+            Add("cap;", new[] { '\u2229', });
+            Add("capand;", new[] { '\u2A44', });
+            Add("capbrcup;", new[] { '\u2A49', });
+            Add("capcap;", new[] { '\u2A4B', });
+            Add("capcup;", new[] { '\u2A47', });
+            Add("capdot;", new[] { '\u2A40', });
+            Add("CapitalDifferentialD;", new[] { '\u2145', });
+            Add("caps;", new[] { '\u2229', '\uFE00', });
+            Add("caret;", new[] { '\u2041', });
+            Add("caron;", new[] { '\u02C7', });
+            Add("Cayleys;", new[] { '\u212D', });
+            Add("ccaps;", new[] { '\u2A4D', });
+            Add("Ccaron;", new[] { '\u010C', });
+            Add("ccaron;", new[] { '\u010D', });
+            Add("Ccedil;", new[] { '\u00C7', });
+            Add("Ccedil", new[] { '\u00C7', });
+            Add("ccedil;", new[] { '\u00E7', });
+            Add("ccedil", new[] { '\u00E7', });
+            Add("Ccirc;", new[] { '\u0108', });
+            Add("ccirc;", new[] { '\u0109', });
+            Add("Cconint;", new[] { '\u2230', });
+            Add("ccups;", new[] { '\u2A4C', });
+            Add("ccupssm;", new[] { '\u2A50', });
+            Add("Cdot;", new[] { '\u010A', });
+            Add("cdot;", new[] { '\u010B', });
+            Add("cedil;", new[] { '\u00B8', });
+            Add("cedil", new[] { '\u00B8', });
+            Add("Cedilla;", new[] { '\u00B8', });
+            Add("cemptyv;", new[] { '\u29B2', });
+            Add("cent;", new[] { '\u00A2', });
+            Add("cent", new[] { '\u00A2', });
+            Add("CenterDot;", new[] { '\u00B7', });
+            Add("centerdot;", new[] { '\u00B7', });
+            Add("Cfr;", new[] { '\u212D', });
+            Add("cfr;", new[] { '\uD835', '\uDD20', });
+            Add("CHcy;", new[] { '\u0427', });
+            Add("chcy;", new[] { '\u0447', });
+            Add("check;", new[] { '\u2713', });
+            Add("checkmark;", new[] { '\u2713', });
+            Add("Chi;", new[] { '\u03A7', });
+            Add("chi;", new[] { '\u03C7', });
+            Add("cir;", new[] { '\u25CB', });
+            Add("circ;", new[] { '\u02C6', });
+            Add("circeq;", new[] { '\u2257', });
+            Add("circlearrowleft;", new[] { '\u21BA', });
+            Add("circlearrowright;", new[] { '\u21BB', });
+            Add("circledast;", new[] { '\u229B', });
+            Add("circledcirc;", new[] { '\u229A', });
+            Add("circleddash;", new[] { '\u229D', });
+            Add("CircleDot;", new[] { '\u2299', });
+            Add("circledR;", new[] { '\u00AE', });
+            Add("circledS;", new[] { '\u24C8', });
+            Add("CircleMinus;", new[] { '\u2296', });
+            Add("CirclePlus;", new[] { '\u2295', });
+            Add("CircleTimes;", new[] { '\u2297', });
+            Add("cirE;", new[] { '\u29C3', });
+            Add("cire;", new[] { '\u2257', });
+            Add("cirfnint;", new[] { '\u2A10', });
+            Add("cirmid;", new[] { '\u2AEF', });
+            Add("cirscir;", new[] { '\u29C2', });
+            Add("ClockwiseContourIntegral;", new[] { '\u2232', });
+            Add("CloseCurlyDoubleQuote;", new[] { '\u201D', });
+            Add("CloseCurlyQuote;", new[] { '\u2019', });
+            Add("clubs;", new[] { '\u2663', });
+            Add("clubsuit;", new[] { '\u2663', });
+            Add("Colon;", new[] { '\u2237', });
+            Add("colon;", new[] { '\u003A', });
+            Add("Colone;", new[] { '\u2A74', });
+            Add("colone;", new[] { '\u2254', });
+            Add("coloneq;", new[] { '\u2254', });
+            Add("comma;", new[] { '\u002C', });
+            Add("commat;", new[] { '\u0040', });
+            Add("comp;", new[] { '\u2201', });
+            Add("compfn;", new[] { '\u2218', });
+            Add("complement;", new[] { '\u2201', });
+            Add("complexes;", new[] { '\u2102', });
+            Add("cong;", new[] { '\u2245', });
+            Add("congdot;", new[] { '\u2A6D', });
+            Add("Congruent;", new[] { '\u2261', });
+            Add("Conint;", new[] { '\u222F', });
+            Add("conint;", new[] { '\u222E', });
+            Add("ContourIntegral;", new[] { '\u222E', });
+            Add("Copf;", new[] { '\u2102', });
+            Add("copf;", new[] { '\uD835', '\uDD54', });
+            Add("coprod;", new[] { '\u2210', });
+            Add("Coproduct;", new[] { '\u2210', });
+            Add("COPY;", new[] { '\u00A9', });
+            Add("COPY", new[] { '\u00A9', });
+            Add("copy;", new[] { '\u00A9', });
+            Add("copy", new[] { '\u00A9', });
+            Add("copysr;", new[] { '\u2117', });
+            Add("CounterClockwiseContourIntegral;", new[] { '\u2233', });
+            Add("crarr;", new[] { '\u21B5', });
+            Add("Cross;", new[] { '\u2A2F', });
+            Add("cross;", new[] { '\u2717', });
+            Add("Cscr;", new[] { '\uD835', '\uDC9E', });
+            Add("cscr;", new[] { '\uD835', '\uDCB8', });
+            Add("csub;", new[] { '\u2ACF', });
+            Add("csube;", new[] { '\u2AD1', });
+            Add("csup;", new[] { '\u2AD0', });
+            Add("csupe;", new[] { '\u2AD2', });
+            Add("ctdot;", new[] { '\u22EF', });
+            Add("cudarrl;", new[] { '\u2938', });
+            Add("cudarrr;", new[] { '\u2935', });
+            Add("cuepr;", new[] { '\u22DE', });
+            Add("cuesc;", new[] { '\u22DF', });
+            Add("cularr;", new[] { '\u21B6', });
+            Add("cularrp;", new[] { '\u293D', });
+            Add("Cup;", new[] { '\u22D3', });
+            Add("cup;", new[] { '\u222A', });
+            Add("cupbrcap;", new[] { '\u2A48', });
+            Add("CupCap;", new[] { '\u224D', });
+            Add("cupcap;", new[] { '\u2A46', });
+            Add("cupcup;", new[] { '\u2A4A', });
+            Add("cupdot;", new[] { '\u228D', });
+            Add("cupor;", new[] { '\u2A45', });
+            Add("cups;", new[] { '\u222A', '\uFE00', });
+            Add("curarr;", new[] { '\u21B7', });
+            Add("curarrm;", new[] { '\u293C', });
+            Add("curlyeqprec;", new[] { '\u22DE', });
+            Add("curlyeqsucc;", new[] { '\u22DF', });
+            Add("curlyvee;", new[] { '\u22CE', });
+            Add("curlywedge;", new[] { '\u22CF', });
+            Add("curren;", new[] { '\u00A4', });
+            Add("curren", new[] { '\u00A4', });
+            Add("curvearrowleft;", new[] { '\u21B6', });
+            Add("curvearrowright;", new[] { '\u21B7', });
+            Add("cuvee;", new[] { '\u22CE', });
+            Add("cuwed;", new[] { '\u22CF', });
+            Add("cwconint;", new[] { '\u2232', });
+            Add("cwint;", new[] { '\u2231', });
+            Add("cylcty;", new[] { '\u232D', });
+            Add("Dagger;", new[] { '\u2021', });
+            Add("dagger;", new[] { '\u2020', });
+            Add("daleth;", new[] { '\u2138', });
+            Add("Darr;", new[] { '\u21A1', });
+            Add("dArr;", new[] { '\u21D3', });
+            Add("darr;", new[] { '\u2193', });
+            Add("dash;", new[] { '\u2010', });
+            Add("Dashv;", new[] { '\u2AE4', });
+            Add("dashv;", new[] { '\u22A3', });
+            Add("dbkarow;", new[] { '\u290F', });
+            Add("dblac;", new[] { '\u02DD', });
+            Add("Dcaron;", new[] { '\u010E', });
+            Add("dcaron;", new[] { '\u010F', });
+            Add("Dcy;", new[] { '\u0414', });
+            Add("dcy;", new[] { '\u0434', });
+            Add("DD;", new[] { '\u2145', });
+            Add("dd;", new[] { '\u2146', });
+            Add("ddagger;", new[] { '\u2021', });
+            Add("ddarr;", new[] { '\u21CA', });
+            Add("DDotrahd;", new[] { '\u2911', });
+            Add("ddotseq;", new[] { '\u2A77', });
+            Add("deg;", new[] { '\u00B0', });
+            Add("deg", new[] { '\u00B0', });
+            Add("Del;", new[] { '\u2207', });
+            Add("Delta;", new[] { '\u0394', });
+            Add("delta;", new[] { '\u03B4', });
+            Add("demptyv;", new[] { '\u29B1', });
+            Add("dfisht;", new[] { '\u297F', });
+            Add("Dfr;", new[] { '\uD835', '\uDD07', });
+            Add("dfr;", new[] { '\uD835', '\uDD21', });
+            Add("dHar;", new[] { '\u2965', });
+            Add("dharl;", new[] { '\u21C3', });
+            Add("dharr;", new[] { '\u21C2', });
+            Add("DiacriticalAcute;", new[] { '\u00B4', });
+            Add("DiacriticalDot;", new[] { '\u02D9', });
+            Add("DiacriticalDoubleAcute;", new[] { '\u02DD', });
+            Add("DiacriticalGrave;", new[] { '\u0060', });
+            Add("DiacriticalTilde;", new[] { '\u02DC', });
+            Add("diam;", new[] { '\u22C4', });
+            Add("Diamond;", new[] { '\u22C4', });
+            Add("diamond;", new[] { '\u22C4', });
+            Add("diamondsuit;", new[] { '\u2666', });
+            Add("diams;", new[] { '\u2666', });
+            Add("die;", new[] { '\u00A8', });
+            Add("DifferentialD;", new[] { '\u2146', });
+            Add("digamma;", new[] { '\u03DD', });
+            Add("disin;", new[] { '\u22F2', });
+            Add("div;", new[] { '\u00F7', });
+            Add("divide;", new[] { '\u00F7', });
+            Add("divide", new[] { '\u00F7', });
+            Add("divideontimes;", new[] { '\u22C7', });
+            Add("divonx;", new[] { '\u22C7', });
+            Add("DJcy;", new[] { '\u0402', });
+            Add("djcy;", new[] { '\u0452', });
+            Add("dlcorn;", new[] { '\u231E', });
+            Add("dlcrop;", new[] { '\u230D', });
+            Add("dollar;", new[] { '\u0024', });
+            Add("Dopf;", new[] { '\uD835', '\uDD3B', });
+            Add("dopf;", new[] { '\uD835', '\uDD55', });
+            Add("Dot;", new[] { '\u00A8', });
+            Add("dot;", new[] { '\u02D9', });
+            Add("DotDot;", new[] { '\u20DC', });
+            Add("doteq;", new[] { '\u2250', });
+            Add("doteqdot;", new[] { '\u2251', });
+            Add("DotEqual;", new[] { '\u2250', });
+            Add("dotminus;", new[] { '\u2238', });
+            Add("dotplus;", new[] { '\u2214', });
+            Add("dotsquare;", new[] { '\u22A1', });
+            Add("doublebarwedge;", new[] { '\u2306', });
+            Add("DoubleContourIntegral;", new[] { '\u222F', });
+            Add("DoubleDot;", new[] { '\u00A8', });
+            Add("DoubleDownArrow;", new[] { '\u21D3', });
+            Add("DoubleLeftArrow;", new[] { '\u21D0', });
+            Add("DoubleLeftRightArrow;", new[] { '\u21D4', });
+            Add("DoubleLeftTee;", new[] { '\u2AE4', });
+            Add("DoubleLongLeftArrow;", new[] { '\u27F8', });
+            Add("DoubleLongLeftRightArrow;", new[] { '\u27FA', });
+            Add("DoubleLongRightArrow;", new[] { '\u27F9', });
+            Add("DoubleRightArrow;", new[] { '\u21D2', });
+            Add("DoubleRightTee;", new[] { '\u22A8', });
+            Add("DoubleUpArrow;", new[] { '\u21D1', });
+            Add("DoubleUpDownArrow;", new[] { '\u21D5', });
+            Add("DoubleVerticalBar;", new[] { '\u2225', });
+            Add("DownArrow;", new[] { '\u2193', });
+            Add("Downarrow;", new[] { '\u21D3', });
+            Add("downarrow;", new[] { '\u2193', });
+            Add("DownArrowBar;", new[] { '\u2913', });
+            Add("DownArrowUpArrow;", new[] { '\u21F5', });
+            Add("DownBreve;", new[] { '\u0311', });
+            Add("downdownarrows;", new[] { '\u21CA', });
+            Add("downharpoonleft;", new[] { '\u21C3', });
+            Add("downharpoonright;", new[] { '\u21C2', });
+            Add("DownLeftRightVector;", new[] { '\u2950', });
+            Add("DownLeftTeeVector;", new[] { '\u295E', });
+            Add("DownLeftVector;", new[] { '\u21BD', });
+            Add("DownLeftVectorBar;", new[] { '\u2956', });
+            Add("DownRightTeeVector;", new[] { '\u295F', });
+            Add("DownRightVector;", new[] { '\u21C1', });
+            Add("DownRightVectorBar;", new[] { '\u2957', });
+            Add("DownTee;", new[] { '\u22A4', });
+            Add("DownTeeArrow;", new[] { '\u21A7', });
+            Add("drbkarow;", new[] { '\u2910', });
+            Add("drcorn;", new[] { '\u231F', });
+            Add("drcrop;", new[] { '\u230C', });
+            Add("Dscr;", new[] { '\uD835', '\uDC9F', });
+            Add("dscr;", new[] { '\uD835', '\uDCB9', });
+            Add("DScy;", new[] { '\u0405', });
+            Add("dscy;", new[] { '\u0455', });
+            Add("dsol;", new[] { '\u29F6', });
+            Add("Dstrok;", new[] { '\u0110', });
+            Add("dstrok;", new[] { '\u0111', });
+            Add("dtdot;", new[] { '\u22F1', });
+            Add("dtri;", new[] { '\u25BF', });
+            Add("dtrif;", new[] { '\u25BE', });
+            Add("duarr;", new[] { '\u21F5', });
+            Add("duhar;", new[] { '\u296F', });
+            Add("dwangle;", new[] { '\u29A6', });
+            Add("DZcy;", new[] { '\u040F', });
+            Add("dzcy;", new[] { '\u045F', });
+            Add("dzigrarr;", new[] { '\u27FF', });
+            Add("Eacute;", new[] { '\u00C9', });
+            Add("Eacute", new[] { '\u00C9', });
+            Add("eacute;", new[] { '\u00E9', });
+            Add("eacute", new[] { '\u00E9', });
+            Add("easter;", new[] { '\u2A6E', });
+            Add("Ecaron;", new[] { '\u011A', });
+            Add("ecaron;", new[] { '\u011B', });
+            Add("ecir;", new[] { '\u2256', });
+            Add("Ecirc;", new[] { '\u00CA', });
+            Add("Ecirc", new[] { '\u00CA', });
+            Add("ecirc;", new[] { '\u00EA', });
+            Add("ecirc", new[] { '\u00EA', });
+            Add("ecolon;", new[] { '\u2255', });
+            Add("Ecy;", new[] { '\u042D', });
+            Add("ecy;", new[] { '\u044D', });
+            Add("eDDot;", new[] { '\u2A77', });
+            Add("Edot;", new[] { '\u0116', });
+            Add("eDot;", new[] { '\u2251', });
+            Add("edot;", new[] { '\u0117', });
+            Add("ee;", new[] { '\u2147', });
+            Add("efDot;", new[] { '\u2252', });
+            Add("Efr;", new[] { '\uD835', '\uDD08', });
+            Add("efr;", new[] { '\uD835', '\uDD22', });
+            Add("eg;", new[] { '\u2A9A', });
+            Add("Egrave;", new[] { '\u00C8', });
+            Add("Egrave", new[] { '\u00C8', });
+            Add("egrave;", new[] { '\u00E8', });
+            Add("egrave", new[] { '\u00E8', });
+            Add("egs;", new[] { '\u2A96', });
+            Add("egsdot;", new[] { '\u2A98', });
+            Add("el;", new[] { '\u2A99', });
+            Add("Element;", new[] { '\u2208', });
+            Add("elinters;", new[] { '\u23E7', });
+            Add("ell;", new[] { '\u2113', });
+            Add("els;", new[] { '\u2A95', });
+            Add("elsdot;", new[] { '\u2A97', });
+            Add("Emacr;", new[] { '\u0112', });
+            Add("emacr;", new[] { '\u0113', });
+            Add("empty;", new[] { '\u2205', });
+            Add("emptyset;", new[] { '\u2205', });
+            Add("EmptySmallSquare;", new[] { '\u25FB', });
+            Add("emptyv;", new[] { '\u2205', });
+            Add("EmptyVerySmallSquare;", new[] { '\u25AB', });
+            Add("emsp;", new[] { '\u2003', });
+            Add("emsp13;", new[] { '\u2004', });
+            Add("emsp14;", new[] { '\u2005', });
+            Add("ENG;", new[] { '\u014A', });
+            Add("eng;", new[] { '\u014B', });
+            Add("ensp;", new[] { '\u2002', });
+            Add("Eogon;", new[] { '\u0118', });
+            Add("eogon;", new[] { '\u0119', });
+            Add("Eopf;", new[] { '\uD835', '\uDD3C', });
+            Add("eopf;", new[] { '\uD835', '\uDD56', });
+            Add("epar;", new[] { '\u22D5', });
+            Add("eparsl;", new[] { '\u29E3', });
+            Add("eplus;", new[] { '\u2A71', });
+            Add("epsi;", new[] { '\u03B5', });
+            Add("Epsilon;", new[] { '\u0395', });
+            Add("epsilon;", new[] { '\u03B5', });
+            Add("epsiv;", new[] { '\u03F5', });
+            Add("eqcirc;", new[] { '\u2256', });
+            Add("eqcolon;", new[] { '\u2255', });
+            Add("eqsim;", new[] { '\u2242', });
+            Add("eqslantgtr;", new[] { '\u2A96', });
+            Add("eqslantless;", new[] { '\u2A95', });
+            Add("Equal;", new[] { '\u2A75', });
+            Add("equals;", new[] { '\u003D', });
+            Add("EqualTilde;", new[] { '\u2242', });
+            Add("equest;", new[] { '\u225F', });
+            Add("Equilibrium;", new[] { '\u21CC', });
+            Add("equiv;", new[] { '\u2261', });
+            Add("equivDD;", new[] { '\u2A78', });
+            Add("eqvparsl;", new[] { '\u29E5', });
+            Add("erarr;", new[] { '\u2971', });
+            Add("erDot;", new[] { '\u2253', });
+            Add("Escr;", new[] { '\u2130', });
+            Add("escr;", new[] { '\u212F', });
+            Add("esdot;", new[] { '\u2250', });
+            Add("Esim;", new[] { '\u2A73', });
+            Add("esim;", new[] { '\u2242', });
+            Add("Eta;", new[] { '\u0397', });
+            Add("eta;", new[] { '\u03B7', });
+            Add("ETH;", new[] { '\u00D0', });
+            Add("ETH", new[] { '\u00D0', });
+            Add("eth;", new[] { '\u00F0', });
+            Add("eth", new[] { '\u00F0', });
+            Add("Euml;", new[] { '\u00CB', });
+            Add("Euml", new[] { '\u00CB', });
+            Add("euml;", new[] { '\u00EB', });
+            Add("euml", new[] { '\u00EB', });
+            Add("euro;", new[] { '\u20AC', });
+            Add("excl;", new[] { '\u0021', });
+            Add("exist;", new[] { '\u2203', });
+            Add("Exists;", new[] { '\u2203', });
+            Add("expectation;", new[] { '\u2130', });
+            Add("ExponentialE;", new[] { '\u2147', });
+            Add("exponentiale;", new[] { '\u2147', });
+            Add("fallingdotseq;", new[] { '\u2252', });
+            Add("Fcy;", new[] { '\u0424', });
+            Add("fcy;", new[] { '\u0444', });
+            Add("female;", new[] { '\u2640', });
+            Add("ffilig;", new[] { '\uFB03', });
+            Add("fflig;", new[] { '\uFB00', });
+            Add("ffllig;", new[] { '\uFB04', });
+            Add("Ffr;", new[] { '\uD835', '\uDD09', });
+            Add("ffr;", new[] { '\uD835', '\uDD23', });
+            Add("filig;", new[] { '\uFB01', });
+            Add("FilledSmallSquare;", new[] { '\u25FC', });
+            Add("FilledVerySmallSquare;", new[] { '\u25AA', });
+            Add("fjlig;", new[] { '\u0066', '\u006A', });
+            Add("flat;", new[] { '\u266D', });
+            Add("fllig;", new[] { '\uFB02', });
+            Add("fltns;", new[] { '\u25B1', });
+            Add("fnof;", new[] { '\u0192', });
+            Add("Fopf;", new[] { '\uD835', '\uDD3D', });
+            Add("fopf;", new[] { '\uD835', '\uDD57', });
+            Add("ForAll;", new[] { '\u2200', });
+            Add("forall;", new[] { '\u2200', });
+            Add("fork;", new[] { '\u22D4', });
+            Add("forkv;", new[] { '\u2AD9', });
+            Add("Fouriertrf;", new[] { '\u2131', });
+            Add("fpartint;", new[] { '\u2A0D', });
+            Add("frac12;", new[] { '\u00BD', });
+            Add("frac12", new[] { '\u00BD', });
+            Add("frac13;", new[] { '\u2153', });
+            Add("frac14;", new[] { '\u00BC', });
+            Add("frac14", new[] { '\u00BC', });
+            Add("frac15;", new[] { '\u2155', });
+            Add("frac16;", new[] { '\u2159', });
+            Add("frac18;", new[] { '\u215B', });
+            Add("frac23;", new[] { '\u2154', });
+            Add("frac25;", new[] { '\u2156', });
+            Add("frac34;", new[] { '\u00BE', });
+            Add("frac34", new[] { '\u00BE', });
+            Add("frac35;", new[] { '\u2157', });
+            Add("frac38;", new[] { '\u215C', });
+            Add("frac45;", new[] { '\u2158', });
+            Add("frac56;", new[] { '\u215A', });
+            Add("frac58;", new[] { '\u215D', });
+            Add("frac78;", new[] { '\u215E', });
+            Add("frasl;", new[] { '\u2044', });
+            Add("frown;", new[] { '\u2322', });
+            Add("Fscr;", new[] { '\u2131', });
+            Add("fscr;", new[] { '\uD835', '\uDCBB', });
+            Add("gacute;", new[] { '\u01F5', });
+            Add("Gamma;", new[] { '\u0393', });
+            Add("gamma;", new[] { '\u03B3', });
+            Add("Gammad;", new[] { '\u03DC', });
+            Add("gammad;", new[] { '\u03DD', });
+            Add("gap;", new[] { '\u2A86', });
+            Add("Gbreve;", new[] { '\u011E', });
+            Add("gbreve;", new[] { '\u011F', });
+            Add("Gcedil;", new[] { '\u0122', });
+            Add("Gcirc;", new[] { '\u011C', });
+            Add("gcirc;", new[] { '\u011D', });
+            Add("Gcy;", new[] { '\u0413', });
+            Add("gcy;", new[] { '\u0433', });
+            Add("Gdot;", new[] { '\u0120', });
+            Add("gdot;", new[] { '\u0121', });
+            Add("gE;", new[] { '\u2267', });
+            Add("ge;", new[] { '\u2265', });
+            Add("gEl;", new[] { '\u2A8C', });
+            Add("gel;", new[] { '\u22DB', });
+            Add("geq;", new[] { '\u2265', });
+            Add("geqq;", new[] { '\u2267', });
+            Add("geqslant;", new[] { '\u2A7E', });
+            Add("ges;", new[] { '\u2A7E', });
+            Add("gescc;", new[] { '\u2AA9', });
+            Add("gesdot;", new[] { '\u2A80', });
+            Add("gesdoto;", new[] { '\u2A82', });
+            Add("gesdotol;", new[] { '\u2A84', });
+            Add("gesl;", new[] { '\u22DB', '\uFE00', });
+            Add("gesles;", new[] { '\u2A94', });
+            Add("Gfr;", new[] { '\uD835', '\uDD0A', });
+            Add("gfr;", new[] { '\uD835', '\uDD24', });
+            Add("Gg;", new[] { '\u22D9', });
+            Add("gg;", new[] { '\u226B', });
+            Add("ggg;", new[] { '\u22D9', });
+            Add("gimel;", new[] { '\u2137', });
+            Add("GJcy;", new[] { '\u0403', });
+            Add("gjcy;", new[] { '\u0453', });
+            Add("gl;", new[] { '\u2277', });
+            Add("gla;", new[] { '\u2AA5', });
+            Add("glE;", new[] { '\u2A92', });
+            Add("glj;", new[] { '\u2AA4', });
+            Add("gnap;", new[] { '\u2A8A', });
+            Add("gnapprox;", new[] { '\u2A8A', });
+            Add("gnE;", new[] { '\u2269', });
+            Add("gne;", new[] { '\u2A88', });
+            Add("gneq;", new[] { '\u2A88', });
+            Add("gneqq;", new[] { '\u2269', });
+            Add("gnsim;", new[] { '\u22E7', });
+            Add("Gopf;", new[] { '\uD835', '\uDD3E', });
+            Add("gopf;", new[] { '\uD835', '\uDD58', });
+            Add("grave;", new[] { '\u0060', });
+            Add("GreaterEqual;", new[] { '\u2265', });
+            Add("GreaterEqualLess;", new[] { '\u22DB', });
+            Add("GreaterFullEqual;", new[] { '\u2267', });
+            Add("GreaterGreater;", new[] { '\u2AA2', });
+            Add("GreaterLess;", new[] { '\u2277', });
+            Add("GreaterSlantEqual;", new[] { '\u2A7E', });
+            Add("GreaterTilde;", new[] { '\u2273', });
+            Add("Gscr;", new[] { '\uD835', '\uDCA2', });
+            Add("gscr;", new[] { '\u210A', });
+            Add("gsim;", new[] { '\u2273', });
+            Add("gsime;", new[] { '\u2A8E', });
+            Add("gsiml;", new[] { '\u2A90', });
+            Add("GT;", new[] { '\u003E', });
+            Add("GT", new[] { '\u003E', });
+            Add("Gt;", new[] { '\u226B', });
+            Add("gt;", new[] { '\u003E', });
+            Add("gt", new[] { '\u003E', });
+            Add("gtcc;", new[] { '\u2AA7', });
+            Add("gtcir;", new[] { '\u2A7A', });
+            Add("gtdot;", new[] { '\u22D7', });
+            Add("gtlPar;", new[] { '\u2995', });
+            Add("gtquest;", new[] { '\u2A7C', });
+            Add("gtrapprox;", new[] { '\u2A86', });
+            Add("gtrarr;", new[] { '\u2978', });
+            Add("gtrdot;", new[] { '\u22D7', });
+            Add("gtreqless;", new[] { '\u22DB', });
+            Add("gtreqqless;", new[] { '\u2A8C', });
+            Add("gtrless;", new[] { '\u2277', });
+            Add("gtrsim;", new[] { '\u2273', });
+            Add("gvertneqq;", new[] { '\u2269', '\uFE00', });
+            Add("gvnE;", new[] { '\u2269', '\uFE00', });
+            Add("Hacek;", new[] { '\u02C7', });
+            Add("hairsp;", new[] { '\u200A', });
+            Add("half;", new[] { '\u00BD', });
+            Add("hamilt;", new[] { '\u210B', });
+            Add("HARDcy;", new[] { '\u042A', });
+            Add("hardcy;", new[] { '\u044A', });
+            Add("hArr;", new[] { '\u21D4', });
+            Add("harr;", new[] { '\u2194', });
+            Add("harrcir;", new[] { '\u2948', });
+            Add("harrw;", new[] { '\u21AD', });
+            Add("Hat;", new[] { '\u005E', });
+            Add("hbar;", new[] { '\u210F', });
+            Add("Hcirc;", new[] { '\u0124', });
+            Add("hcirc;", new[] { '\u0125', });
+            Add("hearts;", new[] { '\u2665', });
+            Add("heartsuit;", new[] { '\u2665', });
+            Add("hellip;", new[] { '\u2026', });
+            Add("hercon;", new[] { '\u22B9', });
+            Add("Hfr;", new[] { '\u210C', });
+            Add("hfr;", new[] { '\uD835', '\uDD25', });
+            Add("HilbertSpace;", new[] { '\u210B', });
+            Add("hksearow;", new[] { '\u2925', });
+            Add("hkswarow;", new[] { '\u2926', });
+            Add("hoarr;", new[] { '\u21FF', });
+            Add("homtht;", new[] { '\u223B', });
+            Add("hookleftarrow;", new[] { '\u21A9', });
+            Add("hookrightarrow;", new[] { '\u21AA', });
+            Add("Hopf;", new[] { '\u210D', });
+            Add("hopf;", new[] { '\uD835', '\uDD59', });
+            Add("horbar;", new[] { '\u2015', });
+            Add("HorizontalLine;", new[] { '\u2500', });
+            Add("Hscr;", new[] { '\u210B', });
+            Add("hscr;", new[] { '\uD835', '\uDCBD', });
+            Add("hslash;", new[] { '\u210F', });
+            Add("Hstrok;", new[] { '\u0126', });
+            Add("hstrok;", new[] { '\u0127', });
+            Add("HumpDownHump;", new[] { '\u224E', });
+            Add("HumpEqual;", new[] { '\u224F', });
+            Add("hybull;", new[] { '\u2043', });
+            Add("hyphen;", new[] { '\u2010', });
+            Add("Iacute;", new[] { '\u00CD', });
+            Add("Iacute", new[] { '\u00CD', });
+            Add("iacute;", new[] { '\u00ED', });
+            Add("iacute", new[] { '\u00ED', });
+            Add("ic;", new[] { '\u2063', });
+            Add("Icirc;", new[] { '\u00CE', });
+            Add("Icirc", new[] { '\u00CE', });
+            Add("icirc;", new[] { '\u00EE', });
+            Add("icirc", new[] { '\u00EE', });
+            Add("Icy;", new[] { '\u0418', });
+            Add("icy;", new[] { '\u0438', });
+            Add("Idot;", new[] { '\u0130', });
+            Add("IEcy;", new[] { '\u0415', });
+            Add("iecy;", new[] { '\u0435', });
+            Add("iexcl;", new[] { '\u00A1', });
+            Add("iexcl", new[] { '\u00A1', });
+            Add("iff;", new[] { '\u21D4', });
+            Add("Ifr;", new[] { '\u2111', });
+            Add("ifr;", new[] { '\uD835', '\uDD26', });
+            Add("Igrave;", new[] { '\u00CC', });
+            Add("Igrave", new[] { '\u00CC', });
+            Add("igrave;", new[] { '\u00EC', });
+            Add("igrave", new[] { '\u00EC', });
+            Add("ii;", new[] { '\u2148', });
+            Add("iiiint;", new[] { '\u2A0C', });
+            Add("iiint;", new[] { '\u222D', });
+            Add("iinfin;", new[] { '\u29DC', });
+            Add("iiota;", new[] { '\u2129', });
+            Add("IJlig;", new[] { '\u0132', });
+            Add("ijlig;", new[] { '\u0133', });
+            Add("Im;", new[] { '\u2111', });
+            Add("Imacr;", new[] { '\u012A', });
+            Add("imacr;", new[] { '\u012B', });
+            Add("image;", new[] { '\u2111', });
+            Add("ImaginaryI;", new[] { '\u2148', });
+            Add("imagline;", new[] { '\u2110', });
+            Add("imagpart;", new[] { '\u2111', });
+            Add("imath;", new[] { '\u0131', });
+            Add("imof;", new[] { '\u22B7', });
+            Add("imped;", new[] { '\u01B5', });
+            Add("Implies;", new[] { '\u21D2', });
+            Add("in;", new[] { '\u2208', });
+            Add("incare;", new[] { '\u2105', });
+            Add("infin;", new[] { '\u221E', });
+            Add("infintie;", new[] { '\u29DD', });
+            Add("inodot;", new[] { '\u0131', });
+            Add("Int;", new[] { '\u222C', });
+            Add("int;", new[] { '\u222B', });
+            Add("intcal;", new[] { '\u22BA', });
+            Add("integers;", new[] { '\u2124', });
+            Add("Integral;", new[] { '\u222B', });
+            Add("intercal;", new[] { '\u22BA', });
+            Add("Intersection;", new[] { '\u22C2', });
+            Add("intlarhk;", new[] { '\u2A17', });
+            Add("intprod;", new[] { '\u2A3C', });
+            Add("InvisibleComma;", new[] { '\u2063', });
+            Add("InvisibleTimes;", new[] { '\u2062', });
+            Add("IOcy;", new[] { '\u0401', });
+            Add("iocy;", new[] { '\u0451', });
+            Add("Iogon;", new[] { '\u012E', });
+            Add("iogon;", new[] { '\u012F', });
+            Add("Iopf;", new[] { '\uD835', '\uDD40', });
+            Add("iopf;", new[] { '\uD835', '\uDD5A', });
+            Add("Iota;", new[] { '\u0399', });
+            Add("iota;", new[] { '\u03B9', });
+            Add("iprod;", new[] { '\u2A3C', });
+            Add("iquest;", new[] { '\u00BF', });
+            Add("iquest", new[] { '\u00BF', });
+            Add("Iscr;", new[] { '\u2110', });
+            Add("iscr;", new[] { '\uD835', '\uDCBE', });
+            Add("isin;", new[] { '\u2208', });
+            Add("isindot;", new[] { '\u22F5', });
+            Add("isinE;", new[] { '\u22F9', });
+            Add("isins;", new[] { '\u22F4', });
+            Add("isinsv;", new[] { '\u22F3', });
+            Add("isinv;", new[] { '\u2208', });
+            Add("it;", new[] { '\u2062', });
+            Add("Itilde;", new[] { '\u0128', });
+            Add("itilde;", new[] { '\u0129', });
+            Add("Iukcy;", new[] { '\u0406', });
+            Add("iukcy;", new[] { '\u0456', });
+            Add("Iuml;", new[] { '\u00CF', });
+            Add("Iuml", new[] { '\u00CF', });
+            Add("iuml;", new[] { '\u00EF', });
+            Add("iuml", new[] { '\u00EF', });
+            Add("Jcirc;", new[] { '\u0134', });
+            Add("jcirc;", new[] { '\u0135', });
+            Add("Jcy;", new[] { '\u0419', });
+            Add("jcy;", new[] { '\u0439', });
+            Add("Jfr;", new[] { '\uD835', '\uDD0D', });
+            Add("jfr;", new[] { '\uD835', '\uDD27', });
+            Add("jmath;", new[] { '\u0237', });
+            Add("Jopf;", new[] { '\uD835', '\uDD41', });
+            Add("jopf;", new[] { '\uD835', '\uDD5B', });
+            Add("Jscr;", new[] { '\uD835', '\uDCA5', });
+            Add("jscr;", new[] { '\uD835', '\uDCBF', });
+            Add("Jsercy;", new[] { '\u0408', });
+            Add("jsercy;", new[] { '\u0458', });
+            Add("Jukcy;", new[] { '\u0404', });
+            Add("jukcy;", new[] { '\u0454', });
+            Add("Kappa;", new[] { '\u039A', });
+            Add("kappa;", new[] { '\u03BA', });
+            Add("kappav;", new[] { '\u03F0', });
+            Add("Kcedil;", new[] { '\u0136', });
+            Add("kcedil;", new[] { '\u0137', });
+            Add("Kcy;", new[] { '\u041A', });
+            Add("kcy;", new[] { '\u043A', });
+            Add("Kfr;", new[] { '\uD835', '\uDD0E', });
+            Add("kfr;", new[] { '\uD835', '\uDD28', });
+            Add("kgreen;", new[] { '\u0138', });
+            Add("KHcy;", new[] { '\u0425', });
+            Add("khcy;", new[] { '\u0445', });
+            Add("KJcy;", new[] { '\u040C', });
+            Add("kjcy;", new[] { '\u045C', });
+            Add("Kopf;", new[] { '\uD835', '\uDD42', });
+            Add("kopf;", new[] { '\uD835', '\uDD5C', });
+            Add("Kscr;", new[] { '\uD835', '\uDCA6', });
+            Add("kscr;", new[] { '\uD835', '\uDCC0', });
+            Add("lAarr;", new[] { '\u21DA', });
+            Add("Lacute;", new[] { '\u0139', });
+            Add("lacute;", new[] { '\u013A', });
+            Add("laemptyv;", new[] { '\u29B4', });
+            Add("lagran;", new[] { '\u2112', });
+            Add("Lambda;", new[] { '\u039B', });
+            Add("lambda;", new[] { '\u03BB', });
+            Add("Lang;", new[] { '\u27EA', });
+            Add("lang;", new[] { '\u27E8', });
+            Add("langd;", new[] { '\u2991', });
+            Add("langle;", new[] { '\u27E8', });
+            Add("lap;", new[] { '\u2A85', });
+            Add("Laplacetrf;", new[] { '\u2112', });
+            Add("laquo;", new[] { '\u00AB', });
+            Add("laquo", new[] { '\u00AB', });
+            Add("Larr;", new[] { '\u219E', });
+            Add("lArr;", new[] { '\u21D0', });
+            Add("larr;", new[] { '\u2190', });
+            Add("larrb;", new[] { '\u21E4', });
+            Add("larrbfs;", new[] { '\u291F', });
+            Add("larrfs;", new[] { '\u291D', });
+            Add("larrhk;", new[] { '\u21A9', });
+            Add("larrlp;", new[] { '\u21AB', });
+            Add("larrpl;", new[] { '\u2939', });
+            Add("larrsim;", new[] { '\u2973', });
+            Add("larrtl;", new[] { '\u21A2', });
+            Add("lat;", new[] { '\u2AAB', });
+            Add("lAtail;", new[] { '\u291B', });
+            Add("latail;", new[] { '\u2919', });
+            Add("late;", new[] { '\u2AAD', });
+            Add("lates;", new[] { '\u2AAD', '\uFE00', });
+            Add("lBarr;", new[] { '\u290E', });
+            Add("lbarr;", new[] { '\u290C', });
+            Add("lbbrk;", new[] { '\u2772', });
+            Add("lbrace;", new[] { '\u007B', });
+            Add("lbrack;", new[] { '\u005B', });
+            Add("lbrke;", new[] { '\u298B', });
+            Add("lbrksld;", new[] { '\u298F', });
+            Add("lbrkslu;", new[] { '\u298D', });
+            Add("Lcaron;", new[] { '\u013D', });
+            Add("lcaron;", new[] { '\u013E', });
+            Add("Lcedil;", new[] { '\u013B', });
+            Add("lcedil;", new[] { '\u013C', });
+            Add("lceil;", new[] { '\u2308', });
+            Add("lcub;", new[] { '\u007B', });
+            Add("Lcy;", new[] { '\u041B', });
+            Add("lcy;", new[] { '\u043B', });
+            Add("ldca;", new[] { '\u2936', });
+            Add("ldquo;", new[] { '\u201C', });
+            Add("ldquor;", new[] { '\u201E', });
+            Add("ldrdhar;", new[] { '\u2967', });
+            Add("ldrushar;", new[] { '\u294B', });
+            Add("ldsh;", new[] { '\u21B2', });
+            Add("lE;", new[] { '\u2266', });
+            Add("le;", new[] { '\u2264', });
+            Add("LeftAngleBracket;", new[] { '\u27E8', });
+            Add("LeftArrow;", new[] { '\u2190', });
+            Add("Leftarrow;", new[] { '\u21D0', });
+            Add("leftarrow;", new[] { '\u2190', });
+            Add("LeftArrowBar;", new[] { '\u21E4', });
+            Add("LeftArrowRightArrow;", new[] { '\u21C6', });
+            Add("leftarrowtail;", new[] { '\u21A2', });
+            Add("LeftCeiling;", new[] { '\u2308', });
+            Add("LeftDoubleBracket;", new[] { '\u27E6', });
+            Add("LeftDownTeeVector;", new[] { '\u2961', });
+            Add("LeftDownVector;", new[] { '\u21C3', });
+            Add("LeftDownVectorBar;", new[] { '\u2959', });
+            Add("LeftFloor;", new[] { '\u230A', });
+            Add("leftharpoondown;", new[] { '\u21BD', });
+            Add("leftharpoonup;", new[] { '\u21BC', });
+            Add("leftleftarrows;", new[] { '\u21C7', });
+            Add("LeftRightArrow;", new[] { '\u2194', });
+            Add("Leftrightarrow;", new[] { '\u21D4', });
+            Add("leftrightarrow;", new[] { '\u2194', });
+            Add("leftrightarrows;", new[] { '\u21C6', });
+            Add("leftrightharpoons;", new[] { '\u21CB', });
+            Add("leftrightsquigarrow;", new[] { '\u21AD', });
+            Add("LeftRightVector;", new[] { '\u294E', });
+            Add("LeftTee;", new[] { '\u22A3', });
+            Add("LeftTeeArrow;", new[] { '\u21A4', });
+            Add("LeftTeeVector;", new[] { '\u295A', });
+            Add("leftthreetimes;", new[] { '\u22CB', });
+            Add("LeftTriangle;", new[] { '\u22B2', });
+            Add("LeftTriangleBar;", new[] { '\u29CF', });
+            Add("LeftTriangleEqual;", new[] { '\u22B4', });
+            Add("LeftUpDownVector;", new[] { '\u2951', });
+            Add("LeftUpTeeVector;", new[] { '\u2960', });
+            Add("LeftUpVector;", new[] { '\u21BF', });
+            Add("LeftUpVectorBar;", new[] { '\u2958', });
+            Add("LeftVector;", new[] { '\u21BC', });
+            Add("LeftVectorBar;", new[] { '\u2952', });
+            Add("lEg;", new[] { '\u2A8B', });
+            Add("leg;", new[] { '\u22DA', });
+            Add("leq;", new[] { '\u2264', });
+            Add("leqq;", new[] { '\u2266', });
+            Add("leqslant;", new[] { '\u2A7D', });
+            Add("les;", new[] { '\u2A7D', });
+            Add("lescc;", new[] { '\u2AA8', });
+            Add("lesdot;", new[] { '\u2A7F', });
+            Add("lesdoto;", new[] { '\u2A81', });
+            Add("lesdotor;", new[] { '\u2A83', });
+            Add("lesg;", new[] { '\u22DA', '\uFE00', });
+            Add("lesges;", new[] { '\u2A93', });
+            Add("lessapprox;", new[] { '\u2A85', });
+            Add("lessdot;", new[] { '\u22D6', });
+            Add("lesseqgtr;", new[] { '\u22DA', });
+            Add("lesseqqgtr;", new[] { '\u2A8B', });
+            Add("LessEqualGreater;", new[] { '\u22DA', });
+            Add("LessFullEqual;", new[] { '\u2266', });
+            Add("LessGreater;", new[] { '\u2276', });
+            Add("lessgtr;", new[] { '\u2276', });
+            Add("LessLess;", new[] { '\u2AA1', });
+            Add("lesssim;", new[] { '\u2272', });
+            Add("LessSlantEqual;", new[] { '\u2A7D', });
+            Add("LessTilde;", new[] { '\u2272', });
+            Add("lfisht;", new[] { '\u297C', });
+            Add("lfloor;", new[] { '\u230A', });
+            Add("Lfr;", new[] { '\uD835', '\uDD0F', });
+            Add("lfr;", new[] { '\uD835', '\uDD29', });
+            Add("lg;", new[] { '\u2276', });
+            Add("lgE;", new[] { '\u2A91', });
+            Add("lHar;", new[] { '\u2962', });
+            Add("lhard;", new[] { '\u21BD', });
+            Add("lharu;", new[] { '\u21BC', });
+            Add("lharul;", new[] { '\u296A', });
+            Add("lhblk;", new[] { '\u2584', });
+            Add("LJcy;", new[] { '\u0409', });
+            Add("ljcy;", new[] { '\u0459', });
+            Add("Ll;", new[] { '\u22D8', });
+            Add("ll;", new[] { '\u226A', });
+            Add("llarr;", new[] { '\u21C7', });
+            Add("llcorner;", new[] { '\u231E', });
+            Add("Lleftarrow;", new[] { '\u21DA', });
+            Add("llhard;", new[] { '\u296B', });
+            Add("lltri;", new[] { '\u25FA', });
+            Add("Lmidot;", new[] { '\u013F', });
+            Add("lmidot;", new[] { '\u0140', });
+            Add("lmoust;", new[] { '\u23B0', });
+            Add("lmoustache;", new[] { '\u23B0', });
+            Add("lnap;", new[] { '\u2A89', });
+            Add("lnapprox;", new[] { '\u2A89', });
+            Add("lnE;", new[] { '\u2268', });
+            Add("lne;", new[] { '\u2A87', });
+            Add("lneq;", new[] { '\u2A87', });
+            Add("lneqq;", new[] { '\u2268', });
+            Add("lnsim;", new[] { '\u22E6', });
+            Add("loang;", new[] { '\u27EC', });
+            Add("loarr;", new[] { '\u21FD', });
+            Add("lobrk;", new[] { '\u27E6', });
+            Add("LongLeftArrow;", new[] { '\u27F5', });
+            Add("Longleftarrow;", new[] { '\u27F8', });
+            Add("longleftarrow;", new[] { '\u27F5', });
+            Add("LongLeftRightArrow;", new[] { '\u27F7', });
+            Add("Longleftrightarrow;", new[] { '\u27FA', });
+            Add("longleftrightarrow;", new[] { '\u27F7', });
+            Add("longmapsto;", new[] { '\u27FC', });
+            Add("LongRightArrow;", new[] { '\u27F6', });
+            Add("Longrightarrow;", new[] { '\u27F9', });
+            Add("longrightarrow;", new[] { '\u27F6', });
+            Add("looparrowleft;", new[] { '\u21AB', });
+            Add("looparrowright;", new[] { '\u21AC', });
+            Add("lopar;", new[] { '\u2985', });
+            Add("Lopf;", new[] { '\uD835', '\uDD43', });
+            Add("lopf;", new[] { '\uD835', '\uDD5D', });
+            Add("loplus;", new[] { '\u2A2D', });
+            Add("lotimes;", new[] { '\u2A34', });
+            Add("lowast;", new[] { '\u2217', });
+            Add("lowbar;", new[] { '\u005F', });
+            Add("LowerLeftArrow;", new[] { '\u2199', });
+            Add("LowerRightArrow;", new[] { '\u2198', });
+            Add("loz;", new[] { '\u25CA', });
+            Add("lozenge;", new[] { '\u25CA', });
+            Add("lozf;", new[] { '\u29EB', });
+            Add("lpar;", new[] { '\u0028', });
+            Add("lparlt;", new[] { '\u2993', });
+            Add("lrarr;", new[] { '\u21C6', });
+            Add("lrcorner;", new[] { '\u231F', });
+            Add("lrhar;", new[] { '\u21CB', });
+            Add("lrhard;", new[] { '\u296D', });
+            Add("lrm;", new[] { '\u200E', });
+            Add("lrtri;", new[] { '\u22BF', });
+            Add("lsaquo;", new[] { '\u2039', });
+            Add("Lscr;", new[] { '\u2112', });
+            Add("lscr;", new[] { '\uD835', '\uDCC1', });
+            Add("Lsh;", new[] { '\u21B0', });
+            Add("lsh;", new[] { '\u21B0', });
+            Add("lsim;", new[] { '\u2272', });
+            Add("lsime;", new[] { '\u2A8D', });
+            Add("lsimg;", new[] { '\u2A8F', });
+            Add("lsqb;", new[] { '\u005B', });
+            Add("lsquo;", new[] { '\u2018', });
+            Add("lsquor;", new[] { '\u201A', });
+            Add("Lstrok;", new[] { '\u0141', });
+            Add("lstrok;", new[] { '\u0142', });
+            Add("LT;", new[] { '\u003C', });
+            Add("LT", new[] { '\u003C', });
+            Add("Lt;", new[] { '\u226A', });
+            Add("lt;", new[] { '\u003C', });
+            Add("lt", new[] { '\u003C', });
+            Add("ltcc;", new[] { '\u2AA6', });
+            Add("ltcir;", new[] { '\u2A79', });
+            Add("ltdot;", new[] { '\u22D6', });
+            Add("lthree;", new[] { '\u22CB', });
+            Add("ltimes;", new[] { '\u22C9', });
+            Add("ltlarr;", new[] { '\u2976', });
+            Add("ltquest;", new[] { '\u2A7B', });
+            Add("ltri;", new[] { '\u25C3', });
+            Add("ltrie;", new[] { '\u22B4', });
+            Add("ltrif;", new[] { '\u25C2', });
+            Add("ltrPar;", new[] { '\u2996', });
+            Add("lurdshar;", new[] { '\u294A', });
+            Add("luruhar;", new[] { '\u2966', });
+            Add("lvertneqq;", new[] { '\u2268', '\uFE00', });
+            Add("lvnE;", new[] { '\u2268', '\uFE00', });
+            Add("macr;", new[] { '\u00AF', });
+            Add("macr", new[] { '\u00AF', });
+            Add("male;", new[] { '\u2642', });
+            Add("malt;", new[] { '\u2720', });
+            Add("maltese;", new[] { '\u2720', });
+            Add("Map;", new[] { '\u2905', });
+            Add("map;", new[] { '\u21A6', });
+            Add("mapsto;", new[] { '\u21A6', });
+            Add("mapstodown;", new[] { '\u21A7', });
+            Add("mapstoleft;", new[] { '\u21A4', });
+            Add("mapstoup;", new[] { '\u21A5', });
+            Add("marker;", new[] { '\u25AE', });
+            Add("mcomma;", new[] { '\u2A29', });
+            Add("Mcy;", new[] { '\u041C', });
+            Add("mcy;", new[] { '\u043C', });
+            Add("mdash;", new[] { '\u2014', });
+            Add("mDDot;", new[] { '\u223A', });
+            Add("measuredangle;", new[] { '\u2221', });
+            Add("MediumSpace;", new[] { '\u205F', });
+            Add("Mellintrf;", new[] { '\u2133', });
+            Add("Mfr;", new[] { '\uD835', '\uDD10', });
+            Add("mfr;", new[] { '\uD835', '\uDD2A', });
+            Add("mho;", new[] { '\u2127', });
+            Add("micro;", new[] { '\u00B5', });
+            Add("micro", new[] { '\u00B5', });
+            Add("mid;", new[] { '\u2223', });
+            Add("midast;", new[] { '\u002A', });
+            Add("midcir;", new[] { '\u2AF0', });
+            Add("middot;", new[] { '\u00B7', });
+            Add("middot", new[] { '\u00B7', });
+            Add("minus;", new[] { '\u2212', });
+            Add("minusb;", new[] { '\u229F', });
+            Add("minusd;", new[] { '\u2238', });
+            Add("minusdu;", new[] { '\u2A2A', });
+            Add("MinusPlus;", new[] { '\u2213', });
+            Add("mlcp;", new[] { '\u2ADB', });
+            Add("mldr;", new[] { '\u2026', });
+            Add("mnplus;", new[] { '\u2213', });
+            Add("models;", new[] { '\u22A7', });
+            Add("Mopf;", new[] { '\uD835', '\uDD44', });
+            Add("mopf;", new[] { '\uD835', '\uDD5E', });
+            Add("mp;", new[] { '\u2213', });
+            Add("Mscr;", new[] { '\u2133', });
+            Add("mscr;", new[] { '\uD835', '\uDCC2', });
+            Add("mstpos;", new[] { '\u223E', });
+            Add("Mu;", new[] { '\u039C', });
+            Add("mu;", new[] { '\u03BC', });
+            Add("multimap;", new[] { '\u22B8', });
+            Add("mumap;", new[] { '\u22B8', });
+            Add("nabla;", new[] { '\u2207', });
+            Add("Nacute;", new[] { '\u0143', });
+            Add("nacute;", new[] { '\u0144', });
+            Add("nang;", new[] { '\u2220', '\u20D2', });
+            Add("nap;", new[] { '\u2249', });
+            Add("napE;", new[] { '\u2A70', '\u0338', });
+            Add("napid;", new[] { '\u224B', '\u0338', });
+            Add("napos;", new[] { '\u0149', });
+            Add("napprox;", new[] { '\u2249', });
+            Add("natur;", new[] { '\u266E', });
+            Add("natural;", new[] { '\u266E', });
+            Add("naturals;", new[] { '\u2115', });
+            Add("nbsp;", new[] { '\u00A0', });
+            Add("nbsp", new[] { '\u00A0', });
+            Add("nbump;", new[] { '\u224E', '\u0338', });
+            Add("nbumpe;", new[] { '\u224F', '\u0338', });
+            Add("ncap;", new[] { '\u2A43', });
+            Add("Ncaron;", new[] { '\u0147', });
+            Add("ncaron;", new[] { '\u0148', });
+            Add("Ncedil;", new[] { '\u0145', });
+            Add("ncedil;", new[] { '\u0146', });
+            Add("ncong;", new[] { '\u2247', });
+            Add("ncongdot;", new[] { '\u2A6D', '\u0338', });
+            Add("ncup;", new[] { '\u2A42', });
+            Add("Ncy;", new[] { '\u041D', });
+            Add("ncy;", new[] { '\u043D', });
+            Add("ndash;", new[] { '\u2013', });
+            Add("ne;", new[] { '\u2260', });
+            Add("nearhk;", new[] { '\u2924', });
+            Add("neArr;", new[] { '\u21D7', });
+            Add("nearr;", new[] { '\u2197', });
+            Add("nearrow;", new[] { '\u2197', });
+            Add("nedot;", new[] { '\u2250', '\u0338', });
+            Add("NegativeMediumSpace;", new[] { '\u200B', });
+            Add("NegativeThickSpace;", new[] { '\u200B', });
+            Add("NegativeThinSpace;", new[] { '\u200B', });
+            Add("NegativeVeryThinSpace;", new[] { '\u200B', });
+            Add("nequiv;", new[] { '\u2262', });
+            Add("nesear;", new[] { '\u2928', });
+            Add("nesim;", new[] { '\u2242', '\u0338', });
+            Add("NestedGreaterGreater;", new[] { '\u226B', });
+            Add("NestedLessLess;", new[] { '\u226A', });
+            Add("NewLine;", new[] { '\u000A', });
+            Add("nexist;", new[] { '\u2204', });
+            Add("nexists;", new[] { '\u2204', });
+            Add("Nfr;", new[] { '\uD835', '\uDD11', });
+            Add("nfr;", new[] { '\uD835', '\uDD2B', });
+            Add("ngE;", new[] { '\u2267', '\u0338', });
+            Add("nge;", new[] { '\u2271', });
+            Add("ngeq;", new[] { '\u2271', });
+            Add("ngeqq;", new[] { '\u2267', '\u0338', });
+            Add("ngeqslant;", new[] { '\u2A7E', '\u0338', });
+            Add("nges;", new[] { '\u2A7E', '\u0338', });
+            Add("nGg;", new[] { '\u22D9', '\u0338', });
+            Add("ngsim;", new[] { '\u2275', });
+            Add("nGt;", new[] { '\u226B', '\u20D2', });
+            Add("ngt;", new[] { '\u226F', });
+            Add("ngtr;", new[] { '\u226F', });
+            Add("nGtv;", new[] { '\u226B', '\u0338', });
+            Add("nhArr;", new[] { '\u21CE', });
+            Add("nharr;", new[] { '\u21AE', });
+            Add("nhpar;", new[] { '\u2AF2', });
+            Add("ni;", new[] { '\u220B', });
+            Add("nis;", new[] { '\u22FC', });
+            Add("nisd;", new[] { '\u22FA', });
+            Add("niv;", new[] { '\u220B', });
+            Add("NJcy;", new[] { '\u040A', });
+            Add("njcy;", new[] { '\u045A', });
+            Add("nlArr;", new[] { '\u21CD', });
+            Add("nlarr;", new[] { '\u219A', });
+            Add("nldr;", new[] { '\u2025', });
+            Add("nlE;", new[] { '\u2266', '\u0338', });
+            Add("nle;", new[] { '\u2270', });
+            Add("nLeftarrow;", new[] { '\u21CD', });
+            Add("nleftarrow;", new[] { '\u219A', });
+            Add("nLeftrightarrow;", new[] { '\u21CE', });
+            Add("nleftrightarrow;", new[] { '\u21AE', });
+            Add("nleq;", new[] { '\u2270', });
+            Add("nleqq;", new[] { '\u2266', '\u0338', });
+            Add("nleqslant;", new[] { '\u2A7D', '\u0338', });
+            Add("nles;", new[] { '\u2A7D', '\u0338', });
+            Add("nless;", new[] { '\u226E', });
+            Add("nLl;", new[] { '\u22D8', '\u0338', });
+            Add("nlsim;", new[] { '\u2274', });
+            Add("nLt;", new[] { '\u226A', '\u20D2', });
+            Add("nlt;", new[] { '\u226E', });
+            Add("nltri;", new[] { '\u22EA', });
+            Add("nltrie;", new[] { '\u22EC', });
+            Add("nLtv;", new[] { '\u226A', '\u0338', });
+            Add("nmid;", new[] { '\u2224', });
+            Add("NoBreak;", new[] { '\u2060', });
+            Add("NonBreakingSpace;", new[] { '\u00A0', });
+            Add("Nopf;", new[] { '\u2115', });
+            Add("nopf;", new[] { '\uD835', '\uDD5F', });
+            Add("Not;", new[] { '\u2AEC', });
+            Add("not;", new[] { '\u00AC', });
+            Add("not", new[] { '\u00AC', });
+            Add("NotCongruent;", new[] { '\u2262', });
+            Add("NotCupCap;", new[] { '\u226D', });
+            Add("NotDoubleVerticalBar;", new[] { '\u2226', });
+            Add("NotElement;", new[] { '\u2209', });
+            Add("NotEqual;", new[] { '\u2260', });
+            Add("NotEqualTilde;", new[] { '\u2242', '\u0338', });
+            Add("NotExists;", new[] { '\u2204', });
+            Add("NotGreater;", new[] { '\u226F', });
+            Add("NotGreaterEqual;", new[] { '\u2271', });
+            Add("NotGreaterFullEqual;", new[] { '\u2267', '\u0338', });
+            Add("NotGreaterGreater;", new[] { '\u226B', '\u0338', });
+            Add("NotGreaterLess;", new[] { '\u2279', });
+            Add("NotGreaterSlantEqual;", new[] { '\u2A7E', '\u0338', });
+            Add("NotGreaterTilde;", new[] { '\u2275', });
+            Add("NotHumpDownHump;", new[] { '\u224E', '\u0338', });
+            Add("NotHumpEqual;", new[] { '\u224F', '\u0338', });
+            Add("notin;", new[] { '\u2209', });
+            Add("notindot;", new[] { '\u22F5', '\u0338', });
+            Add("notinE;", new[] { '\u22F9', '\u0338', });
+            Add("notinva;", new[] { '\u2209', });
+            Add("notinvb;", new[] { '\u22F7', });
+            Add("notinvc;", new[] { '\u22F6', });
+            Add("NotLeftTriangle;", new[] { '\u22EA', });
+            Add("NotLeftTriangleBar;", new[] { '\u29CF', '\u0338', });
+            Add("NotLeftTriangleEqual;", new[] { '\u22EC', });
+            Add("NotLess;", new[] { '\u226E', });
+            Add("NotLessEqual;", new[] { '\u2270', });
+            Add("NotLessGreater;", new[] { '\u2278', });
+            Add("NotLessLess;", new[] { '\u226A', '\u0338', });
+            Add("NotLessSlantEqual;", new[] { '\u2A7D', '\u0338', });
+            Add("NotLessTilde;", new[] { '\u2274', });
+            Add("NotNestedGreaterGreater;", new[] { '\u2AA2', '\u0338', });
+            Add("NotNestedLessLess;", new[] { '\u2AA1', '\u0338', });
+            Add("notni;", new[] { '\u220C', });
+            Add("notniva;", new[] { '\u220C', });
+            Add("notnivb;", new[] { '\u22FE', });
+            Add("notnivc;", new[] { '\u22FD', });
+            Add("NotPrecedes;", new[] { '\u2280', });
+            Add("NotPrecedesEqual;", new[] { '\u2AAF', '\u0338', });
+            Add("NotPrecedesSlantEqual;", new[] { '\u22E0', });
+            Add("NotReverseElement;", new[] { '\u220C', });
+            Add("NotRightTriangle;", new[] { '\u22EB', });
+            Add("NotRightTriangleBar;", new[] { '\u29D0', '\u0338', });
+            Add("NotRightTriangleEqual;", new[] { '\u22ED', });
+            Add("NotSquareSubset;", new[] { '\u228F', '\u0338', });
+            Add("NotSquareSubsetEqual;", new[] { '\u22E2', });
+            Add("NotSquareSuperset;", new[] { '\u2290', '\u0338', });
+            Add("NotSquareSupersetEqual;", new[] { '\u22E3', });
+            Add("NotSubset;", new[] { '\u2282', '\u20D2', });
+            Add("NotSubsetEqual;", new[] { '\u2288', });
+            Add("NotSucceeds;", new[] { '\u2281', });
+            Add("NotSucceedsEqual;", new[] { '\u2AB0', '\u0338', });
+            Add("NotSucceedsSlantEqual;", new[] { '\u22E1', });
+            Add("NotSucceedsTilde;", new[] { '\u227F', '\u0338', });
+            Add("NotSuperset;", new[] { '\u2283', '\u20D2', });
+            Add("NotSupersetEqual;", new[] { '\u2289', });
+            Add("NotTilde;", new[] { '\u2241', });
+            Add("NotTildeEqual;", new[] { '\u2244', });
+            Add("NotTildeFullEqual;", new[] { '\u2247', });
+            Add("NotTildeTilde;", new[] { '\u2249', });
+            Add("NotVerticalBar;", new[] { '\u2224', });
+            Add("npar;", new[] { '\u2226', });
+            Add("nparallel;", new[] { '\u2226', });
+            Add("nparsl;", new[] { '\u2AFD', '\u20E5', });
+            Add("npart;", new[] { '\u2202', '\u0338', });
+            Add("npolint;", new[] { '\u2A14', });
+            Add("npr;", new[] { '\u2280', });
+            Add("nprcue;", new[] { '\u22E0', });
+            Add("npre;", new[] { '\u2AAF', '\u0338', });
+            Add("nprec;", new[] { '\u2280', });
+            Add("npreceq;", new[] { '\u2AAF', '\u0338', });
+            Add("nrArr;", new[] { '\u21CF', });
+            Add("nrarr;", new[] { '\u219B', });
+            Add("nrarrc;", new[] { '\u2933', '\u0338', });
+            Add("nrarrw;", new[] { '\u219D', '\u0338', });
+            Add("nRightarrow;", new[] { '\u21CF', });
+            Add("nrightarrow;", new[] { '\u219B', });
+            Add("nrtri;", new[] { '\u22EB', });
+            Add("nrtrie;", new[] { '\u22ED', });
+            Add("nsc;", new[] { '\u2281', });
+            Add("nsccue;", new[] { '\u22E1', });
+            Add("nsce;", new[] { '\u2AB0', '\u0338', });
+            Add("Nscr;", new[] { '\uD835', '\uDCA9', });
+            Add("nscr;", new[] { '\uD835', '\uDCC3', });
+            Add("nshortmid;", new[] { '\u2224', });
+            Add("nshortparallel;", new[] { '\u2226', });
+            Add("nsim;", new[] { '\u2241', });
+            Add("nsime;", new[] { '\u2244', });
+            Add("nsimeq;", new[] { '\u2244', });
+            Add("nsmid;", new[] { '\u2224', });
+            Add("nspar;", new[] { '\u2226', });
+            Add("nsqsube;", new[] { '\u22E2', });
+            Add("nsqsupe;", new[] { '\u22E3', });
+            Add("nsub;", new[] { '\u2284', });
+            Add("nsubE;", new[] { '\u2AC5', '\u0338', });
+            Add("nsube;", new[] { '\u2288', });
+            Add("nsubset;", new[] { '\u2282', '\u20D2', });
+            Add("nsubseteq;", new[] { '\u2288', });
+            Add("nsubseteqq;", new[] { '\u2AC5', '\u0338', });
+            Add("nsucc;", new[] { '\u2281', });
+            Add("nsucceq;", new[] { '\u2AB0', '\u0338', });
+            Add("nsup;", new[] { '\u2285', });
+            Add("nsupE;", new[] { '\u2AC6', '\u0338', });
+            Add("nsupe;", new[] { '\u2289', });
+            Add("nsupset;", new[] { '\u2283', '\u20D2', });
+            Add("nsupseteq;", new[] { '\u2289', });
+            Add("nsupseteqq;", new[] { '\u2AC6', '\u0338', });
+            Add("ntgl;", new[] { '\u2279', });
+            Add("Ntilde;", new[] { '\u00D1', });
+            Add("Ntilde", new[] { '\u00D1', });
+            Add("ntilde;", new[] { '\u00F1', });
+            Add("ntilde", new[] { '\u00F1', });
+            Add("ntlg;", new[] { '\u2278', });
+            Add("ntriangleleft;", new[] { '\u22EA', });
+            Add("ntrianglelefteq;", new[] { '\u22EC', });
+            Add("ntriangleright;", new[] { '\u22EB', });
+            Add("ntrianglerighteq;", new[] { '\u22ED', });
+            Add("Nu;", new[] { '\u039D', });
+            Add("nu;", new[] { '\u03BD', });
+            Add("num;", new[] { '\u0023', });
+            Add("numero;", new[] { '\u2116', });
+            Add("numsp;", new[] { '\u2007', });
+            Add("nvap;", new[] { '\u224D', '\u20D2', });
+            Add("nVDash;", new[] { '\u22AF', });
+            Add("nVdash;", new[] { '\u22AE', });
+            Add("nvDash;", new[] { '\u22AD', });
+            Add("nvdash;", new[] { '\u22AC', });
+            Add("nvge;", new[] { '\u2265', '\u20D2', });
+            Add("nvgt;", new[] { '\u003E', '\u20D2', });
+            Add("nvHarr;", new[] { '\u2904', });
+            Add("nvinfin;", new[] { '\u29DE', });
+            Add("nvlArr;", new[] { '\u2902', });
+            Add("nvle;", new[] { '\u2264', '\u20D2', });
+            Add("nvlt;", new[] { '\u003C', '\u20D2', });
+            Add("nvltrie;", new[] { '\u22B4', '\u20D2', });
+            Add("nvrArr;", new[] { '\u2903', });
+            Add("nvrtrie;", new[] { '\u22B5', '\u20D2', });
+            Add("nvsim;", new[] { '\u223C', '\u20D2', });
+            Add("nwarhk;", new[] { '\u2923', });
+            Add("nwArr;", new[] { '\u21D6', });
+            Add("nwarr;", new[] { '\u2196', });
+            Add("nwarrow;", new[] { '\u2196', });
+            Add("nwnear;", new[] { '\u2927', });
+            Add("Oacute;", new[] { '\u00D3', });
+            Add("Oacute", new[] { '\u00D3', });
+            Add("oacute;", new[] { '\u00F3', });
+            Add("oacute", new[] { '\u00F3', });
+            Add("oast;", new[] { '\u229B', });
+            Add("ocir;", new[] { '\u229A', });
+            Add("Ocirc;", new[] { '\u00D4', });
+            Add("Ocirc", new[] { '\u00D4', });
+            Add("ocirc;", new[] { '\u00F4', });
+            Add("ocirc", new[] { '\u00F4', });
+            Add("Ocy;", new[] { '\u041E', });
+            Add("ocy;", new[] { '\u043E', });
+            Add("odash;", new[] { '\u229D', });
+            Add("Odblac;", new[] { '\u0150', });
+            Add("odblac;", new[] { '\u0151', });
+            Add("odiv;", new[] { '\u2A38', });
+            Add("odot;", new[] { '\u2299', });
+            Add("odsold;", new[] { '\u29BC', });
+            Add("OElig;", new[] { '\u0152', });
+            Add("oelig;", new[] { '\u0153', });
+            Add("ofcir;", new[] { '\u29BF', });
+            Add("Ofr;", new[] { '\uD835', '\uDD12', });
+            Add("ofr;", new[] { '\uD835', '\uDD2C', });
+            Add("ogon;", new[] { '\u02DB', });
+            Add("Ograve;", new[] { '\u00D2', });
+            Add("Ograve", new[] { '\u00D2', });
+            Add("ograve;", new[] { '\u00F2', });
+            Add("ograve", new[] { '\u00F2', });
+            Add("ogt;", new[] { '\u29C1', });
+            Add("ohbar;", new[] { '\u29B5', });
+            Add("ohm;", new[] { '\u03A9', });
+            Add("oint;", new[] { '\u222E', });
+            Add("olarr;", new[] { '\u21BA', });
+            Add("olcir;", new[] { '\u29BE', });
+            Add("olcross;", new[] { '\u29BB', });
+            Add("oline;", new[] { '\u203E', });
+            Add("olt;", new[] { '\u29C0', });
+            Add("Omacr;", new[] { '\u014C', });
+            Add("omacr;", new[] { '\u014D', });
+            Add("Omega;", new[] { '\u03A9', });
+            Add("omega;", new[] { '\u03C9', });
+            Add("Omicron;", new[] { '\u039F', });
+            Add("omicron;", new[] { '\u03BF', });
+            Add("omid;", new[] { '\u29B6', });
+            Add("ominus;", new[] { '\u2296', });
+            Add("Oopf;", new[] { '\uD835', '\uDD46', });
+            Add("oopf;", new[] { '\uD835', '\uDD60', });
+            Add("opar;", new[] { '\u29B7', });
+            Add("OpenCurlyDoubleQuote;", new[] { '\u201C', });
+            Add("OpenCurlyQuote;", new[] { '\u2018', });
+            Add("operp;", new[] { '\u29B9', });
+            Add("oplus;", new[] { '\u2295', });
+            Add("Or;", new[] { '\u2A54', });
+            Add("or;", new[] { '\u2228', });
+            Add("orarr;", new[] { '\u21BB', });
+            Add("ord;", new[] { '\u2A5D', });
+            Add("order;", new[] { '\u2134', });
+            Add("orderof;", new[] { '\u2134', });
+            Add("ordf;", new[] { '\u00AA', });
+            Add("ordf", new[] { '\u00AA', });
+            Add("ordm;", new[] { '\u00BA', });
+            Add("ordm", new[] { '\u00BA', });
+            Add("origof;", new[] { '\u22B6', });
+            Add("oror;", new[] { '\u2A56', });
+            Add("orslope;", new[] { '\u2A57', });
+            Add("orv;", new[] { '\u2A5B', });
+            Add("oS;", new[] { '\u24C8', });
+            Add("Oscr;", new[] { '\uD835', '\uDCAA', });
+            Add("oscr;", new[] { '\u2134', });
+            Add("Oslash;", new[] { '\u00D8', });
+            Add("Oslash", new[] { '\u00D8', });
+            Add("oslash;", new[] { '\u00F8', });
+            Add("oslash", new[] { '\u00F8', });
+            Add("osol;", new[] { '\u2298', });
+            Add("Otilde;", new[] { '\u00D5', });
+            Add("Otilde", new[] { '\u00D5', });
+            Add("otilde;", new[] { '\u00F5', });
+            Add("otilde", new[] { '\u00F5', });
+            Add("Otimes;", new[] { '\u2A37', });
+            Add("otimes;", new[] { '\u2297', });
+            Add("otimesas;", new[] { '\u2A36', });
+            Add("Ouml;", new[] { '\u00D6', });
+            Add("Ouml", new[] { '\u00D6', });
+            Add("ouml;", new[] { '\u00F6', });
+            Add("ouml", new[] { '\u00F6', });
+            Add("ovbar;", new[] { '\u233D', });
+            Add("OverBar;", new[] { '\u203E', });
+            Add("OverBrace;", new[] { '\u23DE', });
+            Add("OverBracket;", new[] { '\u23B4', });
+            Add("OverParenthesis;", new[] { '\u23DC', });
+            Add("par;", new[] { '\u2225', });
+            Add("para;", new[] { '\u00B6', });
+            Add("para", new[] { '\u00B6', });
+            Add("parallel;", new[] { '\u2225', });
+            Add("parsim;", new[] { '\u2AF3', });
+            Add("parsl;", new[] { '\u2AFD', });
+            Add("part;", new[] { '\u2202', });
+            Add("PartialD;", new[] { '\u2202', });
+            Add("Pcy;", new[] { '\u041F', });
+            Add("pcy;", new[] { '\u043F', });
+            Add("percnt;", new[] { '\u0025', });
+            Add("period;", new[] { '\u002E', });
+            Add("permil;", new[] { '\u2030', });
+            Add("perp;", new[] { '\u22A5', });
+            Add("pertenk;", new[] { '\u2031', });
+            Add("Pfr;", new[] { '\uD835', '\uDD13', });
+            Add("pfr;", new[] { '\uD835', '\uDD2D', });
+            Add("Phi;", new[] { '\u03A6', });
+            Add("phi;", new[] { '\u03C6', });
+            Add("phiv;", new[] { '\u03D5', });
+            Add("phmmat;", new[] { '\u2133', });
+            Add("phone;", new[] { '\u260E', });
+            Add("Pi;", new[] { '\u03A0', });
+            Add("pi;", new[] { '\u03C0', });
+            Add("pitchfork;", new[] { '\u22D4', });
+            Add("piv;", new[] { '\u03D6', });
+            Add("planck;", new[] { '\u210F', });
+            Add("planckh;", new[] { '\u210E', });
+            Add("plankv;", new[] { '\u210F', });
+            Add("plus;", new[] { '\u002B', });
+            Add("plusacir;", new[] { '\u2A23', });
+            Add("plusb;", new[] { '\u229E', });
+            Add("pluscir;", new[] { '\u2A22', });
+            Add("plusdo;", new[] { '\u2214', });
+            Add("plusdu;", new[] { '\u2A25', });
+            Add("pluse;", new[] { '\u2A72', });
+            Add("PlusMinus;", new[] { '\u00B1', });
+            Add("plusmn;", new[] { '\u00B1', });
+            Add("plusmn", new[] { '\u00B1', });
+            Add("plussim;", new[] { '\u2A26', });
+            Add("plustwo;", new[] { '\u2A27', });
+            Add("pm;", new[] { '\u00B1', });
+            Add("Poincareplane;", new[] { '\u210C', });
+            Add("pointint;", new[] { '\u2A15', });
+            Add("Popf;", new[] { '\u2119', });
+            Add("popf;", new[] { '\uD835', '\uDD61', });
+            Add("pound;", new[] { '\u00A3', });
+            Add("pound", new[] { '\u00A3', });
+            Add("Pr;", new[] { '\u2ABB', });
+            Add("pr;", new[] { '\u227A', });
+            Add("prap;", new[] { '\u2AB7', });
+            Add("prcue;", new[] { '\u227C', });
+            Add("prE;", new[] { '\u2AB3', });
+            Add("pre;", new[] { '\u2AAF', });
+            Add("prec;", new[] { '\u227A', });
+            Add("precapprox;", new[] { '\u2AB7', });
+            Add("preccurlyeq;", new[] { '\u227C', });
+            Add("Precedes;", new[] { '\u227A', });
+            Add("PrecedesEqual;", new[] { '\u2AAF', });
+            Add("PrecedesSlantEqual;", new[] { '\u227C', });
+            Add("PrecedesTilde;", new[] { '\u227E', });
+            Add("preceq;", new[] { '\u2AAF', });
+            Add("precnapprox;", new[] { '\u2AB9', });
+            Add("precneqq;", new[] { '\u2AB5', });
+            Add("precnsim;", new[] { '\u22E8', });
+            Add("precsim;", new[] { '\u227E', });
+            Add("Prime;", new[] { '\u2033', });
+            Add("prime;", new[] { '\u2032', });
+            Add("primes;", new[] { '\u2119', });
+            Add("prnap;", new[] { '\u2AB9', });
+            Add("prnE;", new[] { '\u2AB5', });
+            Add("prnsim;", new[] { '\u22E8', });
+            Add("prod;", new[] { '\u220F', });
+            Add("Product;", new[] { '\u220F', });
+            Add("profalar;", new[] { '\u232E', });
+            Add("profline;", new[] { '\u2312', });
+            Add("profsurf;", new[] { '\u2313', });
+            Add("prop;", new[] { '\u221D', });
+            Add("Proportion;", new[] { '\u2237', });
+            Add("Proportional;", new[] { '\u221D', });
+            Add("propto;", new[] { '\u221D', });
+            Add("prsim;", new[] { '\u227E', });
+            Add("prurel;", new[] { '\u22B0', });
+            Add("Pscr;", new[] { '\uD835', '\uDCAB', });
+            Add("pscr;", new[] { '\uD835', '\uDCC5', });
+            Add("Psi;", new[] { '\u03A8', });
+            Add("psi;", new[] { '\u03C8', });
+            Add("puncsp;", new[] { '\u2008', });
+            Add("Qfr;", new[] { '\uD835', '\uDD14', });
+            Add("qfr;", new[] { '\uD835', '\uDD2E', });
+            Add("qint;", new[] { '\u2A0C', });
+            Add("Qopf;", new[] { '\u211A', });
+            Add("qopf;", new[] { '\uD835', '\uDD62', });
+            Add("qprime;", new[] { '\u2057', });
+            Add("Qscr;", new[] { '\uD835', '\uDCAC', });
+            Add("qscr;", new[] { '\uD835', '\uDCC6', });
+            Add("quaternions;", new[] { '\u210D', });
+            Add("quatint;", new[] { '\u2A16', });
+            Add("quest;", new[] { '\u003F', });
+            Add("questeq;", new[] { '\u225F', });
+            Add("QUOT;", new[] { '\u0022', });
+            Add("QUOT", new[] { '\u0022', });
+            Add("quot;", new[] { '\u0022', });
+            Add("quot", new[] { '\u0022', });
+            Add("rAarr;", new[] { '\u21DB', });
+            Add("race;", new[] { '\u223D', '\u0331', });
+            Add("Racute;", new[] { '\u0154', });
+            Add("racute;", new[] { '\u0155', });
+            Add("radic;", new[] { '\u221A', });
+            Add("raemptyv;", new[] { '\u29B3', });
+            Add("Rang;", new[] { '\u27EB', });
+            Add("rang;", new[] { '\u27E9', });
+            Add("rangd;", new[] { '\u2992', });
+            Add("range;", new[] { '\u29A5', });
+            Add("rangle;", new[] { '\u27E9', });
+            Add("raquo;", new[] { '\u00BB', });
+            Add("raquo", new[] { '\u00BB', });
+            Add("Rarr;", new[] { '\u21A0', });
+            Add("rArr;", new[] { '\u21D2', });
+            Add("rarr;", new[] { '\u2192', });
+            Add("rarrap;", new[] { '\u2975', });
+            Add("rarrb;", new[] { '\u21E5', });
+            Add("rarrbfs;", new[] { '\u2920', });
+            Add("rarrc;", new[] { '\u2933', });
+            Add("rarrfs;", new[] { '\u291E', });
+            Add("rarrhk;", new[] { '\u21AA', });
+            Add("rarrlp;", new[] { '\u21AC', });
+            Add("rarrpl;", new[] { '\u2945', });
+            Add("rarrsim;", new[] { '\u2974', });
+            Add("Rarrtl;", new[] { '\u2916', });
+            Add("rarrtl;", new[] { '\u21A3', });
+            Add("rarrw;", new[] { '\u219D', });
+            Add("rAtail;", new[] { '\u291C', });
+            Add("ratail;", new[] { '\u291A', });
+            Add("ratio;", new[] { '\u2236', });
+            Add("rationals;", new[] { '\u211A', });
+            Add("RBarr;", new[] { '\u2910', });
+            Add("rBarr;", new[] { '\u290F', });
+            Add("rbarr;", new[] { '\u290D', });
+            Add("rbbrk;", new[] { '\u2773', });
+            Add("rbrace;", new[] { '\u007D', });
+            Add("rbrack;", new[] { '\u005D', });
+            Add("rbrke;", new[] { '\u298C', });
+            Add("rbrksld;", new[] { '\u298E', });
+            Add("rbrkslu;", new[] { '\u2990', });
+            Add("Rcaron;", new[] { '\u0158', });
+            Add("rcaron;", new[] { '\u0159', });
+            Add("Rcedil;", new[] { '\u0156', });
+            Add("rcedil;", new[] { '\u0157', });
+            Add("rceil;", new[] { '\u2309', });
+            Add("rcub;", new[] { '\u007D', });
+            Add("Rcy;", new[] { '\u0420', });
+            Add("rcy;", new[] { '\u0440', });
+            Add("rdca;", new[] { '\u2937', });
+            Add("rdldhar;", new[] { '\u2969', });
+            Add("rdquo;", new[] { '\u201D', });
+            Add("rdquor;", new[] { '\u201D', });
+            Add("rdsh;", new[] { '\u21B3', });
+            Add("Re;", new[] { '\u211C', });
+            Add("real;", new[] { '\u211C', });
+            Add("realine;", new[] { '\u211B', });
+            Add("realpart;", new[] { '\u211C', });
+            Add("reals;", new[] { '\u211D', });
+            Add("rect;", new[] { '\u25AD', });
+            Add("REG;", new[] { '\u00AE', });
+            Add("REG", new[] { '\u00AE', });
+            Add("reg;", new[] { '\u00AE', });
+            Add("reg", new[] { '\u00AE', });
+            Add("ReverseElement;", new[] { '\u220B', });
+            Add("ReverseEquilibrium;", new[] { '\u21CB', });
+            Add("ReverseUpEquilibrium;", new[] { '\u296F', });
+            Add("rfisht;", new[] { '\u297D', });
+            Add("rfloor;", new[] { '\u230B', });
+            Add("Rfr;", new[] { '\u211C', });
+            Add("rfr;", new[] { '\uD835', '\uDD2F', });
+            Add("rHar;", new[] { '\u2964', });
+            Add("rhard;", new[] { '\u21C1', });
+            Add("rharu;", new[] { '\u21C0', });
+            Add("rharul;", new[] { '\u296C', });
+            Add("Rho;", new[] { '\u03A1', });
+            Add("rho;", new[] { '\u03C1', });
+            Add("rhov;", new[] { '\u03F1', });
+            Add("RightAngleBracket;", new[] { '\u27E9', });
+            Add("RightArrow;", new[] { '\u2192', });
+            Add("Rightarrow;", new[] { '\u21D2', });
+            Add("rightarrow;", new[] { '\u2192', });
+            Add("RightArrowBar;", new[] { '\u21E5', });
+            Add("RightArrowLeftArrow;", new[] { '\u21C4', });
+            Add("rightarrowtail;", new[] { '\u21A3', });
+            Add("RightCeiling;", new[] { '\u2309', });
+            Add("RightDoubleBracket;", new[] { '\u27E7', });
+            Add("RightDownTeeVector;", new[] { '\u295D', });
+            Add("RightDownVector;", new[] { '\u21C2', });
+            Add("RightDownVectorBar;", new[] { '\u2955', });
+            Add("RightFloor;", new[] { '\u230B', });
+            Add("rightharpoondown;", new[] { '\u21C1', });
+            Add("rightharpoonup;", new[] { '\u21C0', });
+            Add("rightleftarrows;", new[] { '\u21C4', });
+            Add("rightleftharpoons;", new[] { '\u21CC', });
+            Add("rightrightarrows;", new[] { '\u21C9', });
+            Add("rightsquigarrow;", new[] { '\u219D', });
+            Add("RightTee;", new[] { '\u22A2', });
+            Add("RightTeeArrow;", new[] { '\u21A6', });
+            Add("RightTeeVector;", new[] { '\u295B', });
+            Add("rightthreetimes;", new[] { '\u22CC', });
+            Add("RightTriangle;", new[] { '\u22B3', });
+            Add("RightTriangleBar;", new[] { '\u29D0', });
+            Add("RightTriangleEqual;", new[] { '\u22B5', });
+            Add("RightUpDownVector;", new[] { '\u294F', });
+            Add("RightUpTeeVector;", new[] { '\u295C', });
+            Add("RightUpVector;", new[] { '\u21BE', });
+            Add("RightUpVectorBar;", new[] { '\u2954', });
+            Add("RightVector;", new[] { '\u21C0', });
+            Add("RightVectorBar;", new[] { '\u2953', });
+            Add("ring;", new[] { '\u02DA', });
+            Add("risingdotseq;", new[] { '\u2253', });
+            Add("rlarr;", new[] { '\u21C4', });
+            Add("rlhar;", new[] { '\u21CC', });
+            Add("rlm;", new[] { '\u200F', });
+            Add("rmoust;", new[] { '\u23B1', });
+            Add("rmoustache;", new[] { '\u23B1', });
+            Add("rnmid;", new[] { '\u2AEE', });
+            Add("roang;", new[] { '\u27ED', });
+            Add("roarr;", new[] { '\u21FE', });
+            Add("robrk;", new[] { '\u27E7', });
+            Add("ropar;", new[] { '\u2986', });
+            Add("Ropf;", new[] { '\u211D', });
+            Add("ropf;", new[] { '\uD835', '\uDD63', });
+            Add("roplus;", new[] { '\u2A2E', });
+            Add("rotimes;", new[] { '\u2A35', });
+            Add("RoundImplies;", new[] { '\u2970', });
+            Add("rpar;", new[] { '\u0029', });
+            Add("rpargt;", new[] { '\u2994', });
+            Add("rppolint;", new[] { '\u2A12', });
+            Add("rrarr;", new[] { '\u21C9', });
+            Add("Rrightarrow;", new[] { '\u21DB', });
+            Add("rsaquo;", new[] { '\u203A', });
+            Add("Rscr;", new[] { '\u211B', });
+            Add("rscr;", new[] { '\uD835', '\uDCC7', });
+            Add("Rsh;", new[] { '\u21B1', });
+            Add("rsh;", new[] { '\u21B1', });
+            Add("rsqb;", new[] { '\u005D', });
+            Add("rsquo;", new[] { '\u2019', });
+            Add("rsquor;", new[] { '\u2019', });
+            Add("rthree;", new[] { '\u22CC', });
+            Add("rtimes;", new[] { '\u22CA', });
+            Add("rtri;", new[] { '\u25B9', });
+            Add("rtrie;", new[] { '\u22B5', });
+            Add("rtrif;", new[] { '\u25B8', });
+            Add("rtriltri;", new[] { '\u29CE', });
+            Add("RuleDelayed;", new[] { '\u29F4', });
+            Add("ruluhar;", new[] { '\u2968', });
+            Add("rx;", new[] { '\u211E', });
+            Add("Sacute;", new[] { '\u015A', });
+            Add("sacute;", new[] { '\u015B', });
+            Add("sbquo;", new[] { '\u201A', });
+            Add("Sc;", new[] { '\u2ABC', });
+            Add("sc;", new[] { '\u227B', });
+            Add("scap;", new[] { '\u2AB8', });
+            Add("Scaron;", new[] { '\u0160', });
+            Add("scaron;", new[] { '\u0161', });
+            Add("sccue;", new[] { '\u227D', });
+            Add("scE;", new[] { '\u2AB4', });
+            Add("sce;", new[] { '\u2AB0', });
+            Add("Scedil;", new[] { '\u015E', });
+            Add("scedil;", new[] { '\u015F', });
+            Add("Scirc;", new[] { '\u015C', });
+            Add("scirc;", new[] { '\u015D', });
+            Add("scnap;", new[] { '\u2ABA', });
+            Add("scnE;", new[] { '\u2AB6', });
+            Add("scnsim;", new[] { '\u22E9', });
+            Add("scpolint;", new[] { '\u2A13', });
+            Add("scsim;", new[] { '\u227F', });
+            Add("Scy;", new[] { '\u0421', });
+            Add("scy;", new[] { '\u0441', });
+            Add("sdot;", new[] { '\u22C5', });
+            Add("sdotb;", new[] { '\u22A1', });
+            Add("sdote;", new[] { '\u2A66', });
+            Add("searhk;", new[] { '\u2925', });
+            Add("seArr;", new[] { '\u21D8', });
+            Add("searr;", new[] { '\u2198', });
+            Add("searrow;", new[] { '\u2198', });
+            Add("sect;", new[] { '\u00A7', });
+            Add("sect", new[] { '\u00A7', });
+            Add("semi;", new[] { '\u003B', });
+            Add("seswar;", new[] { '\u2929', });
+            Add("setminus;", new[] { '\u2216', });
+            Add("setmn;", new[] { '\u2216', });
+            Add("sext;", new[] { '\u2736', });
+            Add("Sfr;", new[] { '\uD835', '\uDD16', });
+            Add("sfr;", new[] { '\uD835', '\uDD30', });
+            Add("sfrown;", new[] { '\u2322', });
+            Add("sharp;", new[] { '\u266F', });
+            Add("SHCHcy;", new[] { '\u0429', });
+            Add("shchcy;", new[] { '\u0449', });
+            Add("SHcy;", new[] { '\u0428', });
+            Add("shcy;", new[] { '\u0448', });
+            Add("ShortDownArrow;", new[] { '\u2193', });
+            Add("ShortLeftArrow;", new[] { '\u2190', });
+            Add("shortmid;", new[] { '\u2223', });
+            Add("shortparallel;", new[] { '\u2225', });
+            Add("ShortRightArrow;", new[] { '\u2192', });
+            Add("ShortUpArrow;", new[] { '\u2191', });
+            Add("shy;", new[] { '\u00AD', });
+            Add("shy", new[] { '\u00AD', });
+            Add("Sigma;", new[] { '\u03A3', });
+            Add("sigma;", new[] { '\u03C3', });
+            Add("sigmaf;", new[] { '\u03C2', });
+            Add("sigmav;", new[] { '\u03C2', });
+            Add("sim;", new[] { '\u223C', });
+            Add("simdot;", new[] { '\u2A6A', });
+            Add("sime;", new[] { '\u2243', });
+            Add("simeq;", new[] { '\u2243', });
+            Add("simg;", new[] { '\u2A9E', });
+            Add("simgE;", new[] { '\u2AA0', });
+            Add("siml;", new[] { '\u2A9D', });
+            Add("simlE;", new[] { '\u2A9F', });
+            Add("simne;", new[] { '\u2246', });
+            Add("simplus;", new[] { '\u2A24', });
+            Add("simrarr;", new[] { '\u2972', });
+            Add("slarr;", new[] { '\u2190', });
+            Add("SmallCircle;", new[] { '\u2218', });
+            Add("smallsetminus;", new[] { '\u2216', });
+            Add("smashp;", new[] { '\u2A33', });
+            Add("smeparsl;", new[] { '\u29E4', });
+            Add("smid;", new[] { '\u2223', });
+            Add("smile;", new[] { '\u2323', });
+            Add("smt;", new[] { '\u2AAA', });
+            Add("smte;", new[] { '\u2AAC', });
+            Add("smtes;", new[] { '\u2AAC', '\uFE00', });
+            Add("SOFTcy;", new[] { '\u042C', });
+            Add("softcy;", new[] { '\u044C', });
+            Add("sol;", new[] { '\u002F', });
+            Add("solb;", new[] { '\u29C4', });
+            Add("solbar;", new[] { '\u233F', });
+            Add("Sopf;", new[] { '\uD835', '\uDD4A', });
+            Add("sopf;", new[] { '\uD835', '\uDD64', });
+            Add("spades;", new[] { '\u2660', });
+            Add("spadesuit;", new[] { '\u2660', });
+            Add("spar;", new[] { '\u2225', });
+            Add("sqcap;", new[] { '\u2293', });
+            Add("sqcaps;", new[] { '\u2293', '\uFE00', });
+            Add("sqcup;", new[] { '\u2294', });
+            Add("sqcups;", new[] { '\u2294', '\uFE00', });
+            Add("Sqrt;", new[] { '\u221A', });
+            Add("sqsub;", new[] { '\u228F', });
+            Add("sqsube;", new[] { '\u2291', });
+            Add("sqsubset;", new[] { '\u228F', });
+            Add("sqsubseteq;", new[] { '\u2291', });
+            Add("sqsup;", new[] { '\u2290', });
+            Add("sqsupe;", new[] { '\u2292', });
+            Add("sqsupset;", new[] { '\u2290', });
+            Add("sqsupseteq;", new[] { '\u2292', });
+            Add("squ;", new[] { '\u25A1', });
+            Add("Square;", new[] { '\u25A1', });
+            Add("square;", new[] { '\u25A1', });
+            Add("SquareIntersection;", new[] { '\u2293', });
+            Add("SquareSubset;", new[] { '\u228F', });
+            Add("SquareSubsetEqual;", new[] { '\u2291', });
+            Add("SquareSuperset;", new[] { '\u2290', });
+            Add("SquareSupersetEqual;", new[] { '\u2292', });
+            Add("SquareUnion;", new[] { '\u2294', });
+            Add("squarf;", new[] { '\u25AA', });
+            Add("squf;", new[] { '\u25AA', });
+            Add("srarr;", new[] { '\u2192', });
+            Add("Sscr;", new[] { '\uD835', '\uDCAE', });
+            Add("sscr;", new[] { '\uD835', '\uDCC8', });
+            Add("ssetmn;", new[] { '\u2216', });
+            Add("ssmile;", new[] { '\u2323', });
+            Add("sstarf;", new[] { '\u22C6', });
+            Add("Star;", new[] { '\u22C6', });
+            Add("star;", new[] { '\u2606', });
+            Add("starf;", new[] { '\u2605', });
+            Add("straightepsilon;", new[] { '\u03F5', });
+            Add("straightphi;", new[] { '\u03D5', });
+            Add("strns;", new[] { '\u00AF', });
+            Add("Sub;", new[] { '\u22D0', });
+            Add("sub;", new[] { '\u2282', });
+            Add("subdot;", new[] { '\u2ABD', });
+            Add("subE;", new[] { '\u2AC5', });
+            Add("sube;", new[] { '\u2286', });
+            Add("subedot;", new[] { '\u2AC3', });
+            Add("submult;", new[] { '\u2AC1', });
+            Add("subnE;", new[] { '\u2ACB', });
+            Add("subne;", new[] { '\u228A', });
+            Add("subplus;", new[] { '\u2ABF', });
+            Add("subrarr;", new[] { '\u2979', });
+            Add("Subset;", new[] { '\u22D0', });
+            Add("subset;", new[] { '\u2282', });
+            Add("subseteq;", new[] { '\u2286', });
+            Add("subseteqq;", new[] { '\u2AC5', });
+            Add("SubsetEqual;", new[] { '\u2286', });
+            Add("subsetneq;", new[] { '\u228A', });
+            Add("subsetneqq;", new[] { '\u2ACB', });
+            Add("subsim;", new[] { '\u2AC7', });
+            Add("subsub;", new[] { '\u2AD5', });
+            Add("subsup;", new[] { '\u2AD3', });
+            Add("succ;", new[] { '\u227B', });
+            Add("succapprox;", new[] { '\u2AB8', });
+            Add("succcurlyeq;", new[] { '\u227D', });
+            Add("Succeeds;", new[] { '\u227B', });
+            Add("SucceedsEqual;", new[] { '\u2AB0', });
+            Add("SucceedsSlantEqual;", new[] { '\u227D', });
+            Add("SucceedsTilde;", new[] { '\u227F', });
+            Add("succeq;", new[] { '\u2AB0', });
+            Add("succnapprox;", new[] { '\u2ABA', });
+            Add("succneqq;", new[] { '\u2AB6', });
+            Add("succnsim;", new[] { '\u22E9', });
+            Add("succsim;", new[] { '\u227F', });
+            Add("SuchThat;", new[] { '\u220B', });
+            Add("Sum;", new[] { '\u2211', });
+            Add("sum;", new[] { '\u2211', });
+            Add("sung;", new[] { '\u266A', });
+            Add("Sup;", new[] { '\u22D1', });
+            Add("sup;", new[] { '\u2283', });
+            Add("sup1;", new[] { '\u00B9', });
+            Add("sup1", new[] { '\u00B9', });
+            Add("sup2;", new[] { '\u00B2', });
+            Add("sup2", new[] { '\u00B2', });
+            Add("sup3;", new[] { '\u00B3', });
+            Add("sup3", new[] { '\u00B3', });
+            Add("supdot;", new[] { '\u2ABE', });
+            Add("supdsub;", new[] { '\u2AD8', });
+            Add("supE;", new[] { '\u2AC6', });
+            Add("supe;", new[] { '\u2287', });
+            Add("supedot;", new[] { '\u2AC4', });
+            Add("Superset;", new[] { '\u2283', });
+            Add("SupersetEqual;", new[] { '\u2287', });
+            Add("suphsol;", new[] { '\u27C9', });
+            Add("suphsub;", new[] { '\u2AD7', });
+            Add("suplarr;", new[] { '\u297B', });
+            Add("supmult;", new[] { '\u2AC2', });
+            Add("supnE;", new[] { '\u2ACC', });
+            Add("supne;", new[] { '\u228B', });
+            Add("supplus;", new[] { '\u2AC0', });
+            Add("Supset;", new[] { '\u22D1', });
+            Add("supset;", new[] { '\u2283', });
+            Add("supseteq;", new[] { '\u2287', });
+            Add("supseteqq;", new[] { '\u2AC6', });
+            Add("supsetneq;", new[] { '\u228B', });
+            Add("supsetneqq;", new[] { '\u2ACC', });
+            Add("supsim;", new[] { '\u2AC8', });
+            Add("supsub;", new[] { '\u2AD4', });
+            Add("supsup;", new[] { '\u2AD6', });
+            Add("swarhk;", new[] { '\u2926', });
+            Add("swArr;", new[] { '\u21D9', });
+            Add("swarr;", new[] { '\u2199', });
+            Add("swarrow;", new[] { '\u2199', });
+            Add("swnwar;", new[] { '\u292A', });
+            Add("szlig;", new[] { '\u00DF', });
+            Add("szlig", new[] { '\u00DF', });
+            Add("Tab;", new[] { '\u0009', });
+            Add("target;", new[] { '\u2316', });
+            Add("Tau;", new[] { '\u03A4', });
+            Add("tau;", new[] { '\u03C4', });
+            Add("tbrk;", new[] { '\u23B4', });
+            Add("Tcaron;", new[] { '\u0164', });
+            Add("tcaron;", new[] { '\u0165', });
+            Add("Tcedil;", new[] { '\u0162', });
+            Add("tcedil;", new[] { '\u0163', });
+            Add("Tcy;", new[] { '\u0422', });
+            Add("tcy;", new[] { '\u0442', });
+            Add("tdot;", new[] { '\u20DB', });
+            Add("telrec;", new[] { '\u2315', });
+            Add("Tfr;", new[] { '\uD835', '\uDD17', });
+            Add("tfr;", new[] { '\uD835', '\uDD31', });
+            Add("there4;", new[] { '\u2234', });
+            Add("Therefore;", new[] { '\u2234', });
+            Add("therefore;", new[] { '\u2234', });
+            Add("Theta;", new[] { '\u0398', });
+            Add("theta;", new[] { '\u03B8', });
+            Add("thetasym;", new[] { '\u03D1', });
+            Add("thetav;", new[] { '\u03D1', });
+            Add("thickapprox;", new[] { '\u2248', });
+            Add("thicksim;", new[] { '\u223C', });
+            Add("ThickSpace;", new[] { '\u205F', '\u200A', });
+            Add("thinsp;", new[] { '\u2009', });
+            Add("ThinSpace;", new[] { '\u2009', });
+            Add("thkap;", new[] { '\u2248', });
+            Add("thksim;", new[] { '\u223C', });
+            Add("THORN;", new[] { '\u00DE', });
+            Add("THORN", new[] { '\u00DE', });
+            Add("thorn;", new[] { '\u00FE', });
+            Add("thorn", new[] { '\u00FE', });
+            Add("Tilde;", new[] { '\u223C', });
+            Add("tilde;", new[] { '\u02DC', });
+            Add("TildeEqual;", new[] { '\u2243', });
+            Add("TildeFullEqual;", new[] { '\u2245', });
+            Add("TildeTilde;", new[] { '\u2248', });
+            Add("times;", new[] { '\u00D7', });
+            Add("times", new[] { '\u00D7', });
+            Add("timesb;", new[] { '\u22A0', });
+            Add("timesbar;", new[] { '\u2A31', });
+            Add("timesd;", new[] { '\u2A30', });
+            Add("tint;", new[] { '\u222D', });
+            Add("toea;", new[] { '\u2928', });
+            Add("top;", new[] { '\u22A4', });
+            Add("topbot;", new[] { '\u2336', });
+            Add("topcir;", new[] { '\u2AF1', });
+            Add("Topf;", new[] { '\uD835', '\uDD4B', });
+            Add("topf;", new[] { '\uD835', '\uDD65', });
+            Add("topfork;", new[] { '\u2ADA', });
+            Add("tosa;", new[] { '\u2929', });
+            Add("tprime;", new[] { '\u2034', });
+            Add("TRADE;", new[] { '\u2122', });
+            Add("trade;", new[] { '\u2122', });
+            Add("triangle;", new[] { '\u25B5', });
+            Add("triangledown;", new[] { '\u25BF', });
+            Add("triangleleft;", new[] { '\u25C3', });
+            Add("trianglelefteq;", new[] { '\u22B4', });
+            Add("triangleq;", new[] { '\u225C', });
+            Add("triangleright;", new[] { '\u25B9', });
+            Add("trianglerighteq;", new[] { '\u22B5', });
+            Add("tridot;", new[] { '\u25EC', });
+            Add("trie;", new[] { '\u225C', });
+            Add("triminus;", new[] { '\u2A3A', });
+            Add("TripleDot;", new[] { '\u20DB', });
+            Add("triplus;", new[] { '\u2A39', });
+            Add("trisb;", new[] { '\u29CD', });
+            Add("tritime;", new[] { '\u2A3B', });
+            Add("trpezium;", new[] { '\u23E2', });
+            Add("Tscr;", new[] { '\uD835', '\uDCAF', });
+            Add("tscr;", new[] { '\uD835', '\uDCC9', });
+            Add("TScy;", new[] { '\u0426', });
+            Add("tscy;", new[] { '\u0446', });
+            Add("TSHcy;", new[] { '\u040B', });
+            Add("tshcy;", new[] { '\u045B', });
+            Add("Tstrok;", new[] { '\u0166', });
+            Add("tstrok;", new[] { '\u0167', });
+            Add("twixt;", new[] { '\u226C', });
+            Add("twoheadleftarrow;", new[] { '\u219E', });
+            Add("twoheadrightarrow;", new[] { '\u21A0', });
+            Add("Uacute;", new[] { '\u00DA', });
+            Add("Uacute", new[] { '\u00DA', });
+            Add("uacute;", new[] { '\u00FA', });
+            Add("uacute", new[] { '\u00FA', });
+            Add("Uarr;", new[] { '\u219F', });
+            Add("uArr;", new[] { '\u21D1', });
+            Add("uarr;", new[] { '\u2191', });
+            Add("Uarrocir;", new[] { '\u2949', });
+            Add("Ubrcy;", new[] { '\u040E', });
+            Add("ubrcy;", new[] { '\u045E', });
+            Add("Ubreve;", new[] { '\u016C', });
+            Add("ubreve;", new[] { '\u016D', });
+            Add("Ucirc;", new[] { '\u00DB', });
+            Add("Ucirc", new[] { '\u00DB', });
+            Add("ucirc;", new[] { '\u00FB', });
+            Add("ucirc", new[] { '\u00FB', });
+            Add("Ucy;", new[] { '\u0423', });
+            Add("ucy;", new[] { '\u0443', });
+            Add("udarr;", new[] { '\u21C5', });
+            Add("Udblac;", new[] { '\u0170', });
+            Add("udblac;", new[] { '\u0171', });
+            Add("udhar;", new[] { '\u296E', });
+            Add("ufisht;", new[] { '\u297E', });
+            Add("Ufr;", new[] { '\uD835', '\uDD18', });
+            Add("ufr;", new[] { '\uD835', '\uDD32', });
+            Add("Ugrave;", new[] { '\u00D9', });
+            Add("Ugrave", new[] { '\u00D9', });
+            Add("ugrave;", new[] { '\u00F9', });
+            Add("ugrave", new[] { '\u00F9', });
+            Add("uHar;", new[] { '\u2963', });
+            Add("uharl;", new[] { '\u21BF', });
+            Add("uharr;", new[] { '\u21BE', });
+            Add("uhblk;", new[] { '\u2580', });
+            Add("ulcorn;", new[] { '\u231C', });
+            Add("ulcorner;", new[] { '\u231C', });
+            Add("ulcrop;", new[] { '\u230F', });
+            Add("ultri;", new[] { '\u25F8', });
+            Add("Umacr;", new[] { '\u016A', });
+            Add("umacr;", new[] { '\u016B', });
+            Add("uml;", new[] { '\u00A8', });
+            Add("uml", new[] { '\u00A8', });
+            Add("UnderBar;", new[] { '\u005F', });
+            Add("UnderBrace;", new[] { '\u23DF', });
+            Add("UnderBracket;", new[] { '\u23B5', });
+            Add("UnderParenthesis;", new[] { '\u23DD', });
+            Add("Union;", new[] { '\u22C3', });
+            Add("UnionPlus;", new[] { '\u228E', });
+            Add("Uogon;", new[] { '\u0172', });
+            Add("uogon;", new[] { '\u0173', });
+            Add("Uopf;", new[] { '\uD835', '\uDD4C', });
+            Add("uopf;", new[] { '\uD835', '\uDD66', });
+            Add("UpArrow;", new[] { '\u2191', });
+            Add("Uparrow;", new[] { '\u21D1', });
+            Add("uparrow;", new[] { '\u2191', });
+            Add("UpArrowBar;", new[] { '\u2912', });
+            Add("UpArrowDownArrow;", new[] { '\u21C5', });
+            Add("UpDownArrow;", new[] { '\u2195', });
+            Add("Updownarrow;", new[] { '\u21D5', });
+            Add("updownarrow;", new[] { '\u2195', });
+            Add("UpEquilibrium;", new[] { '\u296E', });
+            Add("upharpoonleft;", new[] { '\u21BF', });
+            Add("upharpoonright;", new[] { '\u21BE', });
+            Add("uplus;", new[] { '\u228E', });
+            Add("UpperLeftArrow;", new[] { '\u2196', });
+            Add("UpperRightArrow;", new[] { '\u2197', });
+            Add("Upsi;", new[] { '\u03D2', });
+            Add("upsi;", new[] { '\u03C5', });
+            Add("upsih;", new[] { '\u03D2', });
+            Add("Upsilon;", new[] { '\u03A5', });
+            Add("upsilon;", new[] { '\u03C5', });
+            Add("UpTee;", new[] { '\u22A5', });
+            Add("UpTeeArrow;", new[] { '\u21A5', });
+            Add("upuparrows;", new[] { '\u21C8', });
+            Add("urcorn;", new[] { '\u231D', });
+            Add("urcorner;", new[] { '\u231D', });
+            Add("urcrop;", new[] { '\u230E', });
+            Add("Uring;", new[] { '\u016E', });
+            Add("uring;", new[] { '\u016F', });
+            Add("urtri;", new[] { '\u25F9', });
+            Add("Uscr;", new[] { '\uD835', '\uDCB0', });
+            Add("uscr;", new[] { '\uD835', '\uDCCA', });
+            Add("utdot;", new[] { '\u22F0', });
+            Add("Utilde;", new[] { '\u0168', });
+            Add("utilde;", new[] { '\u0169', });
+            Add("utri;", new[] { '\u25B5', });
+            Add("utrif;", new[] { '\u25B4', });
+            Add("uuarr;", new[] { '\u21C8', });
+            Add("Uuml;", new[] { '\u00DC', });
+            Add("Uuml", new[] { '\u00DC', });
+            Add("uuml;", new[] { '\u00FC', });
+            Add("uuml", new[] { '\u00FC', });
+            Add("uwangle;", new[] { '\u29A7', });
+            Add("vangrt;", new[] { '\u299C', });
+            Add("varepsilon;", new[] { '\u03F5', });
+            Add("varkappa;", new[] { '\u03F0', });
+            Add("varnothing;", new[] { '\u2205', });
+            Add("varphi;", new[] { '\u03D5', });
+            Add("varpi;", new[] { '\u03D6', });
+            Add("varpropto;", new[] { '\u221D', });
+            Add("vArr;", new[] { '\u21D5', });
+            Add("varr;", new[] { '\u2195', });
+            Add("varrho;", new[] { '\u03F1', });
+            Add("varsigma;", new[] { '\u03C2', });
+            Add("varsubsetneq;", new[] { '\u228A', '\uFE00', });
+            Add("varsubsetneqq;", new[] { '\u2ACB', '\uFE00', });
+            Add("varsupsetneq;", new[] { '\u228B', '\uFE00', });
+            Add("varsupsetneqq;", new[] { '\u2ACC', '\uFE00', });
+            Add("vartheta;", new[] { '\u03D1', });
+            Add("vartriangleleft;", new[] { '\u22B2', });
+            Add("vartriangleright;", new[] { '\u22B3', });
+            Add("Vbar;", new[] { '\u2AEB', });
+            Add("vBar;", new[] { '\u2AE8', });
+            Add("vBarv;", new[] { '\u2AE9', });
+            Add("Vcy;", new[] { '\u0412', });
+            Add("vcy;", new[] { '\u0432', });
+            Add("VDash;", new[] { '\u22AB', });
+            Add("Vdash;", new[] { '\u22A9', });
+            Add("vDash;", new[] { '\u22A8', });
+            Add("vdash;", new[] { '\u22A2', });
+            Add("Vdashl;", new[] { '\u2AE6', });
+            Add("Vee;", new[] { '\u22C1', });
+            Add("vee;", new[] { '\u2228', });
+            Add("veebar;", new[] { '\u22BB', });
+            Add("veeeq;", new[] { '\u225A', });
+            Add("vellip;", new[] { '\u22EE', });
+            Add("Verbar;", new[] { '\u2016', });
+            Add("verbar;", new[] { '\u007C', });
+            Add("Vert;", new[] { '\u2016', });
+            Add("vert;", new[] { '\u007C', });
+            Add("VerticalBar;", new[] { '\u2223', });
+            Add("VerticalLine;", new[] { '\u007C', });
+            Add("VerticalSeparator;", new[] { '\u2758', });
+            Add("VerticalTilde;", new[] { '\u2240', });
+            Add("VeryThinSpace;", new[] { '\u200A', });
+            Add("Vfr;", new[] { '\uD835', '\uDD19', });
+            Add("vfr;", new[] { '\uD835', '\uDD33', });
+            Add("vltri;", new[] { '\u22B2', });
+            Add("vnsub;", new[] { '\u2282', '\u20D2', });
+            Add("vnsup;", new[] { '\u2283', '\u20D2', });
+            Add("Vopf;", new[] { '\uD835', '\uDD4D', });
+            Add("vopf;", new[] { '\uD835', '\uDD67', });
+            Add("vprop;", new[] { '\u221D', });
+            Add("vrtri;", new[] { '\u22B3', });
+            Add("Vscr;", new[] { '\uD835', '\uDCB1', });
+            Add("vscr;", new[] { '\uD835', '\uDCCB', });
+            Add("vsubnE;", new[] { '\u2ACB', '\uFE00', });
+            Add("vsubne;", new[] { '\u228A', '\uFE00', });
+            Add("vsupnE;", new[] { '\u2ACC', '\uFE00', });
+            Add("vsupne;", new[] { '\u228B', '\uFE00', });
+            Add("Vvdash;", new[] { '\u22AA', });
+            Add("vzigzag;", new[] { '\u299A', });
+            Add("Wcirc;", new[] { '\u0174', });
+            Add("wcirc;", new[] { '\u0175', });
+            Add("wedbar;", new[] { '\u2A5F', });
+            Add("Wedge;", new[] { '\u22C0', });
+            Add("wedge;", new[] { '\u2227', });
+            Add("wedgeq;", new[] { '\u2259', });
+            Add("weierp;", new[] { '\u2118', });
+            Add("Wfr;", new[] { '\uD835', '\uDD1A', });
+            Add("wfr;", new[] { '\uD835', '\uDD34', });
+            Add("Wopf;", new[] { '\uD835', '\uDD4E', });
+            Add("wopf;", new[] { '\uD835', '\uDD68', });
+            Add("wp;", new[] { '\u2118', });
+            Add("wr;", new[] { '\u2240', });
+            Add("wreath;", new[] { '\u2240', });
+            Add("Wscr;", new[] { '\uD835', '\uDCB2', });
+            Add("wscr;", new[] { '\uD835', '\uDCCC', });
+            Add("xcap;", new[] { '\u22C2', });
+            Add("xcirc;", new[] { '\u25EF', });
+            Add("xcup;", new[] { '\u22C3', });
+            Add("xdtri;", new[] { '\u25BD', });
+            Add("Xfr;", new[] { '\uD835', '\uDD1B', });
+            Add("xfr;", new[] { '\uD835', '\uDD35', });
+            Add("xhArr;", new[] { '\u27FA', });
+            Add("xharr;", new[] { '\u27F7', });
+            Add("Xi;", new[] { '\u039E', });
+            Add("xi;", new[] { '\u03BE', });
+            Add("xlArr;", new[] { '\u27F8', });
+            Add("xlarr;", new[] { '\u27F5', });
+            Add("xmap;", new[] { '\u27FC', });
+            Add("xnis;", new[] { '\u22FB', });
+            Add("xodot;", new[] { '\u2A00', });
+            Add("Xopf;", new[] { '\uD835', '\uDD4F', });
+            Add("xopf;", new[] { '\uD835', '\uDD69', });
+            Add("xoplus;", new[] { '\u2A01', });
+            Add("xotime;", new[] { '\u2A02', });
+            Add("xrArr;", new[] { '\u27F9', });
+            Add("xrarr;", new[] { '\u27F6', });
+            Add("Xscr;", new[] { '\uD835', '\uDCB3', });
+            Add("xscr;", new[] { '\uD835', '\uDCCD', });
+            Add("xsqcup;", new[] { '\u2A06', });
+            Add("xuplus;", new[] { '\u2A04', });
+            Add("xutri;", new[] { '\u25B3', });
+            Add("xvee;", new[] { '\u22C1', });
+            Add("xwedge;", new[] { '\u22C0', });
+            Add("Yacute;", new[] { '\u00DD', });
+            Add("Yacute", new[] { '\u00DD', });
+            Add("yacute;", new[] { '\u00FD', });
+            Add("yacute", new[] { '\u00FD', });
+            Add("YAcy;", new[] { '\u042F', });
+            Add("yacy;", new[] { '\u044F', });
+            Add("Ycirc;", new[] { '\u0176', });
+            Add("ycirc;", new[] { '\u0177', });
+            Add("Ycy;", new[] { '\u042B', });
+            Add("ycy;", new[] { '\u044B', });
+            Add("yen;", new[] { '\u00A5', });
+            Add("yen", new[] { '\u00A5', });
+            Add("Yfr;", new[] { '\uD835', '\uDD1C', });
+            Add("yfr;", new[] { '\uD835', '\uDD36', });
+            Add("YIcy;", new[] { '\u0407', });
+            Add("yicy;", new[] { '\u0457', });
+            Add("Yopf;", new[] { '\uD835', '\uDD50', });
+            Add("yopf;", new[] { '\uD835', '\uDD6A', });
+            Add("Yscr;", new[] { '\uD835', '\uDCB4', });
+            Add("yscr;", new[] { '\uD835', '\uDCCE', });
+            Add("YUcy;", new[] { '\u042E', });
+            Add("yucy;", new[] { '\u044E', });
+            Add("Yuml;", new[] { '\u0178', });
+            Add("yuml;", new[] { '\u00FF', });
+            Add("yuml", new[] { '\u00FF', });
+            Add("Zacute;", new[] { '\u0179', });
+            Add("zacute;", new[] { '\u017A', });
+            Add("Zcaron;", new[] { '\u017D', });
+            Add("zcaron;", new[] { '\u017E', });
+            Add("Zcy;", new[] { '\u0417', });
+            Add("zcy;", new[] { '\u0437', });
+            Add("Zdot;", new[] { '\u017B', });
+            Add("zdot;", new[] { '\u017C', });
+            Add("zeetrf;", new[] { '\u2128', });
+            Add("ZeroWidthSpace;", new[] { '\u200B', });
+            Add("Zeta;", new[] { '\u0396', });
+            Add("zeta;", new[] { '\u03B6', });
+            Add("Zfr;", new[] { '\u2128', });
+            Add("zfr;", new[] { '\uD835', '\uDD37', });
+            Add("ZHcy;", new[] { '\u0416', });
+            Add("zhcy;", new[] { '\u0436', });
+            Add("zigrarr;", new[] { '\u21DD', });
+            Add("Zopf;", new[] { '\u2124', });
+            Add("zopf;", new[] { '\uD835', '\uDD6B', });
+            Add("Zscr;", new[] { '\uD835', '\uDCB5', });
+            Add("zscr;", new[] { '\uD835', '\uDCCF', });
+            Add("zwj;", new[] { '\u200D', });
+            Add("zwnj;", new[] { '\u200C' });
+        }
+
+        internal static char[] GetCharactersByCharacterReference(ReadOnlyMemory<char> characterReference)
         {
             char[] result;
             return HtmlCharacterReferences.TryGetValue(characterReference, out result) ? result : null;

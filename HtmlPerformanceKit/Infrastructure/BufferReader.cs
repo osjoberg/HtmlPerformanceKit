@@ -9,6 +9,7 @@ namespace HtmlPerformanceKit.Infrastructure
     internal class BufferReader : IDisposable
     {
         private readonly TextReader textReader;
+        private readonly char[] PeekBuffer = new char[40];
         private readonly LinkedList<int> peekBuffer = new LinkedList<int>();
 
         internal BufferReader(TextReader textReader)
@@ -26,7 +27,7 @@ namespace HtmlPerformanceKit.Infrastructure
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal string Peek(int length)
+        internal ReadOnlyMemory<char> Peek(int length)
         {
             var outputLength = Math.Min(peekBuffer.Count, length);
 
@@ -44,7 +45,7 @@ namespace HtmlPerformanceKit.Infrastructure
             }
 
             var intBuffer = peekBuffer.ToArray();
-            var charBuffer = new char[outputLength];
+
             for (var index = 0; index < outputLength; index++)
             {
                 if (intBuffer[index] == -1)
@@ -52,10 +53,10 @@ namespace HtmlPerformanceKit.Infrastructure
                     break;
                 }
 
-                charBuffer[index] = (char)intBuffer[index];
+                PeekBuffer[index] = (char)intBuffer[index];
             }
 
-            return new string(charBuffer, 0, outputLength);
+            return new ReadOnlyMemory<char>(PeekBuffer, 0, outputLength);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

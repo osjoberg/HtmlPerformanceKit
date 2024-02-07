@@ -33,12 +33,10 @@ namespace HtmlPerformanceKit.Infrastructure
             return new string(buffer, 0, Length);
         }
 
-#if NET8_0_OR_GREATER
         public ReadOnlyMemory<char> ToMemory()
         {
             return new ReadOnlyMemory<char>(buffer, 0, Length);
         }
-#endif
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Clear()

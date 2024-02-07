@@ -56,16 +56,16 @@ namespace HtmlPerformanceKit.StateMachine
 
                 default:
                     bufferReader.Reconsume(currentInputCharacter);
-                    var peek = bufferReader.Peek(6);
+                    var peek = bufferReader.Peek(6).Span;
 
-                    if (Public.Equals(peek, StringComparison.OrdinalIgnoreCase))
+                    if (Public.AsSpan().Equals(peek, StringComparison.OrdinalIgnoreCase))
                     {
                         bufferReader.Consume(Public.Length);
                         State = AfterDoctypePublicKeywordState;
                         return;
                     }
 
-                    if (System.Equals(peek, StringComparison.OrdinalIgnoreCase))
+                    if (System.AsSpan().Equals(peek, StringComparison.OrdinalIgnoreCase))
                     {
                         bufferReader.Consume(System.Length);
                         State = AfterDoctypeSystemKeywordState;
