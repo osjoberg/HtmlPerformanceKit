@@ -162,7 +162,7 @@ namespace HtmlPerformanceKit.Test
         {
             var options = new HtmlReaderOptions
             {
-                SkipCharacterReferenceDecoding = true
+                DecodeHtmlCharacters = false
             };
 
             reader = HtmlReaderFactory.FromString("<title>&amp;</title><p>", parseErrors, options);

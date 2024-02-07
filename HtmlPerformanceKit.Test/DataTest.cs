@@ -50,7 +50,7 @@ namespace HtmlPerformanceKit.Test
         {
             var options = new HtmlReaderOptions
             {
-                SkipCharacterReferenceDecoding = true
+                DecodeHtmlCharacters = false
             };
 
             reader = HtmlReaderFactory.FromString("&#65;", parseErrors, options);
@@ -81,7 +81,7 @@ namespace HtmlPerformanceKit.Test
         {
             var options = new HtmlReaderOptions
             {
-                SkipCharacterReferenceDecoding = true
+                DecodeHtmlCharacters = false
             };
 
             reader = HtmlReaderFactory.FromString("&#x41;", parseErrors, options);
@@ -112,7 +112,7 @@ namespace HtmlPerformanceKit.Test
         {
             var options = new HtmlReaderOptions
             {
-                SkipCharacterReferenceDecoding = true
+                DecodeHtmlCharacters = false
             };
 
             reader = HtmlReaderFactory.FromString("&lt;", parseErrors, options);
@@ -145,7 +145,7 @@ namespace HtmlPerformanceKit.Test
         {
             var options = new HtmlReaderOptions
             {
-                SkipCharacterReferenceDecoding = true
+                DecodeHtmlCharacters = false
             };
 
             reader = HtmlReaderFactory.FromString("I'm &notit; I tell you", parseErrors, options);
@@ -176,7 +176,7 @@ namespace HtmlPerformanceKit.Test
         {
             var options = new HtmlReaderOptions
             {
-                SkipCharacterReferenceDecoding = true
+                DecodeHtmlCharacters = false
             };
 
             reader = HtmlReaderFactory.FromString("I'm &notin; I tell you", parseErrors, options);

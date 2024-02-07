@@ -1,15 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+<<<<<<< HEAD
     <TargetFramework>net8.0</TargetFramework>
+=======
+    <TargetFramework>net7.0</TargetFramework>
+>>>>>>> a6e1d34b1fd4f7c3689e14807da4d8486bdd40ea
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="en.wikipedia.org_wiki_List_of_Australian_treaties.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="en.wikipedia.org_wiki_List_of_Australian_treaties.html" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
     <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
+    <PackageReference Include="Verify.MSTest" Version="23.1.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -13,6 +13,7 @@ namespace HtmlPerformanceKit.StateMachine
         private readonly HtmlTagToken currentDoctypeToken = new HtmlTagToken();
         private readonly HtmlTagToken currentTagToken = new HtmlTagToken();
         private readonly CharBuffer appropriateTagName = new CharBuffer(100);
+<<<<<<< HEAD
         private readonly CharBuffer currentCommentBuffer = new CharBuffer(1024 * 10);
         private readonly CharBuffer currentDataBuffer = new CharBuffer(1024 * 10);
         private readonly CharBuffer temporaryBuffer = new CharBuffer(1024);
@@ -159,6 +160,19 @@ namespace HtmlPerformanceKit.StateMachine
             SelfClosingStartTagState = BuildSelfClosingStartTagState();
             TagNameState = BuildTagNameState();
             TagOpenState = BuildTagOpenState();
+=======
+        private readonly BufferReader bufferReader;
+        private readonly Action<string> parseError;
+        private readonly bool decodeHtmlCharacters;
+        private CurrentState returnToState;
+        private char additionalAllowedCharacter;
+
+        internal HtmlStateMachine(BufferReader bufferReader, Action<string> parseError, bool decodeHtmlCharacters)
+        {
+            this.bufferReader = bufferReader;
+            this.parseError = parseError;
+            this.decodeHtmlCharacters = decodeHtmlCharacters;
+>>>>>>> a6e1d34b1fd4f7c3689e14807da4d8486bdd40ea
             State = DataState;
         }
 

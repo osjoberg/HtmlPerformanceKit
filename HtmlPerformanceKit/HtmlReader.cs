@@ -11,7 +11,11 @@ namespace HtmlPerformanceKit
     /// </summary>
     public sealed class HtmlReader : IDisposable
     {
+<<<<<<< HEAD
         private static readonly HtmlReaderOptions DefaultOptions = new HtmlReaderOptions();
+=======
+        private readonly BufferReader bufferReader;
+>>>>>>> a6e1d34b1fd4f7c3689e14807da4d8486bdd40ea
         private readonly HtmlStateMachine stateMachine;
         private readonly HtmlReaderOptions options;
         private CharBuffer textBuffer;
@@ -21,8 +25,8 @@ namespace HtmlPerformanceKit
         /// Initializes a new instance of the <see cref="HtmlReader" /> class.
         /// </summary>
         /// <param name="stream">Stream instance to read from.</param>
-        /// <param name="options">The optional options.</param>
-        public HtmlReader(Stream stream, HtmlReaderOptions options = null)
+        /// <param name="options">Options.</param>
+        public HtmlReader(Stream stream, HtmlReaderOptions options)
         {
             if (stream == null)
             {
@@ -31,19 +35,19 @@ namespace HtmlPerformanceKit
 
             if (options == null)
             {
-                options = DefaultOptions;
+                options = HtmlReaderOptions.Default;
             }
 
             this.options = options;
-            stateMachine = HtmlStateMachine.Create(new StreamReader(stream), ParseErrorFromMessage, options.SkipCharacterReferenceDecoding);
+            stateMachine = HtmlStateMachine.Create(new StreamReader(stream), ParseErrorFromMessage, options.DecodeHtmlCharacters);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HtmlReader" /> class.
         /// </summary>
         /// <param name="textReader">Stream instance to read from.</param>
-        /// <param name="options">The optional options.</param>
-        public HtmlReader(TextReader textReader, HtmlReaderOptions options = null)
+        /// <param name="options">Options.</param>
+        public HtmlReader(TextReader textReader, HtmlReaderOptions options)
         {
             if (textReader == null)
             {
@@ -52,11 +56,11 @@ namespace HtmlPerformanceKit
 
             if (options == null)
             {
-                options = DefaultOptions;
+                options = HtmlReaderOptions.Default;
             }
 
             this.options = options;
-            stateMachine = HtmlStateMachine.Create(textReader, ParseErrorFromMessage, options.SkipCharacterReferenceDecoding);
+            stateMachine = HtmlStateMachine.Create(textReader, ParseErrorFromMessage, options.DecodeHtmlCharacters);
         }
 
         private void ParseErrorFromMessage(string message)
@@ -75,7 +79,7 @@ namespace HtmlPerformanceKit
         public HtmlTokenKind TokenKind { get; private set; }
 
         /// <summary>
-        /// Gets if last read tag is a self closing element.
+        /// Gets if last read tag is a self-closing element.
         /// <returns>True if last read token kind was <see cref="HtmlTokenKind.Tag"/> or <see cref="HtmlTokenKind.Doctype"/> and it was a self closing element, otherwise False.</returns>
         /// </summary>
         public bool SelfClosingElement => tagToken?.SelfClosing ?? false;
