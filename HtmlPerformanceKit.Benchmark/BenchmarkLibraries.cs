@@ -15,22 +15,47 @@ using NodeType = AngleSharp.Dom.NodeType;
 
 namespace HtmlPerformanceKit.Benchmark
 {
+    [SimpleJob]
+    [MemoryDiagnoser]
     public class BenchmarkLibraries
     {
-        private Stream stream;
+#if DEBUG || RELEASE
+        private static readonly HtmlReaderOptions KeepOpen = new HtmlReaderOptions
+        {
+            KeepOpen = true
+        };
+#endif
+        private readonly Stream stream;
+        private readonly StreamReader streamReader;
 
         public BenchmarkLibraries()
         {
             var executingAssembly = Assembly.GetExecutingAssembly();
             stream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Benchmark.en.wikipedia.org_wiki_List_of_Australian_treaties.html");
+            streamReader = new StreamReader(stream);
+        }
+
+        [IterationSetup]
+        public void IterationSetup()
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+            streamReader.DiscardBufferedData();
+        }
+
+        private HtmlReader CreateReader()
+        {
+#if DEBUG || RELEASE
+            return new HtmlReader(streamReader, KeepOpen);
+#else
+            return new HtmlReader(new StreamReader(stream));
+#endif
         }
 
         [Benchmark]
         public List<string> ExtractLinks()
         {
-            stream.Seek(0, SeekOrigin.Begin);
+            using var htmlReader = CreateReader(); 
 
-            var htmlReader = new HtmlReader(new StreamReader(stream));
             var links = new List<string>();
 
             while (htmlReader.Read())
@@ -52,9 +77,8 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<ReadOnlyMemory<char>> ExtractLinksMemory()
         {
-            stream.Seek(0, SeekOrigin.Begin);
+            using var htmlReader = CreateReader();
 
-            var htmlReader = new HtmlReader(new StreamReader(stream));
             var links = new List<ReadOnlyMemory<char>>();
 
             while (htmlReader.Read())
@@ -76,8 +100,6 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<string> ExtractLinksHtmlAgilityPack()
         {
-            stream.Seek(0, SeekOrigin.Begin);
-
             var htmlDocument = new HtmlDocument();
             htmlDocument.Load(stream);
             var links = new List<string>();
@@ -100,8 +122,6 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<string> ExtractLinksAngleSharp()
         {
-            stream.Seek(0, SeekOrigin.Begin);
-
             var htmlParser = new HtmlParser();
             var document = htmlParser.ParseDocument(stream);
 
@@ -124,12 +144,11 @@ namespace HtmlPerformanceKit.Benchmark
 
         [Benchmark]
         public List<string> ExtractLinksHtmlParserSharp()
-        {
-            stream.Seek(0, SeekOrigin.Begin);
+        {            
             var links = new List<string>();
 
             var simpleHtmlparser = new SimpleHtmlParser();
-            var document = simpleHtmlparser.Parse(new StreamReader(stream));
+            var document = simpleHtmlparser.Parse(streamReader);
             var memoryStream = new MemoryStream();
             document.Save(memoryStream);
             memoryStream.Seek(0, SeekOrigin.Begin);
@@ -162,9 +181,7 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<string> ExtractLinksHtmlKit()
         {
-            stream.Seek(0, SeekOrigin.Begin);
-
-            var htmlTokenizer = new HtmlKit.HtmlTokenizer(new StreamReader(stream));
+            var htmlTokenizer = new HtmlKit.HtmlTokenizer(streamReader);
 
             var links = new List<string>();
 
@@ -199,9 +216,8 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<string> ExtractTexts()
         {
-            stream.Seek(0, SeekOrigin.Begin);
+            using var htmlReader = CreateReader();
 
-            var htmlReader = new HtmlReader(new StreamReader(stream));
             var texts = new List<string>();
 
             while (htmlReader.Read())
@@ -216,10 +232,26 @@ namespace HtmlPerformanceKit.Benchmark
         }
 
         [Benchmark]
+        public List<ReadOnlyMemory<char>> ExtractsTextsMemory()
+        {
+            using var htmlReader = CreateReader();
+
+            var texts = new List<ReadOnlyMemory<char>>();
+
+            while (htmlReader.Read())
+            {
+                if (htmlReader.TokenKind == HtmlTokenKind.Text)
+                {
+                    texts.Add(htmlReader.TextAsMemory);
+                }
+            }
+
+            return texts;
+        }
+
+        [Benchmark]
         public List<string> ExtractTextsHtmlAgilityPack()
         {
-            stream.Seek(0, SeekOrigin.Begin);
-
             var htmlDocument = new HtmlDocument();
             htmlDocument.Load(stream);
             var texts = new List<string>();
@@ -238,8 +270,6 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<string> ExtractTextsAngleSharp()
         {
-            stream.Seek(0, SeekOrigin.Begin);
-
             var htmlParser = new HtmlParser();
             var document = htmlParser.ParseDocument(stream);
 
@@ -259,10 +289,8 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<string> ExtractTextsHtmlParserSharp()
         {
-            stream.Seek(0, SeekOrigin.Begin);
-
             var simpleHtmlparser = new SimpleHtmlParser();
-            var document = simpleHtmlparser.Parse(new StreamReader(stream));
+            var document = simpleHtmlparser.Parse(streamReader);
             var memoryStream = new MemoryStream();
             document.Save(memoryStream);
             memoryStream.Seek(0, SeekOrigin.Begin);
@@ -292,9 +320,7 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<string> ExtractTextsHtmlKit()
         {
-            stream.Seek(0, SeekOrigin.Begin);
-
-            var htmlTokenizer = new HtmlKit.HtmlTokenizer(new StreamReader(stream));
+            var htmlTokenizer = new HtmlKit.HtmlTokenizer(streamReader);
 
             var texts = new List<string>();
 

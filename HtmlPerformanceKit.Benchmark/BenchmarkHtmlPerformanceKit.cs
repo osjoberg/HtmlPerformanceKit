@@ -4,7 +4,6 @@ using System.IO;
 using System.Reflection;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Exporters;
 using BenchmarkDotNet.Jobs;
 
 namespace HtmlPerformanceKit.Benchmark
@@ -43,17 +42,27 @@ namespace HtmlPerformanceKit.Benchmark
             }
         }
 
-        [Benchmark]
-        public List<string> ExtractLinks()
+        [IterationSetup]
+        public void IterationSetup()
         {
             stream.Seek(0, SeekOrigin.Begin);
             streamReader.DiscardBufferedData();
+        }
 
+        private HtmlReader CreateReader()
+        {
 #if DEBUG || RELEASE
-            using var htmlReader = new HtmlReader(streamReader, KeepOpen);
+            return new HtmlReader(streamReader, KeepOpen);
 #else
-            var htmlReader = new HtmlReader(streamReader);
+            return new HtmlReader(new StreamReader(stream));
 #endif
+        }
+
+        [Benchmark]
+        public List<string> ExtractLinks()
+        {
+            using var htmlReader = CreateReader();
+
             var links = new List<string>();
 
             while (htmlReader.Read())
@@ -75,10 +84,8 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<ReadOnlyMemory<char>> ExtractLinksAsMemory()
         {
-            stream.Seek(0, SeekOrigin.Begin);
-            streamReader.DiscardBufferedData();
+            using var htmlReader = CreateReader();
 
-            using var htmlReader = new HtmlReader(streamReader, KeepOpen);
             var links = new List<ReadOnlyMemory<char>>();
 
             while (htmlReader.Read())
@@ -106,14 +113,8 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<string> ExtractTexts()
         {
-            stream.Seek(0, SeekOrigin.Begin);
-            streamReader.DiscardBufferedData();
+            using var htmlReader = CreateReader();
 
-#if DEBUG || RELEASE
-            using var htmlReader = new HtmlReader(streamReader, KeepOpen);
-#else
-            var htmlReader = new HtmlReader(streamReader);
-#endif
             var texts = new List<string>();
 
             while (htmlReader.Read())
@@ -131,10 +132,8 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<ReadOnlyMemory<char>> ExtractTextsAsMemory()
         {
-            stream.Seek(0, SeekOrigin.Begin);
-            streamReader.DiscardBufferedData();
+            using var htmlReader = CreateReader();
 
-            using var htmlReader = new HtmlReader(streamReader, KeepOpen);
             var texts = new List<ReadOnlyMemory<char>>();
 
             while (htmlReader.Read())
