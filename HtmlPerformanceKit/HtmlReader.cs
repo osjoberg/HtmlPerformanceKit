@@ -76,7 +76,7 @@ namespace HtmlPerformanceKit
 
             if (options == null)
             {
-                throw new ArgumentNullException(nameof(options));
+                options = HtmlReaderOptions.Default;
             }
 
             bufferReader = new BufferReader(streamReader);
@@ -97,7 +97,7 @@ namespace HtmlPerformanceKit
 
             if (options == null)
             {
-                throw new ArgumentNullException(nameof(options));
+                options = HtmlReaderOptions.Default;
             }
 
             bufferReader = new BufferReader(new StreamReader(stream));
@@ -118,7 +118,7 @@ namespace HtmlPerformanceKit
 
             if (options == null)
             {
-                throw new ArgumentNullException(nameof(options));
+                options = HtmlReaderOptions.Default;
             }
 
             bufferReader = new BufferReader(textReader);

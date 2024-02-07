@@ -12,13 +12,5 @@ namespace HtmlPerformanceKit.Test
             reader.ParseError += (sender, args) => parseErrors.Add(args);
             return reader;
         }
-
-        public static HtmlReader FromStream(Stream stream, List<HtmlParseErrorEventArgs> parseErrors, HtmlReaderOptions options = null)
-        {
-            stream.Seek(0, SeekOrigin.Begin);
-            var reader = new HtmlReader(stream, options);
-            reader.ParseError += (sender, args) => parseErrors.Add(args);
-            return reader;
-        }
     }
 }
