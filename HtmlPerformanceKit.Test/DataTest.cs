@@ -46,6 +46,24 @@ namespace HtmlPerformanceKit.Test
         }
 
         [TestMethod]
+        public void DataDecimalCharacterReferenceWhenDecodingSkipped()
+        {
+            var options = new HtmlReaderOptions
+            {
+                SkipCharacterReferenceDecoding = true
+            };
+
+            reader = HtmlReaderFactory.FromString("&#65;", parseErrors, options);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
+            Assert.AreEqual("&#65;", reader.Text);
+
+            Assert.IsFalse(reader.Read());
+            Assert.AreEqual(0, parseErrors.Count);
+        }
+
+        [TestMethod]
         public void DataHexCharacterReference()
         {
             reader = HtmlReaderFactory.FromString("&#x41;", parseErrors);
@@ -59,6 +77,24 @@ namespace HtmlPerformanceKit.Test
         }
 
         [TestMethod]
+        public void DataHexCharacterReferenceWhenDecodingSkipped()
+        {
+            var options = new HtmlReaderOptions
+            {
+                SkipCharacterReferenceDecoding = true
+            };
+
+            reader = HtmlReaderFactory.FromString("&#x41;", parseErrors, options);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
+            Assert.AreEqual("&#x41;", reader.Text);
+
+            Assert.IsFalse(reader.Read());
+            Assert.AreEqual(0, parseErrors.Count);
+        }
+
+        [TestMethod]
         public void DataNamedCharacterReference()
         {
             reader = HtmlReaderFactory.FromString("&lt;", parseErrors);
@@ -66,6 +102,24 @@ namespace HtmlPerformanceKit.Test
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
             Assert.AreEqual("<", reader.Text);
+
+            Assert.IsFalse(reader.Read());
+            Assert.AreEqual(0, parseErrors.Count);
+        }
+
+        [TestMethod]
+        public void DataNamedCharacterReferenceWhenDecodingSkipped()
+        {
+            var options = new HtmlReaderOptions
+            {
+                SkipCharacterReferenceDecoding = true
+            };
+
+            reader = HtmlReaderFactory.FromString("&lt;", parseErrors, options);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
+            Assert.AreEqual("&lt;", reader.Text);
 
             Assert.IsFalse(reader.Read());
             Assert.AreEqual(0, parseErrors.Count);
@@ -87,6 +141,24 @@ namespace HtmlPerformanceKit.Test
         }
 
         [TestMethod]
+        public void DataNamedCharacterReference2WhenDecodingSkipped()
+        {
+            var options = new HtmlReaderOptions
+            {
+                SkipCharacterReferenceDecoding = true
+            };
+
+            reader = HtmlReaderFactory.FromString("I'm &notit; I tell you", parseErrors, options);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
+            Assert.AreEqual("I'm &notit; I tell you", reader.Text);
+
+            Assert.IsFalse(reader.Read());
+            Assert.AreEqual(0, parseErrors.Count);
+        }
+
+        [TestMethod]
         public void DataNamedCharacterReference3()
         {
             reader = HtmlReaderFactory.FromString("I'm &notin; I tell you", parseErrors);
@@ -94,6 +166,24 @@ namespace HtmlPerformanceKit.Test
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
             Assert.AreEqual("I'm ∉ I tell you", reader.Text);
+
+            Assert.IsFalse(reader.Read());
+            Assert.AreEqual(0, parseErrors.Count);
+        }
+
+        [TestMethod]
+        public void DataNamedCharacterReference3WhenDecodingSkipped()
+        {
+            var options = new HtmlReaderOptions
+            {
+                SkipCharacterReferenceDecoding = true
+            };
+
+            reader = HtmlReaderFactory.FromString("I'm &notin; I tell you", parseErrors, options);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
+            Assert.AreEqual("I'm &notin; I tell you", reader.Text);
 
             Assert.IsFalse(reader.Read());
             Assert.AreEqual(0, parseErrors.Count);

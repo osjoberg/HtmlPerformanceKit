@@ -50,7 +50,7 @@ namespace HtmlPerformanceKit.StateMachine
                     State = BeforeAttributeNameState;
                     return;
 
-                case '&':
+                case '&' when !skipDecodingCharacterReferences:
                     State = CharacterReferenceInAttributeValueState;
                     additionalAllowedCharacter = '>';
                     returnToState = AttributeValueDoubleQuotedState;

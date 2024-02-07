@@ -202,12 +202,46 @@ namespace HtmlPerformanceKit.Test
         }
 
         [TestMethod]
+        public void AttributeValueDecimalCharacterReferenceWhenDecodingSkipped()
+        {
+            var options = new HtmlReaderOptions
+            {
+                SkipCharacterReferenceDecoding = true
+            };
+
+            reader = HtmlReaderFactory.FromString("<a title=\"&#65;\">", parseErrors, options);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual("&#65;", reader.GetAttribute("title"));
+
+            Assert.IsFalse(reader.Read());
+            Assert.AreEqual(0, parseErrors.Count);
+        }
+
+        [TestMethod]
         public void AttributeValueHexCharacterReference()
         {
             reader = HtmlReaderFactory.FromString("<a title=\"&#x41;\">", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual("A", reader.GetAttribute("title"));
+
+            Assert.IsFalse(reader.Read());
+            Assert.AreEqual(0, parseErrors.Count);
+        }
+
+        [TestMethod]
+        public void AttributeValueHexCharacterReferenceWhenDecodingSkipped()
+        {
+            var options = new HtmlReaderOptions
+            {
+                SkipCharacterReferenceDecoding = true
+            };
+
+            reader = HtmlReaderFactory.FromString("<a title=\"&#x41;\">", parseErrors, options);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual("&#x41;", reader.GetAttribute("title"));
 
             Assert.IsFalse(reader.Read());
             Assert.AreEqual(0, parseErrors.Count);
@@ -226,12 +260,46 @@ namespace HtmlPerformanceKit.Test
         }
 
         [TestMethod]
+        public void AttributeValueNamedCharacterReferenceWhenDecodingSkipped()
+        {
+            var options = new HtmlReaderOptions
+            {
+                SkipCharacterReferenceDecoding = true
+            };
+
+            reader = HtmlReaderFactory.FromString("<a title=\"&lt;\">", parseErrors, options);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual("&lt;", reader.GetAttribute("title"));
+
+            Assert.IsFalse(reader.Read());
+            Assert.AreEqual(0, parseErrors.Count);
+        }
+
+        [TestMethod]
         public void AttributeValueNamedCharacterReferenceSingleQuoted()
         {
             reader = HtmlReaderFactory.FromString("<a title='&lt;'>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual("<", reader.GetAttribute("title"));
+
+            Assert.IsFalse(reader.Read());
+            Assert.AreEqual(0, parseErrors.Count);
+        }
+
+        [TestMethod]
+        public void AttributeValueNamedCharacterReferenceSingleQuotedWhenDecodingSkipped()
+        {
+            var options = new HtmlReaderOptions
+            {
+                SkipCharacterReferenceDecoding = true
+            };
+
+            reader = HtmlReaderFactory.FromString("<a title='&lt;'>", parseErrors, options);
+
+            Assert.IsTrue(reader.Read());
+            Assert.AreEqual("&lt;", reader.GetAttribute("title"));
 
             Assert.IsFalse(reader.Read());
             Assert.AreEqual(0, parseErrors.Count);

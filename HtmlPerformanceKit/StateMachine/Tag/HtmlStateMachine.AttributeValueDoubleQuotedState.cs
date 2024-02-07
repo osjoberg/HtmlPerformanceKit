@@ -36,7 +36,7 @@ namespace HtmlPerformanceKit.StateMachine
                         State = AfterAttributeValueQuotedState;
                         return;
 
-                    case '&':
+                    case '&' when !skipDecodingCharacterReferences:
                         State = CharacterReferenceInAttributeValueState;
                         additionalAllowedCharacter = '"';
                         returnToState = AttributeValueDoubleQuotedState;

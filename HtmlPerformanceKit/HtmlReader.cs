@@ -11,6 +11,7 @@ namespace HtmlPerformanceKit
     /// </summary>
     public sealed class HtmlReader : IDisposable
     {
+        private static readonly HtmlReaderOptions DefaultOptions = new HtmlReaderOptions();
         private readonly BufferReader bufferReader;
         private readonly HtmlStateMachine stateMachine;
 
@@ -21,45 +22,68 @@ namespace HtmlPerformanceKit
         /// Initializes a new instance of the <see cref="HtmlReader" /> class.
         /// </summary>
         /// <param name="streamReader">StreamReader instance to read from.</param>
-        public HtmlReader(StreamReader streamReader)
+        /// <param name="options">The optional options.</param>
+        public HtmlReader(StreamReader streamReader, HtmlReaderOptions options = null)
         {
             if (streamReader == null)
             {
                 throw new ArgumentNullException(nameof(streamReader));
             }
 
+            if (options == null)
+            {
+                options = DefaultOptions;
+            }
+
             bufferReader = new BufferReader(streamReader);
-            stateMachine = new HtmlStateMachine(bufferReader, message => OnParseError(this, new HtmlParseErrorEventArgs(message, bufferReader.LineNumber, bufferReader.LinePosition)));
+            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, options.SkipCharacterReferenceDecoding);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HtmlReader" /> class.
         /// </summary>
         /// <param name="stream">Stream instance to read from.</param>
-        public HtmlReader(Stream stream)
+        /// <param name="options">The optional options.</param>
+        public HtmlReader(Stream stream, HtmlReaderOptions options = null)
         {
             if (stream == null)
             {
                 throw new ArgumentNullException(nameof(stream));
             }
 
+            if (options == null)
+            {
+                options = DefaultOptions;
+            }
+
             bufferReader = new BufferReader(new StreamReader(stream));
-            stateMachine = new HtmlStateMachine(bufferReader, message => OnParseError(this, new HtmlParseErrorEventArgs(message, bufferReader.LineNumber, bufferReader.LinePosition)));
+            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, options.SkipCharacterReferenceDecoding);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HtmlReader" /> class.
         /// </summary>
         /// <param name="textReader">Stream instance to read from.</param>
-        public HtmlReader(TextReader textReader)
+        /// <param name="options">The optional options.</param>
+        public HtmlReader(TextReader textReader, HtmlReaderOptions options = null)
         {
             if (textReader == null)
             {
                 throw new ArgumentNullException(nameof(textReader));
             }
 
+            if (options == null)
+            {
+                options = DefaultOptions;
+            }
+
             bufferReader = new BufferReader(textReader);
-            stateMachine = new HtmlStateMachine(bufferReader, message => OnParseError(this, new HtmlParseErrorEventArgs(message, bufferReader.LineNumber, bufferReader.LinePosition)));
+            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, options.SkipCharacterReferenceDecoding);
+        }
+
+        private void ParseErrorFromMessage(string message)
+        {
+            OnParseError(this, new HtmlParseErrorEventArgs(message, bufferReader.LineNumber, bufferReader.LinePosition));
         }
 
         /// <summary>
