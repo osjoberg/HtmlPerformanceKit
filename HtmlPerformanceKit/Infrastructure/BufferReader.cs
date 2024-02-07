@@ -30,6 +30,8 @@ namespace HtmlPerformanceKit.Infrastructure
         public void Init(TextReader reader)
         {
             textReader = reader;
+            LineNumber = 0;
+            LinePosition = 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -131,12 +133,27 @@ namespace HtmlPerformanceKit.Infrastructure
                 LineNumber++;
                 LinePosition = 1;
             }
-            else if (result >= 0)
+            else
             {
                 LinePosition++;
             }
 
             return result;
+        }
+
+        private int ConsumeCore()
+        {
+            if (reconsumeBuffer.TryDequeue(out var reconsume))
+            {
+                return reconsume;
+            }
+
+            if (peekBuffer.TryDequeue(out var peekResult))
+            {
+                return peekResult;
+            }
+
+            return textReader.Read();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-
 using HtmlPerformanceKit.Infrastructure;
 using HtmlPerformanceKit.StateMachine;
 
@@ -11,11 +10,6 @@ namespace HtmlPerformanceKit
     /// </summary>
     public sealed class HtmlReader : IDisposable
     {
-<<<<<<< HEAD
-        private static readonly HtmlReaderOptions DefaultOptions = new HtmlReaderOptions();
-=======
-        private readonly BufferReader bufferReader;
->>>>>>> a6e1d34b1fd4f7c3689e14807da4d8486bdd40ea
         private readonly HtmlStateMachine stateMachine;
         private readonly HtmlReaderOptions options;
         private CharBuffer textBuffer;
@@ -26,7 +20,7 @@ namespace HtmlPerformanceKit
         /// </summary>
         /// <param name="stream">Stream instance to read from.</param>
         /// <param name="options">Options.</param>
-        public HtmlReader(Stream stream, HtmlReaderOptions options)
+        public HtmlReader(Stream stream, HtmlReaderOptions options = null)
         {
             if (stream == null)
             {
@@ -47,7 +41,7 @@ namespace HtmlPerformanceKit
         /// </summary>
         /// <param name="textReader">Stream instance to read from.</param>
         /// <param name="options">Options.</param>
-        public HtmlReader(TextReader textReader, HtmlReaderOptions options)
+        public HtmlReader(TextReader textReader, HtmlReaderOptions options = null)
         {
             if (textReader == null)
             {

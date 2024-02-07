@@ -35,7 +35,6 @@ namespace HtmlPerformanceKit.Benchmark
             streamReader = new StreamReader(stream);
         }
 
-        [IterationSetup]
         public void IterationSetup()
         {
             stream.Seek(0, SeekOrigin.Begin);
@@ -54,6 +53,8 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<string> ExtractLinks()
         {
+            IterationSetup();
+
             using var htmlReader = CreateReader(); 
 
             var links = new List<string>();
@@ -77,6 +78,8 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<ReadOnlyMemory<char>> ExtractLinksMemory()
         {
+            IterationSetup();
+
             using var htmlReader = CreateReader();
 
             var links = new List<ReadOnlyMemory<char>>();
@@ -100,6 +103,8 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<string> ExtractLinksHtmlAgilityPack()
         {
+            IterationSetup();
+
             var htmlDocument = new HtmlDocument();
             htmlDocument.Load(stream);
             var links = new List<string>();
@@ -122,6 +127,8 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<string> ExtractLinksAngleSharp()
         {
+            IterationSetup();
+
             var htmlParser = new HtmlParser();
             var document = htmlParser.ParseDocument(stream);
 
@@ -144,7 +151,9 @@ namespace HtmlPerformanceKit.Benchmark
 
         [Benchmark]
         public List<string> ExtractLinksHtmlParserSharp()
-        {            
+        {
+            IterationSetup();
+
             var links = new List<string>();
 
             var simpleHtmlparser = new SimpleHtmlParser();
@@ -181,6 +190,8 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<string> ExtractLinksHtmlKit()
         {
+            IterationSetup();
+
             var htmlTokenizer = new HtmlKit.HtmlTokenizer(streamReader);
 
             var links = new List<string>();
@@ -216,6 +227,8 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<string> ExtractTexts()
         {
+            IterationSetup();
+
             using var htmlReader = CreateReader();
 
             var texts = new List<string>();
@@ -234,6 +247,8 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<ReadOnlyMemory<char>> ExtractsTextsMemory()
         {
+            IterationSetup();
+
             using var htmlReader = CreateReader();
 
             var texts = new List<ReadOnlyMemory<char>>();
@@ -252,6 +267,8 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<string> ExtractTextsHtmlAgilityPack()
         {
+            IterationSetup();
+
             var htmlDocument = new HtmlDocument();
             htmlDocument.Load(stream);
             var texts = new List<string>();
@@ -270,6 +287,8 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<string> ExtractTextsAngleSharp()
         {
+            IterationSetup();
+
             var htmlParser = new HtmlParser();
             var document = htmlParser.ParseDocument(stream);
 
@@ -289,6 +308,8 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<string> ExtractTextsHtmlParserSharp()
         {
+            IterationSetup();
+
             var simpleHtmlparser = new SimpleHtmlParser();
             var document = simpleHtmlparser.Parse(streamReader);
             var memoryStream = new MemoryStream();
@@ -320,6 +341,8 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<string> ExtractTextsHtmlKit()
         {
+            IterationSetup();
+
             var htmlTokenizer = new HtmlKit.HtmlTokenizer(streamReader);
 
             var texts = new List<string>();

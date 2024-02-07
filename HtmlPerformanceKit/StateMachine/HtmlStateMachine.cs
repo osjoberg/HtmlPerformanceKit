@@ -13,7 +13,6 @@ namespace HtmlPerformanceKit.StateMachine
         private readonly HtmlTagToken currentDoctypeToken = new HtmlTagToken();
         private readonly HtmlTagToken currentTagToken = new HtmlTagToken();
         private readonly CharBuffer appropriateTagName = new CharBuffer(100);
-<<<<<<< HEAD
         private readonly CharBuffer currentCommentBuffer = new CharBuffer(1024 * 10);
         private readonly CharBuffer currentDataBuffer = new CharBuffer(1024 * 10);
         private readonly CharBuffer temporaryBuffer = new CharBuffer(1024);
@@ -87,7 +86,7 @@ namespace HtmlPerformanceKit.StateMachine
         private readonly Action TagOpenState;
         private Action<string> parseError;
         private Action returnToState;
-        private bool skipDecodingCharacterReferences;
+        private bool decodeHtmlCharacters;
         private char additionalAllowedCharacter;
 
         private HtmlStateMachine()
@@ -160,35 +159,23 @@ namespace HtmlPerformanceKit.StateMachine
             SelfClosingStartTagState = BuildSelfClosingStartTagState();
             TagNameState = BuildTagNameState();
             TagOpenState = BuildTagOpenState();
-=======
-        private readonly BufferReader bufferReader;
-        private readonly Action<string> parseError;
-        private readonly bool decodeHtmlCharacters;
-        private CurrentState returnToState;
-        private char additionalAllowedCharacter;
-
-        internal HtmlStateMachine(BufferReader bufferReader, Action<string> parseError, bool decodeHtmlCharacters)
-        {
-            this.bufferReader = bufferReader;
-            this.parseError = parseError;
-            this.decodeHtmlCharacters = decodeHtmlCharacters;
->>>>>>> a6e1d34b1fd4f7c3689e14807da4d8486bdd40ea
-            State = DataState;
         }
 
-        public static HtmlStateMachine Create(TextReader streamReader, Action<string> parseError, bool skipDecodingCharacterReferences)
+        public static HtmlStateMachine Create(TextReader streamReader, Action<string> parseError, bool decodeHtmlCharacters)
         {
             var instance = Pool.Get();
-            instance.Prepare(streamReader, parseError, skipDecodingCharacterReferences);
+            instance.Prepare(streamReader, parseError, decodeHtmlCharacters);
             return instance;
         }
 
-        public void Prepare(TextReader streamReader, Action<string> parseError, bool skipDecodingCharacterReferences)
+        public void Prepare(TextReader streamReader, Action<string> parseError, bool decodeHtmlCharacters)
         {
             bufferReader.Init(streamReader);
 
             this.parseError = parseError;
-            this.skipDecodingCharacterReferences = skipDecodingCharacterReferences;
+            this.decodeHtmlCharacters = decodeHtmlCharacters;
+
+            State = DataState;
         }
 
         public void Dispose()

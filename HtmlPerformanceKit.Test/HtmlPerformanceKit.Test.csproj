@@ -1,14 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-<<<<<<< HEAD
     <TargetFramework>net8.0</TargetFramework>
-=======
-    <TargetFramework>net7.0</TargetFramework>
->>>>>>> a6e1d34b1fd4f7c3689e14807da4d8486bdd40ea
-
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="en.wikipedia.org_wiki_List_of_Australian_treaties.html" />
@@ -27,10 +28,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HtmlPerformanceKit.Benchmark\HtmlPerformanceKit.Benchmark.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>
