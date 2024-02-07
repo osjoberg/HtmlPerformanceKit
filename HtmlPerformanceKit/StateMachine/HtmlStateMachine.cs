@@ -8,12 +8,12 @@ namespace HtmlPerformanceKit.StateMachine
     internal partial class HtmlStateMachine : IDisposable
     {
         private const int EofMarker = -1;
-        private readonly HtmlTagToken currentTagToken = new HtmlTagToken();
         private readonly HtmlTagToken currentDoctypeToken = new HtmlTagToken();
-        private readonly CharBuffer currentDataBuffer = new CharBuffer(1024 * 10);
-        private readonly CharBuffer currentCommentBuffer = new CharBuffer(1024 * 10);
-        private readonly CharBuffer temporaryBuffer = new CharBuffer(1024);
+        private readonly HtmlTagToken currentTagToken = new HtmlTagToken();
         private readonly CharBuffer appropriateTagName = new CharBuffer(100);
+        private readonly CharBuffer currentCommentBuffer = new CharBuffer(1024 * 10);
+        private readonly CharBuffer currentDataBuffer = new CharBuffer(1024 * 10);
+        private readonly CharBuffer temporaryBuffer = new CharBuffer(1024);
         private readonly Action AfterAttributeNameState;
         private readonly Action AfterAttributeValueQuotedState;
         private readonly Action AfterDoctypeNameState;
@@ -164,19 +164,15 @@ namespace HtmlPerformanceKit.StateMachine
         public static HtmlStateMachine Create(BufferReader bufferReader, Action<string> parseError, bool skipDecodingCharacterReferences)
         {
             var instance = Pool.Get();
-            instance.Reset(bufferReader, parseError, skipDecodingCharacterReferences);
+            instance.Prepare(bufferReader, parseError, skipDecodingCharacterReferences);
             return instance;
         }
 
-        public void Reset(BufferReader bufferReader, Action<string> parseError, bool skipDecodingCharacterReferences)
+        public void Prepare(BufferReader bufferReader, Action<string> parseError, bool skipDecodingCharacterReferences)
         {
-            this.additionalAllowedCharacter = default;
-            this.returnToState = null;
             this.bufferReader = bufferReader;
             this.parseError = parseError;
             this.skipDecodingCharacterReferences = skipDecodingCharacterReferences;
-
-            State = DataState;
         }
 
         public void Dispose()

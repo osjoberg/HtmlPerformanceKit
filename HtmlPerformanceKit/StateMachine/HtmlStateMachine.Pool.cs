@@ -34,12 +34,15 @@ namespace HtmlPerformanceKit.StateMachine
                     return false;
                 }
 
+                obj.additionalAllowedCharacter = default;
+                obj.returnToState = null;
                 obj.appropriateTagName.Clear();
                 obj.currentCommentBuffer.Clear();
-                obj.currentDataBuffer.Clear();
                 obj.currentDoctypeToken.Clear();
                 obj.currentTagToken.Clear();
                 obj.temporaryBuffer.Clear();
+                obj.ResetEmit();
+                obj.Eof = false;
 
                 return true;
             }

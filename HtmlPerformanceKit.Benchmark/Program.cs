@@ -8,12 +8,14 @@ namespace HtmlPerformanceKit.Benchmark
         public static void Main(string[] args)
         {
             var x = new BenchmarkHtmlPerformanceKit();
-            Console.WriteLine("Press to continue");
-            Console.ReadLine();
+            // Console.WriteLine("Press to continue");
+            // Console.ReadLine();
             RunOnce(x);
             Console.WriteLine("Press to continue");
             Console.ReadLine();
             RunMore(x);
+            Console.WriteLine("Press to continue");
+            Console.ReadLine();
 
             var switcher = new BenchmarkSwitcher(new[]
             {
@@ -28,10 +30,10 @@ namespace HtmlPerformanceKit.Benchmark
         {
             for (var i = 0; i < 1; i++)
             {
-                x.ExtractTexts();
-                x.ExtractTextsAsMemory();
-                x.ExtractLinks();
-                x.ExtractLinksAsMemory();
+                Console.WriteLine(x.ExtractTexts().Count);
+                Console.WriteLine(x.ExtractTextsAsMemory().Count);
+                Console.WriteLine(x.ExtractLinks().Count);
+                Console.WriteLine(x.ExtractLinksAsMemory().Count);
             }
         }
 
