@@ -9,7 +9,7 @@ namespace HtmlPerformanceKit.Test
         public static HtmlReader FromString(string html, List<HtmlParseErrorEventArgs> parseErrors, HtmlReaderOptions options = null)
         {
             var reader = new HtmlReader(new MemoryStream(Encoding.UTF8.GetBytes(html)), options);
-            reader.ParseError += (sender, args) => parseErrors.Add(args);
+            reader.ParseError += (_, args) => parseErrors.Add(args);
             return reader;
         }
     }

@@ -3,24 +3,25 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
+using System.Threading.Tasks;
 using HtmlPerformanceKit.Benchmark;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VerifyMSTest;
 
 namespace HtmlPerformanceKit.Test
 {
     [TestClass]
-    public class LargeDocumentTest
+    public class LargeDocumentTest : VerifyBase
     {
         [TestMethod]
-        public void WikipediaListOfAustralianTreatiesApiTest()
+        public Task WikipediaListOfAustralianTreatiesApiTest()
         {
             var output = new List<object>();
 
             var executingAssembly = Assembly.GetExecutingAssembly();
 
             var inputStream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Test.en.wikipedia.org_wiki_List_of_Australian_treaties.html")!;
-            var expectedStream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Test.en.wikipedia.org_wiki_List_of_Australian_treaties.json")!;
 
             var htmlReader = new HtmlReader(inputStream);
             htmlReader.ParseError += (_, args) => output.Add(args);
@@ -48,12 +49,7 @@ namespace HtmlPerformanceKit.Test
                 }
             }
 
-            var actualOutput = JsonSerializer.Serialize(output, new JsonSerializerOptions { WriteIndented = true });
-
-            //File.WriteAllText("D:\\temp.txt", actualOutput);
-            var expectedOutput = new StreamReader(expectedStream).ReadToEnd();
-
-            Assert.AreEqual(actualOutput, expectedOutput);
+            return Verify(output);
         }
 
 

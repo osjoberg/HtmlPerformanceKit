@@ -8,11 +8,9 @@
 
   <ItemGroup>
     <None Remove="en.wikipedia.org_wiki_List_of_Australian_treaties.html" />
-    <None Remove="en.wikipedia.org_wiki_List_of_Australian_treaties.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="en.wikipedia.org_wiki_List_of_Australian_treaties.json" />
     <EmbeddedResource Include="en.wikipedia.org_wiki_List_of_Australian_treaties.html" />
   </ItemGroup>
 
@@ -20,6 +18,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
     <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
+    <PackageReference Include="Verify.MSTest" Version="23.1.0" />
   </ItemGroup>
 
   <ItemGroup>
