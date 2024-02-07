@@ -16,15 +16,15 @@ namespace HtmlPerformanceKit.StateMachine
         private readonly CharBuffer appropriateTagName = new CharBuffer(100);
         private readonly BufferReader bufferReader;
         private readonly Action<string> parseError;
-        private readonly bool skipDecodingCharacterReferences;
+        private readonly bool decodeHtmlCharacters;
         private CurrentState returnToState;
         private char additionalAllowedCharacter;
 
-        internal HtmlStateMachine(BufferReader bufferReader, Action<string> parseError, bool skipDecodingCharacterReferences)
+        internal HtmlStateMachine(BufferReader bufferReader, Action<string> parseError, bool decodeHtmlCharacters)
         {
             this.bufferReader = bufferReader;
             this.parseError = parseError;
-            this.skipDecodingCharacterReferences = skipDecodingCharacterReferences;
+            this.decodeHtmlCharacters = decodeHtmlCharacters;
             State = DataState;
         }
 

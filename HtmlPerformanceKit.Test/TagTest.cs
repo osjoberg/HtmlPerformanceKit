@@ -206,7 +206,7 @@ namespace HtmlPerformanceKit.Test
         {
             var options = new HtmlReaderOptions
             {
-                SkipCharacterReferenceDecoding = true
+                DecodeHtmlCharacters = false
             };
 
             reader = HtmlReaderFactory.FromString("<a title=\"&#65;\">", parseErrors, options);
@@ -235,7 +235,7 @@ namespace HtmlPerformanceKit.Test
         {
             var options = new HtmlReaderOptions
             {
-                SkipCharacterReferenceDecoding = true
+                DecodeHtmlCharacters = false
             };
 
             reader = HtmlReaderFactory.FromString("<a title=\"&#x41;\">", parseErrors, options);
@@ -264,7 +264,7 @@ namespace HtmlPerformanceKit.Test
         {
             var options = new HtmlReaderOptions
             {
-                SkipCharacterReferenceDecoding = true
+                DecodeHtmlCharacters = false
             };
 
             reader = HtmlReaderFactory.FromString("<a title=\"&lt;\">", parseErrors, options);
@@ -293,7 +293,7 @@ namespace HtmlPerformanceKit.Test
         {
             var options = new HtmlReaderOptions
             {
-                SkipCharacterReferenceDecoding = true
+                DecodeHtmlCharacters = false
             };
 
             reader = HtmlReaderFactory.FromString("<a title='&lt;'>", parseErrors, options);
