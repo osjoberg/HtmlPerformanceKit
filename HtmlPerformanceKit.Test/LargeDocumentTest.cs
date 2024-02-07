@@ -1,4 +1,9 @@
-﻿using HtmlPerformanceKit.Benchmark;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text.Json;
+using HtmlPerformanceKit.Benchmark;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -7,6 +12,51 @@ namespace HtmlPerformanceKit.Test
     [TestClass]
     public class LargeDocumentTest
     {
+        [TestMethod]
+        public void WikipediaListOfAustralianTreatiesApiTest()
+        {
+            var output = new List<object>();
+
+            var executingAssembly = Assembly.GetExecutingAssembly();
+
+            var inputStream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Test.en.wikipedia.org_wiki_List_of_Australian_treaties.html")!;
+            var expectedStream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Test.en.wikipedia.org_wiki_List_of_Australian_treaties.json")!;
+
+            var htmlReader = new HtmlReader(inputStream);
+            htmlReader.ParseError += (_, args) => output.Add(args);
+
+            for (;;)
+            {
+                var read = htmlReader.Read();
+
+                output.Add(new
+                {
+                    Read = read,
+                    htmlReader.AttributeCount,
+                    htmlReader.LineNumber,
+                    htmlReader.LinePosition,
+                    htmlReader.Name,
+                    htmlReader.SelfClosingElement,
+                    htmlReader.Text,
+                    TokenKind = htmlReader.TokenKind.ToString(),
+                    Attributes = Enumerable.Range(0, htmlReader.AttributeCount).ToDictionary(index => htmlReader.GetAttributeName(index), index => htmlReader.GetAttribute(index)),
+                });
+
+                if (read == false)
+                {
+                    break;
+                }
+            }
+
+            var actualOutput = JsonSerializer.Serialize(output, new JsonSerializerOptions { WriteIndented = true });
+
+            //File.WriteAllText("D:\\temp.txt", actualOutput);
+            var expectedOutput = new StreamReader(expectedStream).ReadToEnd();
+
+            Assert.AreEqual(actualOutput, expectedOutput);
+        }
+
+
         [TestMethod]
         public void ExtractLinksFromWikipediaListOfAustralianTreaties()
         {

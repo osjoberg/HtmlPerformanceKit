@@ -1,10 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="en.wikipedia.org_wiki_List_of_Australian_treaties.html" />
+    <None Remove="en.wikipedia.org_wiki_List_of_Australian_treaties.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="en.wikipedia.org_wiki_List_of_Australian_treaties.json" />
+    <EmbeddedResource Include="en.wikipedia.org_wiki_List_of_Australian_treaties.html" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.0" />
