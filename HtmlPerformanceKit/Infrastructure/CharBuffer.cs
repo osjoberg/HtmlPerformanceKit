@@ -33,6 +33,7 @@ namespace HtmlPerformanceKit.Infrastructure
             return new string(buffer, 0, Length);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlyMemory<char> ToMemory()
         {
             return new ReadOnlyMemory<char>(buffer, 0, Length);

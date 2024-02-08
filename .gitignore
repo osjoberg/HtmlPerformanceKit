@@ -27,3 +27,6 @@
 *.log
 /.vs/HtmlPerformanceKit
 /.vs/ProjectEvaluation
+
+bin
+obj
