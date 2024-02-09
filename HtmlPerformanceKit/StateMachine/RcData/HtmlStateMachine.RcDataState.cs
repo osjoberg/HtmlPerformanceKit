@@ -1,4 +1,6 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -24,7 +26,9 @@ namespace HtmlPerformanceKit.StateMachine
     /// </summary>
     internal partial class HtmlStateMachine
     {
-        private void RcDataState()
+        private readonly Action RcDataState;
+
+        private void RcDataStateImplementation()
         {
             while (true)
             {

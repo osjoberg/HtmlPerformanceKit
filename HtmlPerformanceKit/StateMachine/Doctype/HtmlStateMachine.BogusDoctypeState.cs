@@ -1,7 +1,11 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action BogusDoctypeState;
+
         /// <summary>
         /// 8.2.4.67 Bogus DOCTYPE state
         ///
@@ -16,7 +20,7 @@
         /// Anything else
         /// Ignore the character.
         /// </summary>
-        private void BogusDoctypeState()
+        private void BogusDoctypeStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

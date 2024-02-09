@@ -1,10 +1,13 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
-
     internal partial class HtmlStateMachine
     {
+        private readonly Action BogusCommentState;
+
         /// <summary>
         /// 8.2.4.44 Bogus comment state
         /// 
@@ -14,7 +17,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// 
         /// If the end of the file was reached, reconsume the EOF character.
         /// </summary>
-        private void BogusCommentState()
+        private void BogusCommentStateImplementation()
         {
             while (true)
             {

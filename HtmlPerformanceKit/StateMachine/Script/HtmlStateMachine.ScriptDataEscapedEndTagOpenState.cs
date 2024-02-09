@@ -1,7 +1,11 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action ScriptDataEscapedEndTagOpenState;
+
         /// <summary>
         /// 8.2.4.18 Script data end tag open state
         ///
@@ -16,7 +20,7 @@
         /// Anything else
         /// Switch to the script data state. Emit a U+003C LESS-THAN SIGN character token and a U+002F SOLIDUS character token. Reconsume the current input character.
         /// </summary>
-        private void ScriptDataEscapedEndTagOpenState()
+        private void ScriptDataEscapedEndTagOpenStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

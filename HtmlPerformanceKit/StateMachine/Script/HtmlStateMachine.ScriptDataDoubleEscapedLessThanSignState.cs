@@ -1,7 +1,11 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action ScriptDataDoubleEscapedLessThanSignState;
+
         /// <summary>
         /// 8.2.4.32 Script data double escaped less-than sign state
         ///
@@ -13,7 +17,7 @@
         /// Anything else
         /// Switch to the script data double escaped state. Reconsume the current input character.
         /// </summary>
-        private void ScriptDataDoubleEscapedLessThanSignState()
+        private void ScriptDataDoubleEscapedLessThanSignStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

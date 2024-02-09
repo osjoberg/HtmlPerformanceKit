@@ -1,9 +1,13 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action BeforeAttributeNameState;
+
         /// <summary>
         /// 8.2.4.34 Before attribute name state
         ///
@@ -39,7 +43,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Start a new attribute in the current tag token. Set that attribute's name to the current input character, and its value to the empty string. Switch to the attribute name state.
         /// </summary>
-        private void BeforeAttributeNameState()
+        private void BeforeAttributeNameStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

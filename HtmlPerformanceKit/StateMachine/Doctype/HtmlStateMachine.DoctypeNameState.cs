@@ -1,9 +1,13 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action DoctypeNameState;
+
         /// <summary>
         /// 8.2.4.54 DOCTYPE name state
         ///
@@ -30,7 +34,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Append the current input character to the current DOCTYPE token's name.
         /// </summary>
-        private void DoctypeNameState()
+        private void DoctypeNameStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

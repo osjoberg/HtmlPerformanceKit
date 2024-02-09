@@ -1,9 +1,13 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action DoctypeState;
+
         /// <summary>
         /// 8.2.4.52 DOCTYPE state
         ///
@@ -21,7 +25,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Parse error. Switch to the before DOCTYPE name state. Reconsume the character.
         /// </summary>
-        private void DoctypeState()
+        private void DoctypeStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

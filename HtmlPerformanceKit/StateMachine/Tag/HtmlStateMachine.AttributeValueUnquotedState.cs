@@ -1,9 +1,13 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action AttributeValueUnquotedState;
+
         /// <summary>
         /// 8.2.4.40 Attribute value (unquoted) state
         ///
@@ -37,7 +41,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Append the current input character to the current attribute's value.
         /// </summary>
-        private void AttributeValueUnquotedState()
+        private void AttributeValueUnquotedStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

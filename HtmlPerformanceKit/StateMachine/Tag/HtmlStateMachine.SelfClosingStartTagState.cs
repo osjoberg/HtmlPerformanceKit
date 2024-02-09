@@ -1,9 +1,13 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action SelfClosingStartTagState;
+
         /// <summary>
         /// 8.2.4.43 Self-closing start tag state
         ///
@@ -18,7 +22,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Parse error. Switch to the before attribute name state. Reconsume the character.
         /// </summary>
-        private void SelfClosingStartTagState()
+        private void SelfClosingStartTagStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

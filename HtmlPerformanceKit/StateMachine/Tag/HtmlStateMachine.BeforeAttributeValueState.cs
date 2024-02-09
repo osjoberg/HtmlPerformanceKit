@@ -1,9 +1,13 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action BeforeAttributeValueState;
+
         /// <summary>
         /// 8.2.4.37 Before attribute value state
         ///
@@ -41,7 +45,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Append the current input character to the current attribute's value. Switch to the attribute value (unquoted) state.
         /// </summary>
-        private void BeforeAttributeValueState()
+        private void BeforeAttributeValueStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

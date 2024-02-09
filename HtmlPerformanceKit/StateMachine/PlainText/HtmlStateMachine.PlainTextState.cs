@@ -1,9 +1,13 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action PlainTextState;
+
         /// <summary>
         /// 8.2.4.7 PLAINTEXT state
         ///
@@ -18,7 +22,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Emit the current input character as a character token.
         /// </summary>
-        private void PlainTextState()
+        private void PlainTextStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

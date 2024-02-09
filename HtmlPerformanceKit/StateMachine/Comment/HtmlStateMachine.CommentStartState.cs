@@ -1,9 +1,13 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action CommentStartState;
+
         /// <summary>
         /// 8.2.4.46 Comment start state
         ///
@@ -24,7 +28,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Append the current input character to the comment token's data. Switch to the comment state.
         /// </summary>
-        private void CommentStartState()
+        private void CommentStartStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

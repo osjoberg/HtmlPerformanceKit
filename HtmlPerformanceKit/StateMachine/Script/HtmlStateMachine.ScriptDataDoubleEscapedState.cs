@@ -1,9 +1,13 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action ScriptDataDoubleEscapedState;
+
         /// <summary>
         /// 8.2.4.29 Script data double escaped state
         ///
@@ -24,7 +28,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Emit the current input character as a character token.
         /// </summary>
-        private void ScriptDataDoubleEscapedState()
+        private void ScriptDataDoubleEscapedStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

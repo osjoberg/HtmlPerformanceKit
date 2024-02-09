@@ -1,9 +1,13 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action AfterAttributeValueQuotedState;
+
         /// <summary>
         /// 8.2.4.42 After attribute value (quoted) state
         ///
@@ -27,7 +31,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Parse error. Switch to the before attribute name state. Reconsume the character.
         /// </summary>
-        private void AfterAttributeValueQuotedState()
+        private void AfterAttributeValueQuotedStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

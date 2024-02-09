@@ -1,9 +1,13 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action TagNameState;
+
         /// <summary>
         /// 8.2.4.10 Tag name state
         ///
@@ -33,7 +37,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Append the current input character to the current tag token's tag name.
         /// </summary>
-        private void TagNameState()
+        private void TagNameStateImplementation()
         {
             while (true)
             {

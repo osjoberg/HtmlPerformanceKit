@@ -25,9 +25,78 @@ namespace HtmlPerformanceKit.StateMachine
             this.bufferReader = bufferReader;
             this.parseError = parseError;
             this.decodeHtmlCharacters = decodeHtmlCharacters;
+
+            BogusCommentState = BogusCommentStateImplementation;
+            CommentEndBangState = CommentEndBangStateImplementation;
+            CommentEndDashState = CommentEndDashStateImplementation;
+            CommentEndState = CommentEndStateImplementation;
+            CommentStartDashState = CommentStartDashStateImplementation;
+            CommentStartState = CommentStartStateImplementation;
+            CommentState = CommentStateImplementation;
+            CDataSectionState = CDataSectionStateImplementation;
+            CharacterReferenceInDataState = CharacterReferenceInDataStateImplementation;
+            DataState = DataStateImplementation;
+            AfterDoctypeNameState = AfterDoctypeNameStateImplementation;
+            AfterDoctypePublicIdentifierState = AfterDoctypePublicIdentifierStateImplementation;
+            AfterDoctypePublicKeywordState = AfterDoctypePublicKeywordStateImplementation;
+            AfterDoctypeSystemIdentifierState = AfterDoctypeSystemIdentifierStateImplementation;
+            AfterDoctypeSystemKeywordState = AfterDoctypeSystemKeywordStateImplementation;
+            BeforeDoctypeNameState = BeforeDoctypeNameStateImplementation;
+            BeforeDoctypePublicIdentifierState = BeforeDoctypePublicIdentifierStateImplementation;
+            BeforeDoctypeSystemIdentifierState = BeforeDoctypeSystemIdentifierStateImplementation;
+            BetweenDoctypePublicAndSystemIdentifiersState = BetweenDoctypePublicAndSystemIdentifiersStateImplementation;
+            BogusDoctypeState = BogusDoctypeStateImplementation;
+            DoctypeNameState = DoctypeNameStateImplementation;
+            DoctypePublicIdentifierDoubleQuotedState = DoctypePublicIdentifierDoubleQuotedStateImplementation;
+            DoctypePublicIdentifierSingleQuotedState = DoctypePublicIdentifierSingleQuotedStateImplementation;
+            DoctypeState = DoctypeStateImplementation;
+            DoctypeSystemIdentifierDoubleQuotedState = DoctypeSystemIdentifierDoubleQuotedStateImplementation;
+            DoctypeSystemIdentifierSingleQuotedState = DoctypeSystemIdentifierSingleQuotedStateImplementation;
+            PlainTextState = PlainTextStateImplementation;
+            RawTextEndTagNameState = RawTextEndTagNameStateImplementation;
+            RawTextEndTagOpenState = RawTextEndTagOpenStateImplementation;
+            RawTextLessThanSignState = RawTextLessThanSignStateImplementation;
+            RawTextState = RawTextStateImplementation;
+            CharacterReferenceInRcDataState = CharacterReferenceInRcDataStateImplementation;
+            RcDataEndTagNameState = RcDataEndTagNameStateImplementation;
+            RcDataEndTagOpenState = RcDataEndTagOpenStateImplementation;
+            RcDataLessThanSignState = RcDataLessThanSignStateImplementation;
+            RcDataState = RcDataStateImplementation;
+            ScriptDataDoubleEscapedDashDashState = ScriptDataDoubleEscapedDashDashStateImplementation;
+            ScriptDataDoubleEscapedDashState = ScriptDataDoubleEscapedDashStateImplementation;
+            ScriptDataDoubleEscapedLessThanSignState = ScriptDataDoubleEscapedLessThanSignStateImplementation;
+            ScriptDataDoubleEscapedState = ScriptDataDoubleEscapedStateImplementation;
+            ScriptDataDoubleEscapeEndState = ScriptDataDoubleEscapeEndStateImplementation;
+            ScriptDataDoubleEscapeStartState = ScriptDataDoubleEscapeStartStateImplementation;
+            ScriptDataEndTagNameState = ScriptDataEndTagNameStateImplementation;
+            ScriptDataEndTagOpenState = ScriptDataEndTagOpenStateImplementation;
+            ScriptDataEscapedDashDashState = ScriptDataEscapedDashDashStateImplementation;
+            ScriptDataEscapedDashState = ScriptDataEscapedDashStateImplementation;
+            ScriptDataEscapedEndTagNameState = ScriptDataEscapedEndTagNameStateImplementation;
+            ScriptDataEscapedEndTagOpenState = ScriptDataEscapedEndTagOpenStateImplementation;
+            ScriptDataEscapedLessThanSignState = ScriptDataEscapedLessThanSignStateImplementation;
+            ScriptDataEscapedState = ScriptDataEscapedStateImplementation;
+            ScriptDataEscapeStartDashState = ScriptDataEscapeStartDashStateImplementation;
+            ScriptDataEscapeStartState = ScriptDataEscapeStartStateImplementation;
+            ScriptDataLessThanSignState = ScriptDataLessThanSignStateImplementation;
+            ScriptDataState = ScriptDataStateImplementation;
+            AfterAttributeNameState = AfterAttributeNameStateImplementation;
+            AfterAttributeValueQuotedState = AfterAttributeValueQuotedStateImplementation;
+            AttributeNameState = AttributeNameStateImplementation;
+            AttributeValueDoubleQuotedState = AttributeValueDoubleQuotedStateImplementation;
+            AttributeValueSingleQuotedState = AttributeValueSingleQuotedStateImplementation;
+            AttributeValueUnquotedState = AttributeValueUnquotedStateImplementation;
+            BeforeAttributeNameState = BeforeAttributeNameStateImplementation;
+            BeforeAttributeValueState = BeforeAttributeValueStateImplementation;
+            CharacterReferenceInAttributeValueState = CharacterReferenceInAttributeValueStateImplementation;
+            EndTagOpenState = EndTagOpenStateImplementation;
+            MarkupDeclarationOpenState = MarkupDeclarationOpenStateImplementation;
+            SelfClosingStartTagState = SelfClosingStartTagStateImplementation;
+            TagNameState = TagNameStateImplementation;
+            TagOpenState = TagOpenStateImplementation;
+
             State = DataState;
         }
-
 
         internal Action State
         {

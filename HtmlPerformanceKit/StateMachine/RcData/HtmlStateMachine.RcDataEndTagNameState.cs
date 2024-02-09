@@ -1,7 +1,11 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action RcDataEndTagNameState;
+
         /// <summary>
         /// 8.2.4.13 RCDATA end tag name state
         ///
@@ -28,7 +32,7 @@
         /// Anything else
         /// Switch to the RCDATA state. Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume the current input character.
         /// </summary>
-        private void RcDataEndTagNameState()
+        private void RcDataEndTagNameStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

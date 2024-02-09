@@ -1,7 +1,11 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action CharacterReferenceInDataState;
+
         /// <summary>
         /// 8.2.4.2 Character reference in data state
         /// 
@@ -13,7 +17,7 @@
         /// 
         /// Otherwise, emit the character tokens that were returned.
         /// </summary>
-        private void CharacterReferenceInDataState()
+        private void CharacterReferenceInDataStateImplementation()
         {
             additionalAllowedCharacter = '\t'; // Works as no additional character since '\t' is always allowed.
 

@@ -1,7 +1,11 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action ScriptDataEscapedLessThanSignState;
+
         /// <summary>
         /// 8.2.4.25 Script data escaped less-than sign state
         ///
@@ -19,7 +23,7 @@
         /// Anything else
         /// Switch to the script data escaped state. Emit a U+003C LESS-THAN SIGN character token. Reconsume the current input character.
         /// </summary>
-        private void ScriptDataEscapedLessThanSignState()
+        private void ScriptDataEscapedLessThanSignStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

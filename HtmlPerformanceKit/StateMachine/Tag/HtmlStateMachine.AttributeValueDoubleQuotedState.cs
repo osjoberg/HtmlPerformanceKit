@@ -1,9 +1,13 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action AttributeValueDoubleQuotedState;
+
         /// <summary>
         /// 8.2.4.38 Attribute value (double-quoted) state
         ///
@@ -24,7 +28,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Append the current input character to the current attribute's value.
         /// </summary>
-        private void AttributeValueDoubleQuotedState()
+        private void AttributeValueDoubleQuotedStateImplementation()
         {
             while (true)
             {

@@ -1,9 +1,13 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action TagOpenState;
+
         /// <summary>
         /// 8.2.4.8 Tag open state
         ///
@@ -27,7 +31,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Parse error. Switch to the data state. Emit a U+003C LESS-THAN SIGN character token. Reconsume the current input character.
         /// </summary>
-        private void TagOpenState()
+        private void TagOpenStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

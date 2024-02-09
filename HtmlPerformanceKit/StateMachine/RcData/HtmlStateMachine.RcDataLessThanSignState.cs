@@ -1,7 +1,11 @@
-﻿namespace HtmlPerformanceKit.StateMachine
+using System;
+
+namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action RcDataLessThanSignState;
+
         /// <summary>
         /// 8.2.4.11 RCDATA less-than sign state
         ///
@@ -13,7 +17,7 @@
         /// Anything else
         /// Switch to the RCDATA state. Emit a U+003C LESS-THAN SIGN character token. Reconsume the current input character.
         /// </summary>
-        private void RcDataLessThanSignState()
+        private void RcDataLessThanSignStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

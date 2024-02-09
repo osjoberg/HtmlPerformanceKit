@@ -1,8 +1,11 @@
-﻿namespace HtmlPerformanceKit.StateMachine
-{
+using System;
 
+namespace HtmlPerformanceKit.StateMachine
+{
     internal partial class HtmlStateMachine
     {
+        private readonly Action RawTextLessThanSignState;
+
         /// <summary>
         /// 8.2.4.14 RAWTEXT less-than sign state
         ///
@@ -14,7 +17,7 @@
         /// Anything else
         /// Switch to the RAWTEXT state. Emit a U+003C LESS-THAN SIGN character token. Reconsume the current input character.
         /// </summary>
-        private void RawTextLessThanSignState()
+        private void RawTextLessThanSignStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

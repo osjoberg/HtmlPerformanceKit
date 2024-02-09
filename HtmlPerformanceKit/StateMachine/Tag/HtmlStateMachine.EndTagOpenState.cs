@@ -1,9 +1,13 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action EndTagOpenState;
+
         /// <summary>
         /// 8.2.4.9 End tag open state
         ///
@@ -24,7 +28,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Parse error. Switch to the bogus comment state.
         /// </summary>
-        private void EndTagOpenState()
+        private void EndTagOpenStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

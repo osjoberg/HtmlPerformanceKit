@@ -1,9 +1,13 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action CommentEndState;
+
         /// <summary>
         /// 8.2.4.50 Comment end state
         ///
@@ -27,7 +31,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Parse error. Append two "-" (U+002D) characters and the current input character to the comment token's data. Switch to the comment state.
         /// </summary>
-        private void CommentEndState()
+        private void CommentEndStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

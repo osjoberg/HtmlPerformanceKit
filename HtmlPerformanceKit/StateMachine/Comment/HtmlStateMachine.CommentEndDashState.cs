@@ -1,9 +1,13 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action CommentEndDashState;
+
         /// <summary>
         /// 8.2.4.49 Comment end dash state
         ///
@@ -21,7 +25,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Append a "-" (U+002D) character and the current input character to the comment token's data. Switch to the comment state.
         /// </summary>
-        private void CommentEndDashState()
+        private void CommentEndDashStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

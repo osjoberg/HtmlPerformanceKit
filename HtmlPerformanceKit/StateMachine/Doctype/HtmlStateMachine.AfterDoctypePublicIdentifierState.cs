@@ -1,9 +1,13 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+using System;
+
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action AfterDoctypePublicIdentifierState;
+
         /// <summary>
         /// 8.2.4.60 After DOCTYPE public identifier state
         ///
@@ -30,7 +34,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// Anything else
         /// Parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the bogus DOCTYPE state.
         /// </summary>
-        private void AfterDoctypePublicIdentifierState()
+        private void AfterDoctypePublicIdentifierStateImplementation()
         {
             var currentInputCharacter = bufferReader.Consume();
 

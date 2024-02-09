@@ -1,4 +1,6 @@
-﻿using System;
+using System;
+
+using System;
 
 using HtmlPerformanceKit.Infrastructure;
 
@@ -6,6 +8,8 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
+        private readonly Action MarkupDeclarationOpenState;
+
         private const string CommentMarker = "--";
         private const string DoctypeMarker = "doctype";
         private const string CDataMarker = "[CDATA[";
@@ -21,7 +25,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// 
         /// Otherwise, this is a parse error.Switch to the bogus comment state. The next character that is consumed, if any, is the first character that will be in the comment.
         /// </summary>
-        private void MarkupDeclarationOpenState()
+        private void MarkupDeclarationOpenStateImplementation()
         {
             var currentInputCharacter = bufferReader.Peek();
 
