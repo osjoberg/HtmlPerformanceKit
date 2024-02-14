@@ -52,7 +52,7 @@ namespace HtmlPerformanceKit.Infrastructure
                 Array.Resize(ref buffer, buffer.Length * 2);
             }
 
-            @string.CopyTo(0, buffer, Length,  @string.Length);
+            @string.CopyTo(0, buffer, Length, @string.Length);
             Length += @string.Length;
         }
 

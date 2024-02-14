@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace HtmlPerformanceKit.Infrastructure
@@ -9,7 +7,7 @@ namespace HtmlPerformanceKit.Infrastructure
     internal class BufferReader : IDisposable
     {
         private readonly TextReader textReader;
-        private readonly LinkedList<int> peekBuffer = new LinkedList<int>();
+        private readonly QueueStack peekBuffer = new QueueStack(64);
 
         internal BufferReader(TextReader textReader)
         {
@@ -26,36 +24,20 @@ namespace HtmlPerformanceKit.Infrastructure
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal string Peek(int length)
+        internal ReadOnlyMemory<char> Peek(int length)
         {
-            var outputLength = Math.Min(peekBuffer.Count, length);
-
             while (peekBuffer.Count < length)
             {
                 var currentInputCharacter = textReader.Read();
 
-                peekBuffer.AddLast(currentInputCharacter);
-                outputLength++;
-
+                peekBuffer.Enqueue(currentInputCharacter);
                 if (currentInputCharacter == -1)
                 {
                     break;
                 }
             }
-
-            var intBuffer = peekBuffer.ToArray();
-            var charBuffer = new char[outputLength];
-            for (var index = 0; index < outputLength; index++)
-            {
-                if (intBuffer[index] == -1)
-                {
-                    break;
-                }
-
-                charBuffer[index] = (char)intBuffer[index];
-            }
-
-            return new string(charBuffer, 0, outputLength);
+            
+            return peekBuffer.AsMemory();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -73,9 +55,7 @@ namespace HtmlPerformanceKit.Infrastructure
         {
             if (peekBuffer.Count != 0)
             {
-                var peekResult = peekBuffer.First.Value;
-                peekBuffer.RemoveFirst();
-                return peekResult;
+                return peekBuffer.Dequeue();
             }
 
             if (LineNumber == 0)
@@ -216,19 +196,19 @@ namespace HtmlPerformanceKit.Infrastructure
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Reconsume(int data)
         {
-            peekBuffer.AddFirst(data);
+            peekBuffer.Push(data);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal int Peek()
         {
-            if (peekBuffer.Count > 0)
+            if (peekBuffer.Count != 0)
             {
-                return peekBuffer.First.Value;
+                return peekBuffer.Peek();
             }
 
             var currentInputCharacter = textReader.Read();
-            peekBuffer.AddLast(currentInputCharacter);
+            peekBuffer.Enqueue(currentInputCharacter);
 
             return currentInputCharacter;
         }

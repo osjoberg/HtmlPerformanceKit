@@ -1,4 +1,5 @@
-﻿using HtmlPerformanceKit.Infrastructure;
+﻿using System;
+using HtmlPerformanceKit.Infrastructure;
 
 namespace HtmlPerformanceKit.StateMachine
 {
@@ -86,12 +87,12 @@ namespace HtmlPerformanceKit.StateMachine
                     }
 
                     var characterReferenceBuffer = bufferReader.Peek(35);
-                    var startIndex = characterReferenceBuffer.IndexOf(';');
+                    var startIndex = characterReferenceBuffer.Span.IndexOf(';');
                     startIndex = startIndex == -1 ? characterReferenceBuffer.Length : startIndex + 1;
 
                     for (var i = startIndex; i > 0; i--)
                     {
-                        var characterReferenceAttempt = characterReferenceBuffer.Substring(0, i);
+                        var characterReferenceAttempt = characterReferenceBuffer.Slice(0, i);
                         var characterReferenceResult = HtmlChar.GetCharactersByCharacterReference(characterReferenceAttempt);
                         if (characterReferenceResult == null)
                         {
@@ -99,13 +100,13 @@ namespace HtmlPerformanceKit.StateMachine
                         }
 
                         if ((additionalAllowedCharacter == '"' || additionalAllowedCharacter == '\'')
-                            && characterReferenceBuffer[i - 1] != ';' && characterReferenceBuffer.Length > i
-                            && (characterReferenceBuffer[i] == '='
-                                || (characterReferenceBuffer[i] >= 'A' && characterReferenceBuffer[i] <= 'Z')
-                                || (characterReferenceBuffer[i] >= 'a' && characterReferenceBuffer[i] <= 'z')
-                                || (characterReferenceBuffer[i] >= '0' && characterReferenceBuffer[i] <= '9')))
+                            && characterReferenceBuffer.Span[i - 1] != ';' && characterReferenceBuffer.Length > i
+                            && (characterReferenceBuffer.Span[i] == '='
+                                || (characterReferenceBuffer.Span[i] >= 'A' && characterReferenceBuffer.Span[i] <= 'Z')
+                                || (characterReferenceBuffer.Span[i] >= 'a' && characterReferenceBuffer.Span[i] <= 'z')
+                                || (characterReferenceBuffer.Span[i] >= '0' && characterReferenceBuffer.Span[i] <= '9')))
                         {
-                            if (characterReferenceBuffer[i] == '=')
+                            if (characterReferenceBuffer.Span[i] == '=')
                             {
                                 ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                             }
@@ -114,7 +115,7 @@ namespace HtmlPerformanceKit.StateMachine
                         }
 
                         bufferReader.Consume(characterReferenceAttempt.Length);
-                        if (characterReferenceBuffer[i - 1] != ';')
+                        if (characterReferenceBuffer.Span[i - 1] != ';')
                         {
                             ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                         }
@@ -124,14 +125,14 @@ namespace HtmlPerformanceKit.StateMachine
 
                     for (var i = 0; i < characterReferenceBuffer.Length; i++)
                     {
-                        if ((characterReferenceBuffer[i] >= 'A' && characterReferenceBuffer[i] <= 'Z')
-                            || (characterReferenceBuffer[i] >= 'a' && characterReferenceBuffer[i] <= 'z')
-                            || (characterReferenceBuffer[i] >= '0' && characterReferenceBuffer[i] <= '9'))
+                        if ((characterReferenceBuffer.Span[i] >= 'A' && characterReferenceBuffer.Span[i] <= 'Z')
+                            || (characterReferenceBuffer.Span[i] >= 'a' && characterReferenceBuffer.Span[i] <= 'z')
+                            || (characterReferenceBuffer.Span[i] >= '0' && characterReferenceBuffer.Span[i] <= '9'))
                         {
                             continue;
                         }
 
-                        if (characterReferenceBuffer[i] != ';')
+                        if (characterReferenceBuffer.Span[i] != ';')
                         {
                             return Nothing;
                         }
