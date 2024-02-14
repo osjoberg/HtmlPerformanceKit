@@ -13,6 +13,7 @@ namespace HtmlPerformanceKit
     {
         private readonly BufferReader bufferReader;
         private readonly HtmlStateMachine stateMachine;
+        private readonly HtmlReaderOptions options;
 
         private CharBuffer textBuffer;
         private HtmlTagToken tagToken;
@@ -28,8 +29,9 @@ namespace HtmlPerformanceKit
                 throw new ArgumentNullException(nameof(streamReader));
             }
 
+            options = HtmlReaderOptions.Default;
             bufferReader = new BufferReader(streamReader);
-            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, HtmlReaderOptions.Default.DecodeHtmlCharacters);
+            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, options.DecodeHtmlCharacters);
         }
 
         /// <summary>
@@ -43,8 +45,9 @@ namespace HtmlPerformanceKit
                 throw new ArgumentNullException(nameof(stream));
             }
 
+            options = HtmlReaderOptions.Default;
             bufferReader = new BufferReader(new StreamReader(stream));
-            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, HtmlReaderOptions.Default.DecodeHtmlCharacters);
+            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, options.DecodeHtmlCharacters);
         }
 
         /// <summary>
@@ -58,8 +61,9 @@ namespace HtmlPerformanceKit
                 throw new ArgumentNullException(nameof(textReader));
             }
 
+            options = HtmlReaderOptions.Default;
             bufferReader = new BufferReader(textReader);
-            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, HtmlReaderOptions.Default.DecodeHtmlCharacters);
+            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, options.DecodeHtmlCharacters);
         }
 
         /// <summary>
@@ -74,13 +78,9 @@ namespace HtmlPerformanceKit
                 throw new ArgumentNullException(nameof(streamReader));
             }
 
-            if (options == null)
-            {
-                options = HtmlReaderOptions.Default;
-            }
-
+            this.options = options ?? HtmlReaderOptions.Default;
             bufferReader = new BufferReader(streamReader);
-            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, options.DecodeHtmlCharacters);
+            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, this.options.DecodeHtmlCharacters);
         }
 
         /// <summary>
@@ -95,13 +95,9 @@ namespace HtmlPerformanceKit
                 throw new ArgumentNullException(nameof(stream));
             }
 
-            if (options == null)
-            {
-                options = HtmlReaderOptions.Default;
-            }
-
+            this.options = options ?? HtmlReaderOptions.Default;
             bufferReader = new BufferReader(new StreamReader(stream));
-            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, options.DecodeHtmlCharacters);
+            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, this.options.DecodeHtmlCharacters);
         }
 
         /// <summary>
@@ -116,13 +112,9 @@ namespace HtmlPerformanceKit
                 throw new ArgumentNullException(nameof(textReader));
             }
 
-            if (options == null)
-            {
-                options = HtmlReaderOptions.Default;
-            }
-
+            this.options = options ?? HtmlReaderOptions.Default;
             bufferReader = new BufferReader(textReader);
-            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, options.DecodeHtmlCharacters);
+            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, this.options.DecodeHtmlCharacters);
         }
 
         private void ParseErrorFromMessage(string message)
@@ -287,7 +279,13 @@ namespace HtmlPerformanceKit
         /// </summary>
         public void Dispose()
         {
-            bufferReader.Dispose();
+            tagToken = null;
+            textBuffer = null;
+
+            if (options.CloseInput)
+            {
+                bufferReader.Dispose();
+            }
         }
 
         private void OnParseError(object sender, HtmlParseErrorEventArgs args)

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.Json;
 using System.Threading.Tasks;
 using HtmlPerformanceKit.Benchmark;
 
@@ -26,7 +24,7 @@ namespace HtmlPerformanceKit.Test
             var htmlReader = new HtmlReader(inputStream);
             htmlReader.ParseError += (_, args) => output.Add(args);
 
-            for (;;)
+            for (; ; )
             {
                 var read = htmlReader.Read();
 
@@ -97,7 +95,7 @@ namespace HtmlPerformanceKit.Test
         public void ExtractTextFromWikipediaListOfAustralianTreatiesHtmlPerformanceKit()
         {
             var benchmark = new BenchmarkLibraries();
-            var texts = benchmark.ExtractLinks();
+            var texts = benchmark.ExtractTexts();
         }
     }
 }
