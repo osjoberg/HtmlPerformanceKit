@@ -55,10 +55,15 @@ namespace HtmlPerformanceKit.Test
         public void ExtractLinksFromWikipediaListOfAustralianTreaties()
         {
             var benchmark = new BenchmarkLibraries();
+            benchmark.IterationSetup();
             var links = benchmark.ExtractLinks();
+            benchmark.IterationSetup();
             var linksHtmlAgilityPack = benchmark.ExtractLinksHtmlAgilityPack();
+            benchmark.IterationSetup();
             var linksAngleSharp = benchmark.ExtractLinksAngleSharp();
+            benchmark.IterationSetup();
             var linksHtmlParserSharp = benchmark.ExtractLinksHtmlParserSharp();
+            benchmark.IterationSetup();
             var linksHtmlKit = benchmark.ExtractLinksHtmlKit();
 
             CollectionAssert.AreEqual(links, linksHtmlAgilityPack);
@@ -72,7 +77,9 @@ namespace HtmlPerformanceKit.Test
         {
             var benchmark = new BenchmarkLibraries();
 
+            benchmark.IterationSetup();
             var texts = benchmark.ExtractTexts();
+            benchmark.IterationSetup();
             var textsHtmlAgilityPack = benchmark.ExtractTextsHtmlAgilityPack();
             var textsAngleSharp = benchmark.ExtractTextsAngleSharp();
             var textsHtmlParserSharp = benchmark.ExtractTextsHtmlParserSharp();
