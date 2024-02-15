@@ -57,15 +57,21 @@ namespace HtmlPerformanceKit.Infrastructure
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void AddRange(char[] array)
+        internal void AddRange(HtmlChar charSequence)
         {
-            while (Length + array.Length > buffer.Length)
+            var length = charSequence.Length;
+
+            while (Length + length > buffer.Length)
             {
                 Array.Resize(ref buffer, buffer.Length * 2);
             }
 
-            Array.Copy(array, 0, buffer, Length, array.Length);
-            Length += array.Length;
+            buffer[Length++] = charSequence.Char1;
+
+            if (length == 2)
+            {
+                buffer[Length++] = charSequence.Char2;
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

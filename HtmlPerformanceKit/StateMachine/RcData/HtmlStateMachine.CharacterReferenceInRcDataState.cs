@@ -23,7 +23,7 @@ namespace HtmlPerformanceKit.StateMachine
             additionalAllowedCharacter = '\t'; // Works as no additional character since '\t' is always allowed.
 
             var characters = ConsumeCharacterReference();
-            if (characters.Length == 0)
+            if (characters.IsNothing)
             {
                 currentDataBuffer.Add('&');
             }

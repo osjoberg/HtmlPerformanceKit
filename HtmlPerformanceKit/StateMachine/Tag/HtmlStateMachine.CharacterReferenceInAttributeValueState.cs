@@ -2,7 +2,6 @@ using System;
 
 namespace HtmlPerformanceKit.StateMachine
 {
-
     internal partial class HtmlStateMachine
     {
         private readonly Action CharacterReferenceInAttributeValueState;
@@ -21,7 +20,7 @@ namespace HtmlPerformanceKit.StateMachine
         private void CharacterReferenceInAttributeValueStateImplementation()
         {
             var characters = ConsumeCharacterReference();
-            if (characters.Length == 0)
+            if (characters.IsNothing)
             {
                 currentTagToken.Attributes.Current.Value.Add('&');
             }
