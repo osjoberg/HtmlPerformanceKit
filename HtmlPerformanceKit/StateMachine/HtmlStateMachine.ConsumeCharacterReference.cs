@@ -59,7 +59,7 @@ namespace HtmlPerformanceKit.StateMachine
                     }
 
                     var replacementCharacter = HtmlChar.GetReplacementCharacterReference(codepoint);
-                    if (replacementCharacter.IsNothing == false)
+                    if (replacementCharacter.Length != 0)
                     {
                         ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                         return replacementCharacter;
@@ -92,7 +92,7 @@ namespace HtmlPerformanceKit.StateMachine
                     {
                         var characterReferenceAttempt = characterReferenceBuffer.Slice(0, i);
                         var characterReferenceResult = HtmlChar.GetCharactersByCharacterReference(characterReferenceAttempt);
-                        if (characterReferenceResult.IsNothing)
+                        if (characterReferenceResult.Length == 0)
                         {
                             continue;
                         }

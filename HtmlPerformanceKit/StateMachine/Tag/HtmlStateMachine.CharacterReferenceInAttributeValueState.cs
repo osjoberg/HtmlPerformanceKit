@@ -20,7 +20,7 @@ namespace HtmlPerformanceKit.StateMachine
         private void CharacterReferenceInAttributeValueStateImplementation()
         {
             var characters = ConsumeCharacterReference();
-            if (characters.IsNothing)
+            if (characters.Length == 0)
             {
                 currentTagToken.Attributes.Current.Value.Add('&');
             }

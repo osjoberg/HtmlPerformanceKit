@@ -10,25 +10,37 @@ namespace HtmlPerformanceKit.Infrastructure
         internal static HtmlChar ReplacementCharacterHtmlChar = new HtmlChar('\uFFFD');
         internal static readonly HtmlChar Nothing = new HtmlChar('\0', '\0');
 
-        internal char Char1 { get; }
-
-        internal char Char2 { get; }
+        private readonly char char1;
+        private readonly char char2;
 
         internal HtmlChar(char char1) : this(char1, '\0')
         {
-            Char1 = char1;
-            Char2 = '\0';
+            this.char1 = char1;
+            this.char2 = '\0';
         }
 
         internal HtmlChar(char char1, char char2)
         {
-            Char1 = char1;
-            Char2 = char2;
+            this.char1 = char1;
+            this.char2 = char2;
         }
 
-        internal bool IsNothing => Char1 == '\0';
+        internal int Length => char1 == '\0' ? 0 : char2 == '\0' ? 1 : 2;
 
-        internal int Length => (Char1 == '\0' ? 0 : 1) + (Char2 == '\0' ? 0 : 1);
+        internal void CopyTo(char[] destination, int destinationIndex)
+        {
+            if (char1 == '\0')
+            {
+                return;
+            }
+
+            destination[destinationIndex++] = char1;
+
+            if (char2 != '\0')
+            {
+                destination[destinationIndex] = char2;
+            }
+        }
 
         private static readonly Dictionary<ReadOnlyMemory<char>, HtmlChar> HtmlCharacterReferences = new Dictionary<ReadOnlyMemory<char>, HtmlChar>(ReadOnlyMemoryComparer.Instance)
         {
