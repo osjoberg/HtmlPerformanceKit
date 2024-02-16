@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using BenchmarkDotNet.Running;
+﻿using BenchmarkDotNet.Running;
 
 namespace HtmlPerformanceKit.Benchmark
 {
