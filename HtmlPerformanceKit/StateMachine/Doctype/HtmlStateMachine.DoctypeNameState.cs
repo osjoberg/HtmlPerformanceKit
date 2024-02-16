@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action DoctypeNameState;
+        private readonly Action doctypeNameState;
 
         /// <summary>
         /// 8.2.4.54 DOCTYPE name state
@@ -44,11 +44,11 @@ namespace HtmlPerformanceKit.StateMachine
                 case '\n':
                 case '\r':
                 case ' ':
-                    State = AfterDoctypeNameState;
+                    State = afterDoctypeNameState;
                     return;
 
                 case '>':
-                    State = DataState;
+                    State = dataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     return;
 
@@ -84,12 +84,12 @@ namespace HtmlPerformanceKit.StateMachine
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
                     currentDoctypeToken.Name.Add(HtmlChar.ReplacementCharacter);
-                    State = DoctypeNameState;
+                    State = doctypeNameState;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = DataState;
+                    State = dataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;

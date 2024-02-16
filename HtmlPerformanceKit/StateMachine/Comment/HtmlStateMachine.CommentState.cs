@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action CommentState;
+        private readonly Action commentState;
 
         /// <summary>
         /// 8.2.4.48 Comment state
@@ -32,7 +32,7 @@ namespace HtmlPerformanceKit.StateMachine
             switch (currentInputCharacter)
             {
                 case '-':
-                    State = CommentEndDashState;
+                    State = commentEndDashState;
                     return;
 
                 case HtmlChar.Null:
@@ -42,7 +42,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = DataState;
+                    State = dataState;
                     EmitCommentBuffer = currentCommentBuffer;
                     bufferReader.Reconsume(EofMarker);
                     return;

@@ -18,11 +18,11 @@ using NodeType = AngleSharp.Dom.NodeType;
 
 namespace HtmlPerformanceKit.Benchmark
 {
+    [MemoryDiagnoser]
     public class BenchmarkLibraries
     {
         private readonly Stream stream;
         private readonly StreamReader streamReader;
-        private readonly HtmlReaderOptions options = new HtmlReaderOptions { CloseInput = false };
 
         public BenchmarkLibraries()
         {
@@ -41,7 +41,7 @@ namespace HtmlPerformanceKit.Benchmark
         [Benchmark]
         public List<string> ExtractLinks()
         {
-            var htmlReader = new HtmlReader(streamReader, options);
+            var htmlReader = new HtmlReader(streamReader);
             var links = new List<string>();
 
             while (htmlReader.Read())

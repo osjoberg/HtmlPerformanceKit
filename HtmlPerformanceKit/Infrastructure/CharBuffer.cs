@@ -66,7 +66,6 @@ namespace HtmlPerformanceKit.Infrastructure
                 Array.Resize(ref buffer, buffer.Length * 2);
             }
 
-
             htmlChar.CopyTo(buffer, Length);
             Length += length;
         }

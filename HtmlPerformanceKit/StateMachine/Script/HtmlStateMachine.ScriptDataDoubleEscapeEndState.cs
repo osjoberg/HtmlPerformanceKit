@@ -4,7 +4,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action ScriptDataDoubleEscapeEndState;
+        private readonly Action scriptDataDoubleEscapeEndState;
 
         /// <summary>
         /// 8.2.4.33 Script data double escape end state
@@ -42,11 +42,11 @@ namespace HtmlPerformanceKit.StateMachine
                 case '>':
                     if (temporaryBuffer.Equals("script"))
                     {
-                        State = ScriptDataEscapedState;
+                        State = scriptDataEscapedState;
                     }
                     else
                     {
-                        State = ScriptDataDoubleEscapedState;
+                        State = scriptDataDoubleEscapedState;
                     }
 
                     currentDataBuffer.Add((char)currentInputCharacter);
@@ -113,7 +113,7 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 default:
-                    State = ScriptDataDoubleEscapedState;
+                    State = scriptDataDoubleEscapedState;
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }

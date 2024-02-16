@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action BeforeDoctypeNameState;
+        private readonly Action beforeDoctypeNameState;
 
         /// <summary>
         /// 8.2.4.53 Before DOCTYPE name state
@@ -80,19 +80,19 @@ namespace HtmlPerformanceKit.StateMachine
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
                     currentDoctypeToken.Clear();
                     currentDoctypeToken.Name.Add(HtmlChar.ReplacementCharacter);
-                    State = DoctypeNameState;
+                    State = doctypeNameState;
                     return;
 
                 case '>':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     currentDoctypeToken.Clear();
-                    State = DataState;
+                    State = dataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = DataState;
+                    State = dataState;
                     currentDoctypeToken.Clear();
                     EmitDoctypeToken = currentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
@@ -101,7 +101,7 @@ namespace HtmlPerformanceKit.StateMachine
                 default:
                     currentDoctypeToken.Clear();
                     currentDoctypeToken.Name.Add((char)currentInputCharacter);
-                    State = DoctypeNameState;
+                    State = doctypeNameState;
                     return;
             }
         }

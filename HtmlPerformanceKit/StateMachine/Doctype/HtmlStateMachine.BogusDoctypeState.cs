@@ -4,7 +4,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action BogusDoctypeState;
+        private readonly Action bogusDoctypeState;
 
         /// <summary>
         /// 8.2.4.67 Bogus DOCTYPE state
@@ -27,12 +27,12 @@ namespace HtmlPerformanceKit.StateMachine
             switch (currentInputCharacter)
             {
                 case '>':
-                    State = DataState;
+                    State = dataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     return;
 
                 case EofMarker:
-                    State = DataState;
+                    State = dataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;

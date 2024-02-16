@@ -18,7 +18,7 @@ namespace HtmlPerformanceKit.Infrastructure
 
             unchecked
             {
-                int hash = 19;
+                var hash = 19;
 
                 for (var i = 0; i < span.Length; i++)
                 {

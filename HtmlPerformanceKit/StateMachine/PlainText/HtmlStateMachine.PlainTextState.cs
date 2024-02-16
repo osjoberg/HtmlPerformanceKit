@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action PlainTextState;
+        private readonly Action plainTextState;
 
         /// <summary>
         /// 8.2.4.7 PLAINTEXT state
@@ -34,7 +34,7 @@ namespace HtmlPerformanceKit.StateMachine
 					break;
 
                 case EofMarker:
-                    State = DataState;
+                    State = dataState;
                     EmitDataBuffer = currentDataBuffer;
                     bufferReader.Reconsume(EofMarker);
                     break;

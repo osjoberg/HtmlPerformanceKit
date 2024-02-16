@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action BeforeAttributeValueState;
+        private readonly Action beforeAttributeValueState;
 
         /// <summary>
         /// 8.2.4.37 Before attribute value state
@@ -58,16 +58,16 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case '"':
-                    State = AttributeValueDoubleQuotedState;
+                    State = attributeValueDoubleQuotedState;
                     return;
 
                 case '&':
-                    State = AttributeValueUnquotedState;
+                    State = attributeValueUnquotedState;
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
 
                 case '\'':
-                    State = AttributeValueSingleQuotedState;
+                    State = attributeValueSingleQuotedState;
                     return;
 
                 case HtmlChar.Null:
@@ -77,7 +77,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case '>':
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    State = DataState;
+                    State = dataState;
                     EmitTagToken = currentTagToken;
                     return;
 
@@ -89,13 +89,13 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = DataState;
+                    State = dataState;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
                     currentTagToken.Attributes.Current.Value.Add((char)currentInputCharacter);
-                    State = AttributeValueUnquotedState;
+                    State = attributeValueUnquotedState;
                     return;
             }
         }

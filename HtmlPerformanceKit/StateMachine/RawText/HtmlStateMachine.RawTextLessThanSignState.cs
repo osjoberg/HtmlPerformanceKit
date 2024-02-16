@@ -4,7 +4,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action RawTextLessThanSignState;
+        private readonly Action rawTextLessThanSignState;
 
         /// <summary>
         /// 8.2.4.14 RAWTEXT less-than sign state
@@ -25,11 +25,11 @@ namespace HtmlPerformanceKit.StateMachine
             {
                 case '/':
                     temporaryBuffer.Clear();
-                    State = RawTextEndTagOpenState;
+                    State = rawTextEndTagOpenState;
                     return;
 
                 default:
-                    State = RawTextState;
+                    State = rawTextState;
                     currentDataBuffer.Add('<');
                     bufferReader.Reconsume(currentInputCharacter);
                     return;

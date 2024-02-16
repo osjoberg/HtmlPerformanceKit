@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action ScriptDataState;
+        private readonly Action scriptDataState;
 
         /// <summary>
         /// 8.2.4.6 Script data state
@@ -34,7 +34,7 @@ namespace HtmlPerformanceKit.StateMachine
                 switch (currentInputCharacter)
                 {
                     case '<':
-                        State = ScriptDataLessThanSignState;
+                        State = scriptDataLessThanSignState;
                         return;
 
                     case HtmlChar.Null:
@@ -43,7 +43,7 @@ namespace HtmlPerformanceKit.StateMachine
                         continue;
 
                     case EofMarker:
-                        State = DataState;
+                        State = dataState;
                         bufferReader.Reconsume(EofMarker);
                         return;
 

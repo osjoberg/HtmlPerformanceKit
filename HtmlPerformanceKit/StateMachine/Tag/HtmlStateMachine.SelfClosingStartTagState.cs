@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action SelfClosingStartTagState;
+        private readonly Action selfClosingStartTagState;
 
         /// <summary>
         /// 8.2.4.43 Self-closing start tag state
@@ -30,19 +30,19 @@ namespace HtmlPerformanceKit.StateMachine
             {
                 case '>':
                     currentTagToken.SelfClosing = true;
-                    State = DataState;
+                    State = dataState;
                     EmitTagToken = currentTagToken;
                     break;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = DataState;
+                    State = dataState;
                     bufferReader.Reconsume(EofMarker);
                     break;
 
                 default:
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    State = BeforeAttributeNameState;
+                    State = beforeAttributeNameState;
                     bufferReader.Reconsume(currentInputCharacter);
                     break;
             }

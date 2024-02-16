@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action AfterAttributeValueQuotedState;
+        private readonly Action afterAttributeValueQuotedState;
 
         /// <summary>
         /// 8.2.4.42 After attribute value (quoted) state
@@ -41,27 +41,27 @@ namespace HtmlPerformanceKit.StateMachine
                 case '\n':
                 case '\r':
                 case ' ':
-                    State = BeforeAttributeNameState;
+                    State = beforeAttributeNameState;
                     return;
 
                 case '/':
-                    State = SelfClosingStartTagState;               
+                    State = selfClosingStartTagState;               
                     return;
 
                 case '>':
-                    State = DataState;
+                    State = dataState;
                     EmitTagToken = currentTagToken;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = DataState;
+                    State = dataState;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    State = BeforeAttributeNameState;
+                    State = beforeAttributeNameState;
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }

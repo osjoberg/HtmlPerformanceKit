@@ -4,7 +4,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action ScriptDataEscapedEndTagOpenState;
+        private readonly Action scriptDataEscapedEndTagOpenState;
 
         /// <summary>
         /// 8.2.4.18 Script data end tag open state
@@ -56,7 +56,7 @@ namespace HtmlPerformanceKit.StateMachine
                     currentTagToken.EndTag = true;
                     currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
                     temporaryBuffer.Add((char)currentInputCharacter);
-                    State = ScriptDataEscapedEndTagNameState;
+                    State = scriptDataEscapedEndTagNameState;
                     return;
 
                 case 'a':
@@ -89,11 +89,11 @@ namespace HtmlPerformanceKit.StateMachine
                     currentTagToken.EndTag = true;
                     currentTagToken.Name.Add((char)currentInputCharacter);
                     temporaryBuffer.Add((char)currentInputCharacter);
-                    State = ScriptDataEscapedEndTagNameState;
+                    State = scriptDataEscapedEndTagNameState;
                     return;
 
                 default:
-                    State = ScriptDataState;
+                    State = scriptDataState;
                     currentDataBuffer.Add('<');
                     currentDataBuffer.Add('/');
                     bufferReader.Reconsume(currentInputCharacter);

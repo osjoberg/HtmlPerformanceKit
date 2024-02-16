@@ -7,41 +7,8 @@ namespace HtmlPerformanceKit.Infrastructure
     {
         internal const char Null = '\0';
         internal const char ReplacementCharacter = '\uFFFD';
-        internal static HtmlChar ReplacementCharacterHtmlChar = new HtmlChar('\uFFFD');
         internal static readonly HtmlChar Nothing = new HtmlChar('\0', '\0');
-
-        private readonly char char1;
-        private readonly char char2;
-
-        internal HtmlChar(char char1) : this(char1, '\0')
-        {
-            this.char1 = char1;
-            this.char2 = '\0';
-        }
-
-        internal HtmlChar(char char1, char char2)
-        {
-            this.char1 = char1;
-            this.char2 = char2;
-        }
-
-        internal int Length => char1 == '\0' ? 0 : char2 == '\0' ? 1 : 2;
-
-        internal void CopyTo(char[] destination, int destinationIndex)
-        {
-            if (char1 == '\0')
-            {
-                return;
-            }
-
-            destination[destinationIndex++] = char1;
-
-            if (char2 != '\0')
-            {
-                destination[destinationIndex] = char2;
-            }
-        }
-
+        internal static HtmlChar ReplacementCharacterHtmlChar = new HtmlChar('\uFFFD');
         private static readonly Dictionary<ReadOnlyMemory<char>, HtmlChar> HtmlCharacterReferences = new Dictionary<ReadOnlyMemory<char>, HtmlChar>(ReadOnlyMemoryComparer.Instance)
         {
             { "Aacute;".AsMemory(), new HtmlChar('\u00C1') },
@@ -2277,6 +2244,23 @@ namespace HtmlPerformanceKit.Infrastructure
             { "zwnj;".AsMemory(), new HtmlChar('\u200C') }
         };
 
+        private readonly char char1;
+        private readonly char char2;
+
+        internal HtmlChar(char char1) : this(char1, '\0')
+        {
+            this.char1 = char1;
+            this.char2 = '\0';
+        }
+
+        internal HtmlChar(char char1, char char2)
+        {
+            this.char1 = char1;
+            this.char2 = char2;
+        }
+
+        internal int Length => char1 == '\0' ? 0 : char2 == '\0' ? 1 : 2;
+
         internal static HtmlChar GetCharactersByCharacterReference(ReadOnlyMemory<char> characterReference)
         {
             return HtmlCharacterReferences.TryGetValue(characterReference, out var result) ? result : Nothing;
@@ -2337,7 +2321,7 @@ namespace HtmlPerformanceKit.Infrastructure
 
             var inMinus0x10000 = utf32 - 0x10000;
 
-            return new HtmlChar((char)(inMinus0x10000 / 0x400 + 0xd800), (char)(inMinus0x10000 % 0x400 + 0xdc00));
+            return new HtmlChar((char)((inMinus0x10000 / 0x400) + 0xd800), (char)((inMinus0x10000 % 0x400) + 0xdc00));
         }
 
         internal static bool IsCharacterReferenceReplacementToken(int codepoint)
@@ -2360,43 +2344,58 @@ namespace HtmlPerformanceKit.Infrastructure
                 case 0x000B:
                 case 0xFFFE:
                 case 0xFFFF:
-                    case 0x1FFFE:
-                    case 0x1FFFF:
-                    case 0x2FFFE:
-                    case 0x2FFFF:
-                    case 0x3FFFE:
-                    case 0x3FFFF:
-                    case 0x4FFFE:
-                    case 0x4FFFF:
-                    case 0x5FFFE:
-                    case 0x5FFFF:
-                    case 0x6FFFE:
-                    case 0x6FFFF:
-                    case 0x7FFFE:
-                    case 0x7FFFF:
-                    case 0x8FFFE:
-                    case 0x8FFFF:
-                    case 0x9FFFE:
-                    case 0x9FFFF:
-                    case 0xAFFFE:
-                    case 0xAFFFF:
-                    case 0xBFFFE:
-                    case 0xBFFFF:
-                    case 0xCFFFE:
-                    case 0xCFFFF:
-                    case 0xDFFFE:
-                    case 0xDFFFF:
-                    case 0xEFFFE:
-                    case 0xEFFFF:
-                    case 0xFFFFE:
-                    case 0xFFFFF:
-                    case 0x10FFFE:
-                    case 0x10FFFF:
-                        return true;
+                case 0x1FFFE:
+                case 0x1FFFF:
+                case 0x2FFFE:
+                case 0x2FFFF:
+                case 0x3FFFE:
+                case 0x3FFFF:
+                case 0x4FFFE:
+                case 0x4FFFF:
+                case 0x5FFFE:
+                case 0x5FFFF:
+                case 0x6FFFE:
+                case 0x6FFFF:
+                case 0x7FFFE:
+                case 0x7FFFF:
+                case 0x8FFFE:
+                case 0x8FFFF:
+                case 0x9FFFE:
+                case 0x9FFFF:
+                case 0xAFFFE:
+                case 0xAFFFF:
+                case 0xBFFFE:
+                case 0xBFFFF:
+                case 0xCFFFE:
+                case 0xCFFFF:
+                case 0xDFFFE:
+                case 0xDFFFF:
+                case 0xEFFFE:
+                case 0xEFFFF:
+                case 0xFFFFE:
+                case 0xFFFFF:
+                case 0x10FFFE:
+                case 0x10FFFF:
+                    return true;
 
-                    default:
-                        return false;
-                    }
+                default:
+                    return false;
+            }
+        }
+
+        internal void CopyTo(char[] destination, int destinationIndex)
+        {
+            if (char1 == '\0')
+            {
+                return;
+            }
+
+            destination[destinationIndex++] = char1;
+
+            if (char2 != '\0')
+            {
+                destination[destinationIndex] = char2;
             }
         }
     }
+}

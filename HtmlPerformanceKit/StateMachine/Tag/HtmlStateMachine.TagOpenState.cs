@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action TagOpenState;
+        private readonly Action tagOpenState;
 
         /// <summary>
         /// 8.2.4.8 Tag open state
@@ -38,11 +38,11 @@ namespace HtmlPerformanceKit.StateMachine
             switch (currentInputCharacter)
             {
                 case '!':
-                    State = MarkupDeclarationOpenState;
+                    State = markupDeclarationOpenState;
                     return;
 
                 case '/':
-                    State = EndTagOpenState;
+                    State = endTagOpenState;
                     return;
 
                 case 'A':
@@ -73,7 +73,7 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'Z':
                     currentTagToken.Clear();
                     currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
-                    State = TagNameState;
+                    State = tagNameState;
                     return;
 
                 case 'a':
@@ -104,17 +104,17 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'z':
                     currentTagToken.Clear();
                     currentTagToken.Name.Add((char)currentInputCharacter);
-                    State = TagNameState;
+                    State = tagNameState;
                     return;
 
                 case '?':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    State = BogusCommentState;
+                    State = bogusCommentState;
                     return;
 
                 default:
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    State = DataState;
+                    State = dataState;
                     currentDataBuffer.Add('<');
                     bufferReader.Reconsume(currentInputCharacter);
                     return;

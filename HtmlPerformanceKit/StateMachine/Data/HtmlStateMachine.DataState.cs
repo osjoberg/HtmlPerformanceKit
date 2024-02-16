@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action DataState;
+        private readonly Action dataState;
 
         /// <summary>
         /// 8.2.4.1 Data state
@@ -37,15 +37,16 @@ namespace HtmlPerformanceKit.StateMachine
                 switch (currentInputCharacter)
                 {
                     case '&' when decodeHtmlCharacters:
-                        State = CharacterReferenceInDataState;
+                        State = characterReferenceInDataState;
                         return;
 
                     case '<':
-                        State = TagOpenState;
+                        State = tagOpenState;
                         if (currentDataBuffer.Length > 0)
                         {
                             EmitDataBuffer = currentDataBuffer;
-                        }                        
+                        }
+                        
                         return;
 
                     case HtmlChar.Null:

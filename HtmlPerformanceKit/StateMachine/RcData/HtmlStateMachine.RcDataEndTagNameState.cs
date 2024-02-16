@@ -4,7 +4,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action RcDataEndTagNameState;
+        private readonly Action rcDataEndTagNameState;
 
         /// <summary>
         /// 8.2.4.13 RCDATA end tag name state
@@ -44,7 +44,7 @@ namespace HtmlPerformanceKit.StateMachine
                 case ' ':
                     if (currentTagToken.Name.Equals(appropriateTagName))
                     {
-                        State = BeforeAttributeNameState;
+                        State = beforeAttributeNameState;
                         return;                        
                     }
 
@@ -53,7 +53,7 @@ namespace HtmlPerformanceKit.StateMachine
                 case '/':
                     if (currentTagToken.Name.Equals(appropriateTagName))
                     {
-                        State = SelfClosingStartTagState;
+                        State = selfClosingStartTagState;
                         return;
                     }
 
@@ -69,7 +69,7 @@ namespace HtmlPerformanceKit.StateMachine
                             return;
                         }
 
-                        State = DataState;
+                        State = dataState;
                         EmitTagToken = currentTagToken;
                         return;
                     }
@@ -137,7 +137,7 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 default:
-                    State = RcDataState;
+                    State = rcDataState;
                     currentDataBuffer.Add('<');
                     currentDataBuffer.Add('/');
                     currentDataBuffer.AddRange(temporaryBuffer);

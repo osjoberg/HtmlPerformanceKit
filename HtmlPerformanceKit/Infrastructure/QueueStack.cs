@@ -39,7 +39,6 @@ namespace HtmlPerformanceKit.Infrastructure
                 Resize();
             }
 
-
             items[firstIndex] = item;
             Count++;
         }
@@ -92,7 +91,6 @@ namespace HtmlPerformanceKit.Infrastructure
                 firstIndex++;
             }
 
-
             Count--;
 
             if (Count == 0)
@@ -102,28 +100,6 @@ namespace HtmlPerformanceKit.Infrastructure
             }
 
             return item;
-        }
-
-        private void Resize()
-        {
-            var newCapacity = Capacity * 2;
-            var newItems = new int[newCapacity];
-
-            if (firstIndex < lastIndex)
-            {
-                Array.Copy(items, newItems, items.Length);
-            }
-            else
-            {
-                Array.Copy(items, firstIndex, newItems, 0, Capacity - firstIndex);
-                Array.Copy(items, 0, newItems, Capacity - firstIndex, lastIndex);
-                firstIndex = 0;
-                lastIndex = Count;
-            }
-
-            Capacity = newCapacity;
-            copyBuffer = new char[newCapacity];
-            items = newItems;
         }
 
         internal ReadOnlyMemory<char> AsMemory()
@@ -169,6 +145,28 @@ namespace HtmlPerformanceKit.Infrastructure
             }
 
             return new ReadOnlyMemory<char>(copyBuffer, 0, copyBufferIndex2);
+        }
+
+        private void Resize()
+        {
+            var newCapacity = Capacity * 2;
+            var newItems = new int[newCapacity];
+
+            if (firstIndex < lastIndex)
+            {
+                Array.Copy(items, newItems, items.Length);
+            }
+            else
+            {
+                Array.Copy(items, firstIndex, newItems, 0, Capacity - firstIndex);
+                Array.Copy(items, 0, newItems, Capacity - firstIndex, lastIndex);
+                firstIndex = 0;
+                lastIndex = Count;
+            }
+
+            Capacity = newCapacity;
+            copyBuffer = new char[newCapacity];
+            items = newItems;
         }
     }
 }

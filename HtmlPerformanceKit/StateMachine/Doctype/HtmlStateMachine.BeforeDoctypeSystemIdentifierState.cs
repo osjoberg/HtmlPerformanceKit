@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action BeforeDoctypeSystemIdentifierState;
+        private readonly Action beforeDoctypeSystemIdentifierState;
 
         /// <summary>
         /// 8.2.4.63 Before DOCTYPE system identifier state
@@ -49,31 +49,31 @@ namespace HtmlPerformanceKit.StateMachine
                 case '"':
                     currentDoctypeToken.Attributes.Add();
                     currentDoctypeToken.Attributes.Current.Name.AddRange("system");
-                    State = DoctypeSystemIdentifierDoubleQuotedState;
+                    State = doctypeSystemIdentifierDoubleQuotedState;
                     return;
 
                 case '\'':
                     currentDoctypeToken.Attributes.Add();
                     currentDoctypeToken.Attributes.Current.Name.AddRange("system");
-                    State = DoctypeSystemIdentifierSingleQuotedState;
+                    State = doctypeSystemIdentifierSingleQuotedState;
                     return;
 
                 case '>':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    State = DataState;
+                    State = dataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = DataState;
+                    State = dataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    State = BogusDoctypeState;
+                    State = bogusDoctypeState;
                     return;
             }
         }

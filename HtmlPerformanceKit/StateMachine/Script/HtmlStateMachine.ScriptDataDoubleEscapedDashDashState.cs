@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action ScriptDataDoubleEscapedDashDashState;
+        private readonly Action scriptDataDoubleEscapedDashDashState;
 
         /// <summary>
         /// 8.2.4.31 Script data double escaped dash dash state
@@ -42,29 +42,29 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case '<':
-                    State = ScriptDataDoubleEscapedLessThanSignState;
+                    State = scriptDataDoubleEscapedLessThanSignState;
                     currentDataBuffer.Add('<');
                     return;
 
                 case '>':
-                    State = ScriptDataState;
+                    State = scriptDataState;
                     currentDataBuffer.Add('>');
                     return;
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    State = ScriptDataDoubleEscapedState;
+                    State = scriptDataDoubleEscapedState;
                     currentDataBuffer.Add(HtmlChar.ReplacementCharacter);
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = DataState;
+                    State = dataState;
                     bufferReader.Reconsume(EofMarker);
                     return;
                     
                 default:
-                    State = ScriptDataDoubleEscapedState;
+                    State = scriptDataDoubleEscapedState;
                     currentDataBuffer.Add((char)currentInputCharacter);
                     return;
             }

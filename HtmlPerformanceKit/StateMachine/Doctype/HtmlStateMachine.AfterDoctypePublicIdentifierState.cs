@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action AfterDoctypePublicIdentifierState;
+        private readonly Action afterDoctypePublicIdentifierState;
 
         /// <summary>
         /// 8.2.4.60 After DOCTYPE public identifier state
@@ -44,11 +44,11 @@ namespace HtmlPerformanceKit.StateMachine
                 case '\n':
                 case '\r':
                 case ' ':
-                    State = BetweenDoctypePublicAndSystemIdentifiersState;
+                    State = betweenDoctypePublicAndSystemIdentifiersState;
                     return;
 
                 case '>':
-                    State = DataState;
+                    State = dataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     return;
 
@@ -56,26 +56,26 @@ namespace HtmlPerformanceKit.StateMachine
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     currentDoctypeToken.Attributes.Add();
                     currentDoctypeToken.Attributes.Current.Name.AddRange("system");
-                    State = DoctypeSystemIdentifierDoubleQuotedState;
+                    State = doctypeSystemIdentifierDoubleQuotedState;
                     return;
 
                 case '\'':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
                     currentDoctypeToken.Attributes.Add();
                     currentDoctypeToken.Attributes.Current.Name.AddRange("system");
-                    State = DoctypeSystemIdentifierSingleQuotedState;
+                    State = doctypeSystemIdentifierSingleQuotedState;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = DataState;
+                    State = dataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    State = BogusDoctypeState;
+                    State = bogusDoctypeState;
                     return;
             }
         }

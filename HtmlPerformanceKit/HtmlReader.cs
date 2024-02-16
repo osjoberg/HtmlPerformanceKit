@@ -70,7 +70,7 @@ namespace HtmlPerformanceKit
         /// Initializes a new instance of the <see cref="HtmlReader" /> class.
         /// </summary>
         /// <param name="streamReader">StreamReader instance to read from.</param>
-        /// <param name="options">Options.</param>
+        /// <param name="options">Options to configure <see cref="HtmlReader" /> behaviour.</param>
         public HtmlReader(StreamReader streamReader, HtmlReaderOptions options)
         {
             if (streamReader == null)
@@ -87,7 +87,7 @@ namespace HtmlPerformanceKit
         /// Initializes a new instance of the <see cref="HtmlReader" /> class.
         /// </summary>
         /// <param name="stream">Stream instance to read from.</param>
-        /// <param name="options">Options.</param>
+        /// <param name="options">Options to configure <see cref="HtmlReader" /> behaviour.</param>
         public HtmlReader(Stream stream, HtmlReaderOptions options)
         {
             if (stream == null)
@@ -104,7 +104,7 @@ namespace HtmlPerformanceKit
         /// Initializes a new instance of the <see cref="HtmlReader" /> class.
         /// </summary>
         /// <param name="textReader">Stream instance to read from.</param>
-        /// <param name="options">Options.</param>
+        /// <param name="options">Options to configure <see cref="HtmlReader" /> behaviour.</param>
         public HtmlReader(TextReader textReader, HtmlReaderOptions options)
         {
             if (textReader == null)
@@ -115,11 +115,6 @@ namespace HtmlPerformanceKit
             this.options = options ?? HtmlReaderOptions.Default;
             bufferReader = new BufferReader(textReader);
             stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, this.options.DecodeHtmlCharacters);
-        }
-
-        private void ParseErrorFromMessage(string message)
-        {
-            OnParseError(this, new HtmlParseErrorEventArgs(message, bufferReader.LineNumber, bufferReader.LinePosition));
         }
 
         /// <summary>
@@ -286,6 +281,11 @@ namespace HtmlPerformanceKit
             {
                 bufferReader.Dispose();
             }
+        }
+
+        private void ParseErrorFromMessage(string message)
+        {
+            OnParseError(this, new HtmlParseErrorEventArgs(message, bufferReader.LineNumber, bufferReader.LinePosition));
         }
 
         private void OnParseError(object sender, HtmlParseErrorEventArgs args)

@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action BogusCommentState;
+        private readonly Action bogusCommentState;
 
         /// <summary>
         /// 8.2.4.44 Bogus comment state
@@ -27,11 +27,11 @@ namespace HtmlPerformanceKit.StateMachine
                 {
                     case '>':
                         EmitCommentBuffer = currentCommentBuffer;
-                        State = DataState;
+                        State = dataState;
                         return;
                         
                     case EofMarker:
-                        State = DataState;
+                        State = dataState;
                         EmitCommentBuffer = currentCommentBuffer;
                         bufferReader.Reconsume(EofMarker);
                         return;

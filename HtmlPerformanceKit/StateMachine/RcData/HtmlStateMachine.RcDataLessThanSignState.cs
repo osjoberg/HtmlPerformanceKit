@@ -4,7 +4,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action RcDataLessThanSignState;
+        private readonly Action rcDataLessThanSignState;
 
         /// <summary>
         /// 8.2.4.11 RCDATA less-than sign state
@@ -25,11 +25,11 @@ namespace HtmlPerformanceKit.StateMachine
             {
                 case '/':
                     temporaryBuffer.Clear();
-                    State = RcDataEndTagOpenState;
+                    State = rcDataEndTagOpenState;
                     return;
 
                 default:
-                    State = RcDataState;
+                    State = rcDataState;
                     currentDataBuffer.Add('<');
                     bufferReader.Reconsume(currentInputCharacter);
                     return;

@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action AttributeNameState;
+        private readonly Action attributeNameState;
 
         /// <summary>
         /// 8.2.4.35 Attribute name state
@@ -57,19 +57,19 @@ namespace HtmlPerformanceKit.StateMachine
                     case '\n':
                     case '\r':
                     case ' ':
-                        State = AfterAttributeNameState;
+                        State = afterAttributeNameState;
                         return;
 
                     case '/':
-                        State = SelfClosingStartTagState;
+                        State = selfClosingStartTagState;
                         return;
 
                     case '=':
-                        State = BeforeAttributeValueState;
+                        State = beforeAttributeValueState;
                         return;
 
                     case '>':
-                        State = DataState;
+                        State = dataState;
                         EmitTagToken = currentTagToken;
                         return;
 
@@ -115,7 +115,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                     case EofMarker:
                         ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                        State = DataState;
+                        State = dataState;
                         bufferReader.Reconsume(EofMarker);
                         return;
 

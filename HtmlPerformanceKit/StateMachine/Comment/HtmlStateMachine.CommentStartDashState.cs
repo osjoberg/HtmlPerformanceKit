@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action CommentStartDashState;
+        private readonly Action commentStartDashState;
 
         /// <summary>
         /// 8.2.4.47 Comment start dash state
@@ -35,25 +35,25 @@ namespace HtmlPerformanceKit.StateMachine
             switch (currentInputCharacter)
             {
                 case '-':
-                    State = CommentStartDashState;
+                    State = commentStartDashState;
                     return;
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
                     currentCommentBuffer.Add('-');
                     currentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
-                    State = CommentState;
+                    State = commentState;
                     return;
 
                 case '>':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    State = DataState;
+                    State = dataState;
                     EmitCommentBuffer = currentCommentBuffer;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = DataState;
+                    State = dataState;
                     EmitCommentBuffer = currentCommentBuffer;
                     bufferReader.Reconsume(EofMarker);
                     return;
@@ -61,7 +61,7 @@ namespace HtmlPerformanceKit.StateMachine
                 default:
                     currentCommentBuffer.Add('-');
                     currentCommentBuffer.Add((char)currentInputCharacter);
-                    State = CommentState;
+                    State = commentState;
                     return;
             }
         }

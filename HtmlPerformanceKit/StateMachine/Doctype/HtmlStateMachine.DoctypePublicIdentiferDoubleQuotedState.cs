@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action DoctypePublicIdentifierDoubleQuotedState;
+        private readonly Action doctypePublicIdentifierDoubleQuotedState;
 
         /// <summary>
         /// 8.2.4.58 DOCTYPE public identifier (double-quoted) state
@@ -35,7 +35,7 @@ namespace HtmlPerformanceKit.StateMachine
             switch (currentInputCharacter)
             {
                 case '"':
-                    State = AfterDoctypePublicIdentifierState;
+                    State = afterDoctypePublicIdentifierState;
                     return;
 
                 case HtmlChar.Null:
@@ -45,13 +45,13 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case '>':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    State = DataState;
+                    State = dataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    State = DataState;
+                    State = dataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;

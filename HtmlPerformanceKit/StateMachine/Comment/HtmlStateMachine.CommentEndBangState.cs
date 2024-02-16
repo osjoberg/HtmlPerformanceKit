@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action CommentEndBangState;
+        private readonly Action commentEndBangState;
 
         /// <summary>
         /// 8.2.4.51 Comment end bang state
@@ -38,11 +38,11 @@ namespace HtmlPerformanceKit.StateMachine
                     currentCommentBuffer.Add('-');
                     currentCommentBuffer.Add('-');
                     currentCommentBuffer.Add('!');
-                    State = CommentEndDashState;
+                    State = commentEndDashState;
                     return;
 
                 case '>':
-                    State = DataState;
+                    State = dataState;
                     EmitCommentBuffer = currentCommentBuffer;
                     return;
 
@@ -52,12 +52,12 @@ namespace HtmlPerformanceKit.StateMachine
                     currentCommentBuffer.Add('-');
                     currentCommentBuffer.Add('!');
                     currentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
-                    State = CommentState;
+                    State = commentState;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = DataState;
+                    State = dataState;
                     EmitCommentBuffer = currentCommentBuffer;
                     bufferReader.Reconsume(EofMarker);
                     return;
@@ -67,7 +67,7 @@ namespace HtmlPerformanceKit.StateMachine
                     currentCommentBuffer.Add('-');
                     currentCommentBuffer.Add('!');
                     currentCommentBuffer.Add((char)currentInputCharacter);
-                    State = CommentState;
+                    State = commentState;
                     return;
             }
         }

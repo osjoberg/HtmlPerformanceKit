@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action BeforeAttributeNameState;
+        private readonly Action beforeAttributeNameState;
 
         /// <summary>
         /// 8.2.4.34 Before attribute name state
@@ -56,12 +56,12 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case '/':
-                    State = SelfClosingStartTagState;
+                    State = selfClosingStartTagState;
                     return;
 
                 case '>':
                     EmitTagToken = currentTagToken;
-                    State = DataState;
+                    State = dataState;
                     return;
 
                 case 'A':
@@ -92,14 +92,14 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'Z':
                     currentTagToken.Attributes.Add();
                     currentTagToken.Attributes.Current.Name.Add((char)(currentInputCharacter + 0x20));
-                    State = AttributeNameState;
+                    State = attributeNameState;
                     return;
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
                     currentTagToken.Attributes.Add();
                     currentTagToken.Attributes.Current.Name.Add(HtmlChar.ReplacementCharacter);
-                    State = AttributeNameState;
+                    State = attributeNameState;
                     return;
 
                 case '"':
@@ -111,14 +111,14 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = DataState;
+                    State = dataState;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
                     currentTagToken.Attributes.Add();
                     currentTagToken.Attributes.Current.Name.Add((char)currentInputCharacter);
-                    State = AttributeNameState;
+                    State = attributeNameState;
                     return;
             }
         }

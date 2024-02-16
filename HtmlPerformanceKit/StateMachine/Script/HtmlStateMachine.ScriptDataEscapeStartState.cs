@@ -4,7 +4,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action ScriptDataEscapeStartState;
+        private readonly Action scriptDataEscapeStartState;
 
         /// <summary>
         /// 8.2.4.20 Script data escape start state
@@ -24,12 +24,12 @@ namespace HtmlPerformanceKit.StateMachine
             switch (currentInputCharacter)
             {
                 case '-':
-                    State = ScriptDataEscapeStartDashState;
+                    State = scriptDataEscapeStartDashState;
                     currentDataBuffer.Add('-');
                     return;
 
                 default:
-                    State = ScriptDataState;
+                    State = scriptDataState;
                     bufferReader.Reconsume(currentInputCharacter);
                     return;
             }

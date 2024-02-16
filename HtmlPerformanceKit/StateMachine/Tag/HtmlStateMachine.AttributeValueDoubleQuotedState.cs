@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action AttributeValueDoubleQuotedState;
+        private readonly Action attributeValueDoubleQuotedState;
 
         /// <summary>
         /// 8.2.4.38 Attribute value (double-quoted) state
@@ -37,13 +37,13 @@ namespace HtmlPerformanceKit.StateMachine
                 switch (currentInputCharacter)
                 {
                     case '"':
-                        State = AfterAttributeValueQuotedState;
+                        State = afterAttributeValueQuotedState;
                         return;
 
                     case '&' when decodeHtmlCharacters:
-                        State = CharacterReferenceInAttributeValueState;
+                        State = characterReferenceInAttributeValueState;
                         additionalAllowedCharacter = '"';
-                        returnToState = AttributeValueDoubleQuotedState;
+                        returnToState = attributeValueDoubleQuotedState;
                         return;
 
                     case HtmlChar.Null:
@@ -53,7 +53,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                     case EofMarker:
                         ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                        State = DataState;
+                        State = dataState;
                         bufferReader.Reconsume(EofMarker);
                         return;
 

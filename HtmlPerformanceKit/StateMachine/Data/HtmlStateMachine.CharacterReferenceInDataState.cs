@@ -4,7 +4,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action CharacterReferenceInDataState;
+        private readonly Action characterReferenceInDataState;
 
         /// <summary>
         /// 8.2.4.2 Character reference in data state
@@ -31,7 +31,7 @@ namespace HtmlPerformanceKit.StateMachine
                 currentDataBuffer.AddRange(characters);
             }
 
-            State = DataState;
+            State = dataState;
         }
     }
 }

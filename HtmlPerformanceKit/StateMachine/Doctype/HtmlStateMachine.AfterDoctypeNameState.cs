@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action AfterDoctypeNameState;
+        private readonly Action afterDoctypeNameState;
 
         /// <summary>
         /// 8.2.4.55 After DOCTYPE name state
@@ -45,13 +45,13 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case '>':
-                    State = DataState;
+                    State = dataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = DataState;
+                    State = dataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;
@@ -63,19 +63,19 @@ namespace HtmlPerformanceKit.StateMachine
                     if (Public.AsSpan().Equals(peek.Span, StringComparison.OrdinalIgnoreCase))
                     {
                         bufferReader.Consume(Public.Length);
-                        State = AfterDoctypePublicKeywordState;
+                        State = afterDoctypePublicKeywordState;
                         return;
                     }
 
                     if (System.AsSpan().Equals(peek.Span, StringComparison.OrdinalIgnoreCase))
                     {
                         bufferReader.Consume(System.Length);
-                        State = AfterDoctypeSystemKeywordState;
+                        State = afterDoctypeSystemKeywordState;
                         return;
                     }
 
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    State = BogusDoctypeState;
+                    State = bogusDoctypeState;
                     return;
             }
         }

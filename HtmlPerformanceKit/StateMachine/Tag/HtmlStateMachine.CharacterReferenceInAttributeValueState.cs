@@ -4,7 +4,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action CharacterReferenceInAttributeValueState;
+        private readonly Action characterReferenceInAttributeValueState;
 
         /// <summary>
         /// 8.2.4.41 Character reference in attribute value state

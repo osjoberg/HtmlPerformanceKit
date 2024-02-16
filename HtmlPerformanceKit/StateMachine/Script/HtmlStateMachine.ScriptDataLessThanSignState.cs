@@ -4,7 +4,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action ScriptDataLessThanSignState;
+        private readonly Action scriptDataLessThanSignState;
 
         /// <summary>
         /// 8.2.4.17 Script data less-than sign state
@@ -28,17 +28,17 @@ namespace HtmlPerformanceKit.StateMachine
             {
                 case '/':
                     temporaryBuffer.Clear();
-                    State = ScriptDataEndTagOpenState;
+                    State = scriptDataEndTagOpenState;
                     return;
 
                 case '!':
-                    State = ScriptDataEscapeStartState;
+                    State = scriptDataEscapeStartState;
                     currentDataBuffer.Add('<');
                     currentDataBuffer.Add('!');
                     return;
 
                 default:
-                    State = ScriptDataState;
+                    State = scriptDataState;
                     currentDataBuffer.Add('<');
                     bufferReader.Reconsume(currentInputCharacter);
                     return;

@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action RawTextState;
+        private readonly Action rawTextState;
 
         /// <summary>
         /// 8.2.4.5 RAWTEXT state
@@ -34,7 +34,7 @@ namespace HtmlPerformanceKit.StateMachine
                 switch (currentInputCharacter)
                 {
                     case '<':
-                        State = RawTextLessThanSignState;
+                        State = rawTextLessThanSignState;
                         return;
 
                     case HtmlChar.Null:
@@ -43,7 +43,7 @@ namespace HtmlPerformanceKit.StateMachine
                         continue;
 
                     case EofMarker:
-                        State = DataState;
+                        State = dataState;
                         bufferReader.Reconsume(EofMarker);
                         return;
 

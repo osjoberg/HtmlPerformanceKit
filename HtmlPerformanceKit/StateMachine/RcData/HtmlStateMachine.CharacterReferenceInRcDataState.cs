@@ -4,7 +4,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action CharacterReferenceInRcDataState;
+        private readonly Action characterReferenceInRcDataState;
 
         /// <summary>
         /// 8.2.4.4 Character reference in RCDATA state
@@ -19,7 +19,7 @@ namespace HtmlPerformanceKit.StateMachine
         /// </summary>
         private void CharacterReferenceInRcDataStateImplementation()
         {
-            State = RcDataState;
+            State = rcDataState;
             additionalAllowedCharacter = '\t'; // Works as no additional character since '\t' is always allowed.
 
             var characters = ConsumeCharacterReference();

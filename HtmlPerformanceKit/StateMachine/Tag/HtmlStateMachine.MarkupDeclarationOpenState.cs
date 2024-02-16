@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action MarkupDeclarationOpenState;
+        private readonly Action markupDeclarationOpenState;
 
         private const string CommentMarker = "--";
         private const string DoctypeMarker = "doctype";
@@ -38,7 +38,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                     bufferReader.Consume(CommentMarker.Length);
                     currentCommentBuffer.Clear();
-                    State = CommentStartState;
+                    State = commentStartState;
                     return;
 
                 case 'd':
@@ -49,7 +49,7 @@ namespace HtmlPerformanceKit.StateMachine
                     }
 
                     bufferReader.Consume(DoctypeMarker.Length);
-                    State = DoctypeState;
+                    State = doctypeState;
                     return;
 
                 case '[':
@@ -59,12 +59,12 @@ namespace HtmlPerformanceKit.StateMachine
                     }
 
                     bufferReader.Consume(CDataMarker.Length);
-                    State = CDataSectionState;
+                    State = cDataSectionState;
                     return;
 
                 default:
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    State = BogusCommentState;
+                    State = bogusCommentState;
                     return;
             }
         }

@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action AfterAttributeNameState;
+        private readonly Action afterAttributeNameState;
 
         /// <summary>
         /// 8.2.4.36 After attribute name state
@@ -58,15 +58,15 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case '/':
-                    State = SelfClosingStartTagState;               
+                    State = selfClosingStartTagState;               
                     return;
 
                 case '=':
-                    State = BeforeAttributeValueState;
+                    State = beforeAttributeValueState;
                     return;
 
                 case '>':
-                    State = DataState;
+                    State = dataState;
                     EmitTagToken = currentTagToken;
                     return;
 
@@ -98,14 +98,14 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'Z':
                     currentTagToken.Attributes.Add();
                     currentTagToken.Attributes.Current.Name.Add((char)(currentInputCharacter + 0x20));
-                    State = AttributeNameState;
+                    State = attributeNameState;
                     return;
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
                     currentTagToken.Attributes.Add();
                     currentTagToken.Attributes.Current.Name.Add(HtmlChar.ReplacementCharacter);
-                    State = AttributeNameState;
+                    State = attributeNameState;
                     return;
 
                 case '"':
@@ -116,14 +116,14 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = DataState;
+                    State = dataState;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
                     currentTagToken.Attributes.Add();
                     currentTagToken.Attributes.Current.Name.Add((char)currentInputCharacter);
-                    State = AttributeNameState;
+                    State = attributeNameState;
                     return;
             }
         }

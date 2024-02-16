@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action AttributeValueUnquotedState;
+        private readonly Action attributeValueUnquotedState;
 
         /// <summary>
         /// 8.2.4.40 Attribute value (unquoted) state
@@ -51,17 +51,17 @@ namespace HtmlPerformanceKit.StateMachine
                 case '\r':
                 case '\n':
                 case ' ':
-                    State = BeforeAttributeNameState;
+                    State = beforeAttributeNameState;
                     return;
 
                 case '&' when decodeHtmlCharacters:
-                    State = CharacterReferenceInAttributeValueState;
+                    State = characterReferenceInAttributeValueState;
                     additionalAllowedCharacter = '>';
-                    returnToState = AttributeValueDoubleQuotedState;
+                    returnToState = attributeValueDoubleQuotedState;
                     return;
 
                 case '>':
-                    State = DataState;
+                    State = dataState;
                     EmitTagToken = currentTagToken;
                     return;
 
@@ -80,7 +80,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = DataState;
+                    State = dataState;
                     bufferReader.Reconsume(EofMarker);
                     return;
 

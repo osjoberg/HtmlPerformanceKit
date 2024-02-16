@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action EndTagOpenState;
+        private readonly Action endTagOpenState;
 
         /// <summary>
         /// 8.2.4.9 End tag open state
@@ -63,7 +63,7 @@ namespace HtmlPerformanceKit.StateMachine
                     currentTagToken.Clear();
                     currentTagToken.EndTag = true;
                     currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
-                    State = TagNameState;
+                    State = tagNameState;
                     return;
 
                 case 'a':
@@ -95,17 +95,17 @@ namespace HtmlPerformanceKit.StateMachine
                     currentTagToken.Clear();
                     currentTagToken.EndTag = true;
                     currentTagToken.Name.Add((char)currentInputCharacter);
-                    State = TagNameState;
+                    State = tagNameState;
                     return;
 
                 case '>':
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    State = DataState;
+                    State = dataState;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = DataState;
+                    State = dataState;
                     currentDataBuffer.Add('<');
                     currentDataBuffer.Add('/');
                     bufferReader.Reconsume(EofMarker);
@@ -113,7 +113,7 @@ namespace HtmlPerformanceKit.StateMachine
 
                 default:
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    State = BogusCommentState;
+                    State = bogusCommentState;
                     return;
             }
         }

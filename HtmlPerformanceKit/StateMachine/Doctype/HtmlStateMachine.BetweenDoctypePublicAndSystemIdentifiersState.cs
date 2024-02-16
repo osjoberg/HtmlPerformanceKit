@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action BetweenDoctypePublicAndSystemIdentifiersState;
+        private readonly Action betweenDoctypePublicAndSystemIdentifiersState;
 
         /// <summary>
         /// 8.2.4.61 Between DOCTYPE public and system identifiers state
@@ -47,32 +47,32 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case '>':
-                    State = DataState;
+                    State = dataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     return;
 
                 case '"':
                     currentDoctypeToken.Attributes.Add();
                     currentDoctypeToken.Attributes.Current.Name.AddRange("system");
-                    State = DoctypeSystemIdentifierDoubleQuotedState;
+                    State = doctypeSystemIdentifierDoubleQuotedState;
                     return;
 
                 case '\'':
                     currentDoctypeToken.Attributes.Add();
                     currentDoctypeToken.Attributes.Current.Name.AddRange("system");
-                    State = DoctypeSystemIdentifierSingleQuotedState;
+                    State = doctypeSystemIdentifierSingleQuotedState;
                     return;
 
                 case EofMarker:
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = DataState;
+                    State = dataState;
                     EmitDoctypeToken = currentDoctypeToken;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    State = BogusDoctypeState;
+                    State = bogusDoctypeState;
                     return;
             }
         }

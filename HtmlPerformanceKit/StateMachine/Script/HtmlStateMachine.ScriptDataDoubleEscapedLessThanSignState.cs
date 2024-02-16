@@ -4,7 +4,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action ScriptDataDoubleEscapedLessThanSignState;
+        private readonly Action scriptDataDoubleEscapedLessThanSignState;
 
         /// <summary>
         /// 8.2.4.32 Script data double escaped less-than sign state
@@ -25,12 +25,12 @@ namespace HtmlPerformanceKit.StateMachine
             {
                 case '/':
                     temporaryBuffer.Clear();
-                    State = ScriptDataDoubleEscapeEndState;
+                    State = scriptDataDoubleEscapeEndState;
                     currentDataBuffer.Add('/');
                     return;
 
                 default:
-                    State = ScriptDataDoubleEscapedState;
+                    State = scriptDataDoubleEscapedState;
                     currentDataBuffer.Add((char)currentInputCharacter);
                     return;
             }

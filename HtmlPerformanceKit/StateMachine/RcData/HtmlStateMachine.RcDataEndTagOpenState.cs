@@ -4,7 +4,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action RcDataEndTagOpenState;
+        private readonly Action rcDataEndTagOpenState;
 
         /// <summary>
         /// 8.2.4.12 RCDATA end tag open state
@@ -56,7 +56,7 @@ namespace HtmlPerformanceKit.StateMachine
                     currentTagToken.EndTag = true;
                     currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
                     temporaryBuffer.Add((char)currentInputCharacter);
-                    State = RcDataEndTagNameState;
+                    State = rcDataEndTagNameState;
                     return;
 
                 case 'a':
@@ -89,11 +89,11 @@ namespace HtmlPerformanceKit.StateMachine
                     currentTagToken.EndTag = true;
                     currentTagToken.Name.Add((char)currentInputCharacter);
                     temporaryBuffer.Add((char)currentInputCharacter);
-                    State = RcDataEndTagNameState;
+                    State = rcDataEndTagNameState;
                     return;
 
                 default:
-                    State = RcDataState;
+                    State = rcDataState;
                     currentDataBuffer.Add('<');
                     currentDataBuffer.Add('/');
                     bufferReader.Reconsume(currentInputCharacter);

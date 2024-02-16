@@ -4,7 +4,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action RawTextEndTagOpenState;
+        private readonly Action rawTextEndTagOpenState;
 
         /// <summary>
         /// 8.2.4.15 RAWTEXT end tag open state
@@ -56,7 +56,7 @@ namespace HtmlPerformanceKit.StateMachine
                     currentTagToken.EndTag = true;
                     currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
                     temporaryBuffer.Add((char)currentInputCharacter);
-                    State = RawTextEndTagNameState;
+                    State = rawTextEndTagNameState;
                     return;
 
                 case 'a':
@@ -89,11 +89,11 @@ namespace HtmlPerformanceKit.StateMachine
                     currentTagToken.EndTag = true;
                     currentTagToken.Name.Add((char)currentInputCharacter);
                     temporaryBuffer.Add((char)currentInputCharacter);
-                    State = RawTextEndTagNameState;
+                    State = rawTextEndTagNameState;
                     return;
 
                 default:
-                    State = RawTextState;
+                    State = rawTextState;
                     currentDataBuffer.Add('<');
                     currentDataBuffer.Add('/');
                     bufferReader.Reconsume(currentInputCharacter);

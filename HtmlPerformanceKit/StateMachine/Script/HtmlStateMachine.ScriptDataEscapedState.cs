@@ -6,7 +6,7 @@ namespace HtmlPerformanceKit.StateMachine
 {
     internal partial class HtmlStateMachine
     {
-        private readonly Action ScriptDataEscapedState;
+        private readonly Action scriptDataEscapedState;
 
         /// <summary>
         /// 8.2.4.22 Script data escaped state
@@ -35,12 +35,12 @@ namespace HtmlPerformanceKit.StateMachine
             switch (currentInputCharacter)
             {
                 case '-':
-                    State = ScriptDataEscapedDashState;
+                    State = scriptDataEscapedDashState;
                     currentDataBuffer.Add('-');
                     return;
 
                 case '<':
-                    State = ScriptDataEscapedLessThanSignState;
+                    State = scriptDataEscapedLessThanSignState;
                     return;
 
                 case HtmlChar.Null:
@@ -49,7 +49,7 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case EofMarker:
-                    State = DataState;
+                    State = dataState;
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     bufferReader.Reconsume(EofMarker);
                     return;

@@ -37,7 +37,7 @@
                 case 3:
                     if (name.Equals("xmp"))
                     {
-                        State = RawTextState;
+                        State = rawTextState;
                         return;
                     }
 
@@ -46,13 +46,13 @@
                 case 5:
                     if (name.Equals("title"))
                     {
-                        State = RcDataState;
+                        State = rcDataState;
                         return;
                     }
 
                     if (name.Equals("style"))
                     {
-                        State = RawTextState;
+                        State = rawTextState;
                         return;
                     }
 
@@ -61,13 +61,13 @@
                 case 6:
                     if (name.Equals("iframe"))
                     {
-                        State = RawTextState;
+                        State = rawTextState;
                         return;
                     }
 
                     if (name.Equals("script"))
                     {
-                        State = ScriptDataState;
+                        State = scriptDataState;
                         return;
                     }
 
@@ -76,7 +76,7 @@
                 case 7:
                     if (name.Equals("noembed"))
                     {
-                        State = RawTextState;
+                        State = rawTextState;
                         return;
                     }
 
@@ -85,13 +85,13 @@
                 case 8:
                     if (name.Equals("textarea"))
                     {
-                        State = RcDataState;
+                        State = rcDataState;
                         return;
                     }
 
                     if (name.Equals("noframes"))
                     {
-                        State = RawTextState;
+                        State = rawTextState;
                         return;
                     }
 
@@ -101,14 +101,14 @@
 
                     if (name.Equals("plaintext"))
                     {
-                        State = PlainTextState;
+                        State = plainTextState;
                         return;
                     }
 
                     goto default;
 
                 default:
-                    State = DataState;
+                    State = dataState;
                     return;
             }
         }
