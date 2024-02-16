@@ -6,7 +6,7 @@ https://www.w3.org/TR/html5/syntax.html#tokenization
 To install HtmlPerformanceKit, run the following command in the Package Manager Console:
 
 ```cmd
-PM>> Install-Package HtmlPerformanceKit
+PM> Install-Package HtmlPerformanceKit
 ```
 You can also view the package page on [Nuget](https://www.nuget.org/packages/HtmlPerformanceKit/).
 
@@ -51,15 +51,15 @@ AMD Ryzen 7 PRO 4750U with Radeon Graphics, 1 CPU, 16 logical and 8 physical cor
 
 ```
 
-| Method                      | Mean      | Error    | StdDev   | Median    | Gen0       | Gen1      | Gen2      | Allocated |
-|---------------------------- |----------:|---------:|---------:|----------:|-----------:|----------:|----------:|----------:|
-| ExtractLinks                |  10.99 ms | 0.220 ms | 0.413 ms |  10.76 ms |          - |         - |         - |   1.37 MB |
-| ExtractLinksHtmlKit         |  15.10 ms | 0.293 ms | 0.371 ms |  14.97 ms |  4000.0000 | 1000.0000 |         - |  13.95 MB |
-| ExtractLinksHtmlParserSharp |  50.12 ms | 1.002 ms | 2.024 ms |  49.97 ms |  2000.0000 | 1000.0000 |         - |  19.01 MB |
-| ExtractLinksAngleSharp      |  64.21 ms | 1.358 ms | 4.003 ms |  63.22 ms |  3000.0000 | 1000.0000 |         - |  20.63 MB |
-| ExtractLinksHtmlAgilityPack | 135.77 ms | 2.715 ms | 6.292 ms | 134.53 ms |  9000.0000 | 5000.0000 | 2000.0000 |  52.66 MB |
-| ExtractTexts                |  11.22 ms | 0.224 ms | 0.658 ms |  10.92 ms |          - |         - |         - |   2.82 MB |
-| ExtractTextsHtmlKit         |  17.18 ms | 0.343 ms | 0.574 ms |  17.25 ms |  2000.0000 | 1000.0000 |         - |  13.76 MB |
-| ExtractTextsHtmlParserSharp |  54.04 ms | 0.879 ms | 0.734 ms |  53.74 ms |  3000.0000 | 2000.0000 | 1000.0000 |  20.99 MB |
-| ExtractTextsAngleSharp      |  86.79 ms | 1.696 ms | 2.019 ms |  86.61 ms |  4000.0000 | 2000.0000 | 1000.0000 |  25.73 MB |
-| ExtractTextsHtmlAgilityPack | 154.84 ms | 3.068 ms | 5.293 ms | 155.50 ms | 13000.0000 | 6000.0000 | 2000.0000 |  77.48 MB |
+| Method                      | Mean      | Error    | StdDev   | Median    | Allocated |
+|---------------------------- |----------:|---------:|---------:|----------:|----------:|
+| ExtractLinks                |  10.99 ms | 0.220 ms | 0.413 ms |  10.76 ms |   1.37 MB |
+| ExtractLinksHtmlKit         |  15.10 ms | 0.293 ms | 0.371 ms |  14.97 ms |  13.95 MB |
+| ExtractLinksHtmlParserSharp |  50.12 ms | 1.002 ms | 2.024 ms |  49.97 ms |  19.01 MB |
+| ExtractLinksAngleSharp      |  64.21 ms | 1.358 ms | 4.003 ms |  63.22 ms |  20.63 MB |
+| ExtractLinksHtmlAgilityPack | 135.77 ms | 2.715 ms | 6.292 ms | 134.53 ms |  52.66 MB |
+| ExtractTexts                |  11.22 ms | 0.224 ms | 0.658 ms |  10.92 ms |   2.82 MB |
+| ExtractTextsHtmlKit         |  17.18 ms | 0.343 ms | 0.574 ms |  17.25 ms |  13.76 MB |
+| ExtractTextsHtmlParserSharp |  54.04 ms | 0.879 ms | 0.734 ms |  53.74 ms |  20.99 MB |
+| ExtractTextsAngleSharp      |  86.79 ms | 1.696 ms | 2.019 ms |  86.61 ms |  25.73 MB |
+| ExtractTextsHtmlAgilityPack | 154.84 ms | 3.068 ms | 5.293 ms | 155.50 ms |  77.48 MB |
