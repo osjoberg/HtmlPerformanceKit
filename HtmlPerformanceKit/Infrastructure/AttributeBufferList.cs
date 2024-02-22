@@ -10,9 +10,9 @@ namespace HtmlPerformanceKit.Infrastructure
 
         internal AttributeBuffer Current { get; private set; }
 
-        internal CharBuffer this[string name] => GetItem(name)?.Value;
+        internal CharBuffer this[string name] => GetItem(name);
 
-        internal AttributeBuffer this[int index] => index < Count ? attributes[index] : null;
+        internal AttributeBuffer this[int index] => attributes[index];
 
         internal void Add()
         {
@@ -40,13 +40,13 @@ namespace HtmlPerformanceKit.Infrastructure
             Current = null;
         }
 
-        private AttributeBuffer GetItem(string name)
+        private CharBuffer GetItem(string name)
         {
             for (var index = 0; index < Count; index++)
             {
                 if (attributes[index].Name.Equals(name))
                 {
-                    return attributes[index];
+                    return attributes[index].Value;
                 }
             }
 
