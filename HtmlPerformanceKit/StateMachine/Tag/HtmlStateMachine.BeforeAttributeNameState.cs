@@ -45,81 +45,84 @@ namespace HtmlPerformanceKit.StateMachine
         /// </summary>
         private void BeforeAttributeNameStateImplementation()
         {
-            var currentInputCharacter = bufferReader.Consume();
-
-            switch (currentInputCharacter)
+            while (true)
             {
-                case '\t':
-                case '\n':
-                case '\r':
-                case ' ':
-                    return;
+                var currentInputCharacter = bufferReader.Consume();
 
-                case '/':
-                    State = selfClosingStartTagState;
-                    return;
+                switch (currentInputCharacter)
+                {
+                    case '\t':
+                    case '\n':
+                    case '\r':
+                    case ' ':
+                        return;
 
-                case '>':
-                    EmitTagToken = currentTagToken;
-                    State = dataState;
-                    return;
+                    case '/':
+                        State = selfClosingStartTagState;
+                        return;
 
-                case 'A':
-                case 'B':
-                case 'C':
-                case 'D':
-                case 'E':
-                case 'F':
-                case 'G':
-                case 'H':
-                case 'I':
-                case 'J':
-                case 'K':
-                case 'L':
-                case 'M':
-                case 'N':
-                case 'O':
-                case 'P':
-                case 'Q':
-                case 'R':
-                case 'S':
-                case 'T':
-                case 'U':
-                case 'V':
-                case 'W':
-                case 'X':
-                case 'Y':
-                case 'Z':
-                    currentTagToken.Attributes.Add();
-                    currentTagToken.Attributes.Current.Name.Add((char)(currentInputCharacter + 0x20));
-                    State = attributeNameState;
-                    return;
+                    case '>':
+                        EmitTagToken = currentTagToken;
+                        State = dataState;
+                        return;
 
-                case HtmlChar.Null:
-                    ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    currentTagToken.Attributes.Add();
-                    currentTagToken.Attributes.Current.Name.Add(HtmlChar.ReplacementCharacter);
-                    State = attributeNameState;
-                    return;
+                    case 'A':
+                    case 'B':
+                    case 'C':
+                    case 'D':
+                    case 'E':
+                    case 'F':
+                    case 'G':
+                    case 'H':
+                    case 'I':
+                    case 'J':
+                    case 'K':
+                    case 'L':
+                    case 'M':
+                    case 'N':
+                    case 'O':
+                    case 'P':
+                    case 'Q':
+                    case 'R':
+                    case 'S':
+                    case 'T':
+                    case 'U':
+                    case 'V':
+                    case 'W':
+                    case 'X':
+                    case 'Y':
+                    case 'Z':
+                        currentTagToken.Attributes.Add();
+                        currentTagToken.Attributes.Current.Name.Add((char)(currentInputCharacter + 0x20));
+                        State = attributeNameState;
+                        return;
 
-                case '"':
-                case '\'':
-                case '<':
-                case '=':
-                    ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    goto default;
+                    case HtmlChar.Null:
+                        ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
+                        currentTagToken.Attributes.Add();
+                        currentTagToken.Attributes.Current.Name.Add(HtmlChar.ReplacementCharacter);
+                        State = attributeNameState;
+                        return;
 
-                case EofMarker:
-                    ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = dataState;
-                    bufferReader.Reconsume(EofMarker);
-                    return;
+                    case '"':
+                    case '\'':
+                    case '<':
+                    case '=':
+                        ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
+                        goto default;
 
-                default:
-                    currentTagToken.Attributes.Add();
-                    currentTagToken.Attributes.Current.Name.Add((char)currentInputCharacter);
-                    State = attributeNameState;
-                    return;
+                    case EofMarker:
+                        ParseError(ParseErrorMessage.UnexpectedEndOfFile);
+                        State = dataState;
+                        bufferReader.Reconsume(EofMarker);
+                        return;
+
+                    default:
+                        currentTagToken.Attributes.Add();
+                        currentTagToken.Attributes.Current.Name.Add((char)currentInputCharacter);
+                        State = attributeNameState;
+                        return;
+                }
             }
         }
     }

@@ -27,29 +27,32 @@ namespace HtmlPerformanceKit.StateMachine
         /// </summary>
         private void CommentStateImplementation()
         {
-            var currentInputCharacter = bufferReader.Consume();
-
-            switch (currentInputCharacter)
+            while (true)
             {
-                case '-':
-                    State = commentEndDashState;
-                    return;
+                var currentInputCharacter = bufferReader.Consume();
 
-                case HtmlChar.Null:
-                    ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                    currentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
-                    return;
+                switch (currentInputCharacter)
+                {
+                    case '-':
+                        State = commentEndDashState;
+                        return;
 
-                case EofMarker:
-                    ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = dataState;
-                    EmitCommentBuffer = currentCommentBuffer;
-                    bufferReader.Reconsume(EofMarker);
-                    return;
+                    case HtmlChar.Null:
+                        ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
+                        currentCommentBuffer.Add(HtmlChar.ReplacementCharacter);
+                        return;
 
-                default:
-                    currentCommentBuffer.Add((char)currentInputCharacter);
-                    return;
+                    case EofMarker:
+                        ParseError(ParseErrorMessage.UnexpectedEndOfFile);
+                        State = dataState;
+                        EmitCommentBuffer = currentCommentBuffer;
+                        bufferReader.Reconsume(EofMarker);
+                        return;
+
+                    default:
+                        currentCommentBuffer.Add((char)currentInputCharacter);
+                        return;
+                }
             }
         }
     }
