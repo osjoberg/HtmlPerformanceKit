@@ -52,17 +52,17 @@ AMD Ryzen 7 PRO 4750U with Radeon Graphics, 1 CPU, 16 logical and 8 physical cor
 
 ```
 
-| Method                                 | Mean       | Error    | StdDev   | Median     | Allocated    |
-|--------------------------------------- |-----------:|---------:|---------:|-----------:|-------------:|
-| ExtractLinksHtmlPerformanceKit         |   130.7 ms |  0.23 ms |  0.19 ms |   130.6 ms |  13353.07 KB |
-| ExtractLinksHtmlPerformanceKitAsMemory |   105.3 ms |  0.14 ms |  0.12 ms |   105.3 ms |     62.23 KB |
-| ExtractLinksHtmlAgilityPack            | 1,848.7 ms | 36.54 ms | 80.22 ms | 1,895.6 ms | 576739.72 KB |
-| ExtractLinksAngleSharp                 |   959.9 ms | 19.11 ms | 37.27 ms |   984.2 ms | 294108.93 KB |
-| ExtractLinksHtmlParserSharp            |   713.2 ms | 14.13 ms | 22.81 ms |   707.2 ms | 222542.52 KB |
-| ExtractLinksHtmlKit                    |   184.3 ms |  1.39 ms |  1.30 ms |   184.5 ms | 154834.69 KB |
-| ExtractTextsHtmlPerformanceKit         |   150.4 ms |  0.74 ms |  0.66 ms |   150.2 ms |   25265.7 KB |
-| ExtractTextsHtmlPerformanceKitAsMemory |   112.7 ms |  1.36 ms |  1.27 ms |   112.2 ms |     62.23 KB |
-| ExtractTextsHtmlAgilityPack            | 1,770.6 ms |  8.56 ms |  8.01 ms | 1,770.1 ms |  850558.3 KB |
-| ExtractTextsAngleSharp                 | 1,201.6 ms | 23.77 ms | 30.06 ms | 1,216.6 ms | 344377.57 KB |
-| ExtractTextsHtmlParserSharp            |   721.4 ms |  2.63 ms |  2.20 ms |   721.2 ms | 240448.28 KB |
-| ExtractTextsHtmlKit                    |   232.7 ms |  2.12 ms |  1.77 ms |   233.1 ms | 148503.51 KB |
+| Method                                 | Mean       | Median     | Allocated    |
+|--------------------------------------- |-----------:|-----------:|-------------:|
+| ExtractLinksHtmlPerformanceKit         |   130.7 ms |   130.6 ms |  13353.07 KB |
+| ExtractLinksHtmlPerformanceKitAsMemory |   105.3 ms |   105.3 ms |     62.23 KB |
+| ExtractLinksHtmlAgilityPack            | 1,848.7 ms | 1,895.6 ms | 576739.72 KB |
+| ExtractLinksAngleSharp                 |   959.9 ms |   984.2 ms | 294108.93 KB |
+| ExtractLinksHtmlParserSharp            |   713.2 ms |   707.2 ms | 222542.52 KB |
+| ExtractLinksHtmlKit                    |   184.3 ms |   184.5 ms | 154834.69 KB |
+| ExtractTextsHtmlPerformanceKit         |   150.4 ms |   150.2 ms |  25265.70 KB |
+| ExtractTextsHtmlPerformanceKitAsMemory |   112.7 ms |   112.2 ms |     62.23 KB |
+| ExtractTextsHtmlAgilityPack            | 1,770.6 ms | 1,770.1 ms | 850558.30 KB |
+| ExtractTextsAngleSharp                 | 1,201.6 ms | 1,216.6 ms | 344377.57 KB |
+| ExtractTextsHtmlParserSharp            |   721.4 ms |   721.2 ms | 240448.28 KB |
+| ExtractTextsHtmlKit                    |   232.7 ms |   233.1 ms | 148503.51 KB |
