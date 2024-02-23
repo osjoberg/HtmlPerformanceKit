@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+using System.Text;
 using System.Web;
 using System.Xml;
 
@@ -23,11 +24,13 @@ namespace HtmlPerformanceKit.Benchmark
     {
         private readonly Stream stream;
         private readonly StreamReader streamReader;
+        private readonly List<string> result = new List<string>(100_000);
+        private readonly StringBuilder memoryResult = new StringBuilder(2_000_000);
 
         public BenchmarkLibraries()
         {
-            var executingAssembly = Assembly.GetExecutingAssembly();
-            stream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Benchmark.en.wikipedia.org_wiki_List_of_Australian_treaties.html");
+            
+            stream = Resource.GetResourceStream(1);
             streamReader = new StreamReader(stream);
         }
 
@@ -36,27 +39,46 @@ namespace HtmlPerformanceKit.Benchmark
         {
             stream.Seek(0, SeekOrigin.Begin);
             streamReader.DiscardBufferedData();
+            result.Clear();
+            memoryResult.Clear();
         }
 
         [Benchmark]
-        public List<string> ExtractLinks()
+        public List<string> ExtractLinksHtmlPerformanceKit()
         {
             var htmlReader = new HtmlReader(streamReader);
-            var links = new List<string>();
 
             while (htmlReader.Read())
             {
                 if (htmlReader.TokenKind == HtmlTokenKind.Tag && htmlReader.Name == "a")
                 {
-                    var hrefAttributeValue = htmlReader.GetAttribute("href");
-                    if (hrefAttributeValue != null)
+                    if (htmlReader.TryGetAttribute("href", out var hrefAttributeValue))
                     {
-                        links.Add(hrefAttributeValue);
+                        result.Add(hrefAttributeValue!);
                     }
                 }
             }
 
-            return links;
+            return result;
+        }
+
+        [Benchmark]
+        public StringBuilder ExtractLinksHtmlPerformanceKitAsMemory()
+        {
+            var htmlReader = new HtmlReader(streamReader);
+
+            while (htmlReader.Read())
+            {
+                if (htmlReader.TokenKind == HtmlTokenKind.Tag && htmlReader.NameAsMemory.Equals("a".AsMemory()))
+                {
+                    if (htmlReader.TryGetAttributeAsMemory("href", out var hrefAttributeValue))
+                    {
+                        memoryResult.Append(hrefAttributeValue);
+                    }
+                }
+            }
+
+            return memoryResult;
         }
 
         [Benchmark]
@@ -64,7 +86,6 @@ namespace HtmlPerformanceKit.Benchmark
         {
             var htmlDocument = new HtmlDocument();
             htmlDocument.Load(stream);
-            var links = new List<string>();
 
             foreach (var node in htmlDocument.DocumentNode.Descendants())
             {
@@ -73,12 +94,12 @@ namespace HtmlPerformanceKit.Benchmark
                     var hrefAttributeValue = node.Attributes["href"];
                     if (hrefAttributeValue != null)
                     {
-                        links.Add(HttpUtility.HtmlDecode(hrefAttributeValue.Value));
+                        result.Add(HttpUtility.HtmlDecode(hrefAttributeValue.Value));
                     }
                 }
             }
 
-            return links;
+            return result;
         }
 
         [Benchmark]
@@ -87,8 +108,6 @@ namespace HtmlPerformanceKit.Benchmark
             var htmlParser = new HtmlParser();
             var document = htmlParser.ParseDocument(stream);
 
-            var links = new List<string>();
-
             foreach (var node in document.All)
             {
                 if (node.NodeType == NodeType.Element && node.LocalName == "a")
@@ -96,21 +115,19 @@ namespace HtmlPerformanceKit.Benchmark
                     var hrefAttributeValue = node.Attributes["href"];
                     if (hrefAttributeValue != null)
                     {
-                        links.Add(hrefAttributeValue.Value);
+                        result.Add(hrefAttributeValue.Value);
                     }
                 }
             }
 
-            return links;
+            return result;
         }
 
         [Benchmark]
         public List<string> ExtractLinksHtmlParserSharp()
         {
-            var links = new List<string>();
-
-            var simpleHtmlparser = new SimpleHtmlParser();
-            var document = simpleHtmlparser.Parse(new StreamReader(stream));
+            var simpleHtmlParser = new SimpleHtmlParser();
+            var document = simpleHtmlParser.Parse(streamReader);
             var memoryStream = new MemoryStream();
             document.Save(memoryStream);
             memoryStream.Seek(0, SeekOrigin.Begin);
@@ -134,18 +151,16 @@ namespace HtmlPerformanceKit.Benchmark
                     continue;
                 }
 
-                links.Add(hrefAttributeValue);
+                result.Add(hrefAttributeValue);
             }
 
-            return links;
+            return result;
         }
 
         [Benchmark]
         public List<string> ExtractLinksHtmlKit()
         {
-            var htmlTokenizer = new HtmlKit.HtmlTokenizer(new StreamReader(stream));
-
-            var links = new List<string>();
+            var htmlTokenizer = new HtmlKit.HtmlTokenizer(streamReader);
 
             while (htmlTokenizer.ReadNextToken(out var token))
             {
@@ -167,31 +182,44 @@ namespace HtmlPerformanceKit.Benchmark
                         continue;
                     }
 
-                    links.Add(attribute.Value);
+                    result.Add(attribute.Value);
                     break;
                 }
             }
 
-            return links;
+            return result;
         }
 
         [Benchmark]
-        public List<string> ExtractTexts()
+        public List<string> ExtractTextsHtmlPerformanceKit()
         {
-            stream.Seek(0, SeekOrigin.Begin);
-
-            var htmlReader = new HtmlReader(new StreamReader(stream));
-            var texts = new List<string>();
+            var htmlReader = new HtmlReader(streamReader);
 
             while (htmlReader.Read())
             {
                 if (htmlReader.TokenKind == HtmlTokenKind.Text)
                 {
-                    texts.Add(htmlReader.Text);
+                    result.Add(htmlReader.Text);
                 }
             }
 
-            return texts;
+            return result;
+        }
+
+        [Benchmark]
+        public StringBuilder ExtractTextsHtmlPerformanceKitAsMemory()
+        {
+            var htmlReader = new HtmlReader(streamReader);
+
+            while (htmlReader.Read())
+            {
+                if (htmlReader.TokenKind == HtmlTokenKind.Text)
+                {
+                    memoryResult.Append(htmlReader.TextAsMemory);
+                }
+            }
+
+            return memoryResult;
         }
 
         [Benchmark]
@@ -199,17 +227,16 @@ namespace HtmlPerformanceKit.Benchmark
         {
             var htmlDocument = new HtmlDocument();
             htmlDocument.Load(stream);
-            var texts = new List<string>();
 
             foreach (var node in htmlDocument.DocumentNode.Descendants())
             {
                 if (node.NodeType == HtmlNodeType.Text && node.InnerText != "" && node.InnerText != "</form>")
                 {
-                    texts.Add(HttpUtility.HtmlDecode(node.InnerText));
+                    result.Add(HttpUtility.HtmlDecode(node.InnerText));
                 }
             }
 
-            return texts;
+            return result;
         }
 
         [Benchmark]
@@ -218,29 +245,25 @@ namespace HtmlPerformanceKit.Benchmark
             var htmlParser = new HtmlParser();
             var document = htmlParser.ParseDocument(stream);
 
-            var texts = new List<string>();
-
             foreach (var node in document.QuerySelectorAll("*"))
             {
                 foreach (var childNode in node.ChildNodes.OfType<IText>())
                 {
-                    texts.Add(childNode.Text);
+                    result.Add(childNode.Text);
                 }
             }
 
-            return texts;
+            return result;
         }
 
         [Benchmark]
         public List<string> ExtractTextsHtmlParserSharp()
         {
-            var simpleHtmlparser = new SimpleHtmlParser();
-            var document = simpleHtmlparser.Parse(new StreamReader(stream));
+            var simpleHtmlParser = new SimpleHtmlParser();
+            var document = simpleHtmlParser.Parse(streamReader);
             var memoryStream = new MemoryStream();
             document.Save(memoryStream);
             memoryStream.Seek(0, SeekOrigin.Begin);
-
-            var texts = new List<string>();
 
             var reader = XmlReader.Create(memoryStream, new XmlReaderSettings { DtdProcessing = DtdProcessing.Parse });
             while (reader.Read())
@@ -256,18 +279,16 @@ namespace HtmlPerformanceKit.Benchmark
                     continue;
                 }
 
-                texts.Add(reader.Value);
+                result.Add(reader.Value);
             }
 
-            return texts;
+            return result;
         }
 
         [Benchmark]
         public List<string> ExtractTextsHtmlKit()
         {
-            var htmlTokenizer = new HtmlKit.HtmlTokenizer(new StreamReader(stream));
-
-            var texts = new List<string>();
+            var htmlTokenizer = new HtmlKit.HtmlTokenizer(streamReader);
 
             while (htmlTokenizer.ReadNextToken(out var token))
             {
@@ -277,10 +298,10 @@ namespace HtmlPerformanceKit.Benchmark
                 }
 
                 var dataToken = (HtmlDataToken)token;
-                texts.Add(dataToken.Data);
+                result.Add(dataToken.Data);
             }
 
-            return texts;
+            return result;
         }
     }
 }

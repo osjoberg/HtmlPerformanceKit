@@ -8,12 +8,11 @@ namespace HtmlPerformanceKit.Test
     public class RcDataTest
     {
         private readonly List<HtmlParseErrorEventArgs> parseErrors = new List<HtmlParseErrorEventArgs>();
-        private HtmlReader reader;
 
         [TestMethod]
         public void RcDataEmpty()
         {
-            reader = HtmlReaderFactory.FromString("<title></title>", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<title></title>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
@@ -30,7 +29,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void RcDataWithStartTag()
         {
-            reader = HtmlReaderFactory.FromString("<title><p></title>", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<title><p></title>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
@@ -51,7 +50,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void RcDataWithStartAndEndTag()
         {
-            reader = HtmlReaderFactory.FromString("<title><p></p></title>", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<title><p></p></title>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
@@ -72,7 +71,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void RcDataWithSelfClosingTag()
         {
-            reader = HtmlReaderFactory.FromString("<title><br /></title>", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<title><br /></title>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
@@ -93,7 +92,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void RcDataWithText()
         {
-            reader = HtmlReaderFactory.FromString("<title>hello</title>", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<title>hello</title>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
@@ -114,7 +113,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void RcDataWithTag()
         {
-            reader = HtmlReaderFactory.FromString("<title></title><p>", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<title></title><p>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
@@ -135,7 +134,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void RcDataWithCharacterReference()
         {
-            reader = HtmlReaderFactory.FromString("<title>&amp;</title><p>", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<title>&amp;</title><p>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
@@ -165,7 +164,7 @@ namespace HtmlPerformanceKit.Test
                 DecodeHtmlCharacters = false
             };
 
-            reader = HtmlReaderFactory.FromString("<title>&amp;</title><p>", parseErrors, options);
+            var reader = HtmlReaderFactory.FromString("<title>&amp;</title><p>", parseErrors, options);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);

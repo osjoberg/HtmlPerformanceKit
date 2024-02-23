@@ -9,11 +9,17 @@ namespace HtmlPerformanceKit
     /// <summary>
     /// HtmlReader is a streaming reader for HTML documents.
     /// </summary>
-    public sealed class HtmlReader : IDisposable
+    public sealed partial class HtmlReader
     {
+        private const string AttributeTagTokenIsNullMessage = "Attributes can only be accessed when TokenKind is HtmlTokenKind.Tag, HtmlTokenKind.EndTag or HtmlTokenKind.Doctype.";
+        private const string SelfClosingElementTagTokenIsNullMessage = "SelfClosingElement property can only be accessed when TokenKind is HtmlTokenKind.Tag, HtmlTokenKind.EndTag or HtmlTokenKind.Doctype.";
+        private const string AttributeCountElementTagTokenIsNullMessage = "AttributeCount property can only be accessed when TokenKind is HtmlTokenKind.Tag, HtmlTokenKind.EndTag or HtmlTokenKind.Doctype.";
+        private const string NameTagTokenIsNullMessage = "Name property can only be accessed when TokenKind is HtmlTokenKind.Tag, HtmlTokenKind.EndTag or HtmlTokenKind.Doctype.";
+        private const string TextBufferIsNullMessage = "Text property can only be accessed when TokenKind is HtmlTokenKind.Text or HtmlTokenKind.Comment.";
+        private const string AttributeNotFoundMessage = "An attribute with the given name does not exist.";
+
         private readonly BufferReader bufferReader;
         private readonly HtmlStateMachine stateMachine;
-        private readonly HtmlReaderOptions options;
 
         private CharBuffer textBuffer;
         private HtmlTagToken tagToken;
@@ -29,9 +35,9 @@ namespace HtmlPerformanceKit
                 throw new ArgumentNullException(nameof(streamReader));
             }
 
-            options = HtmlReaderOptions.Default;
+            var options = HtmlReaderOptions.Default;
             bufferReader = new BufferReader(streamReader);
-            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, options.DecodeHtmlCharacters);
+            stateMachine = new HtmlStateMachine(bufferReader, OnParserError, options.DecodeHtmlCharacters);
         }
 
         /// <summary>
@@ -45,9 +51,9 @@ namespace HtmlPerformanceKit
                 throw new ArgumentNullException(nameof(stream));
             }
 
-            options = HtmlReaderOptions.Default;
+            var options = HtmlReaderOptions.Default;
             bufferReader = new BufferReader(new StreamReader(stream));
-            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, options.DecodeHtmlCharacters);
+            stateMachine = new HtmlStateMachine(bufferReader, OnParserError, options.DecodeHtmlCharacters);
         }
 
         /// <summary>
@@ -61,9 +67,9 @@ namespace HtmlPerformanceKit
                 throw new ArgumentNullException(nameof(textReader));
             }
 
-            options = HtmlReaderOptions.Default;
+            var options = HtmlReaderOptions.Default;
             bufferReader = new BufferReader(textReader);
-            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, options.DecodeHtmlCharacters);
+            stateMachine = new HtmlStateMachine(bufferReader, OnParserError, options.DecodeHtmlCharacters);
         }
 
         /// <summary>
@@ -78,9 +84,9 @@ namespace HtmlPerformanceKit
                 throw new ArgumentNullException(nameof(streamReader));
             }
 
-            this.options = options ?? HtmlReaderOptions.Default;
+            options = options ?? HtmlReaderOptions.Default;
             bufferReader = new BufferReader(streamReader);
-            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, this.options.DecodeHtmlCharacters);
+            stateMachine = new HtmlStateMachine(bufferReader, OnParserError, options.DecodeHtmlCharacters);
         }
 
         /// <summary>
@@ -95,9 +101,9 @@ namespace HtmlPerformanceKit
                 throw new ArgumentNullException(nameof(stream));
             }
 
-            this.options = options ?? HtmlReaderOptions.Default;
+            options = options ?? HtmlReaderOptions.Default;
             bufferReader = new BufferReader(new StreamReader(stream));
-            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, this.options.DecodeHtmlCharacters);
+            stateMachine = new HtmlStateMachine(bufferReader, OnParserError, options.DecodeHtmlCharacters);
         }
 
         /// <summary>
@@ -112,9 +118,9 @@ namespace HtmlPerformanceKit
                 throw new ArgumentNullException(nameof(textReader));
             }
 
-            this.options = options ?? HtmlReaderOptions.Default;
+            options = options ?? HtmlReaderOptions.Default;
             bufferReader = new BufferReader(textReader);
-            stateMachine = new HtmlStateMachine(bufferReader, ParseErrorFromMessage, this.options.DecodeHtmlCharacters);
+            stateMachine = new HtmlStateMachine(bufferReader, OnParserError, options.DecodeHtmlCharacters);
         }
 
         /// <summary>
@@ -129,27 +135,17 @@ namespace HtmlPerformanceKit
 
         /// <summary>
         /// Gets if last read tag is a self-closing element.
-        /// <returns>True if last read token kind was <see cref="HtmlTokenKind.Tag"/> or <see cref="HtmlTokenKind.Doctype"/> and it was a self closing element, otherwise False.</returns>
+        /// <returns>True if last read token kind was a self-closing element, otherwise False.</returns>
         /// </summary>
-        public bool SelfClosingElement => tagToken?.SelfClosing ?? false;
-
-        /// <summary>
-        /// Gets the last read tag name.
-        /// <returns>Lowercased tag name if last read token kind was <see cref="HtmlTokenKind.Tag"/> or <see cref="HtmlTokenKind.Doctype"/>, otherwise Null.</returns>
-        /// </summary>
-        public string Name => tagToken?.Name.ToString();
-
-        /// <summary>
-        /// Gets the last read text.
-        /// <returns>Text if last read token kind was <see cref="HtmlTokenKind.Text"/> or <see cref="HtmlTokenKind.Comment"/>, otherwise Null.</returns>
-        /// </summary>
-        public string Text => textBuffer?.ToString();
+        /// <exception cref="InvalidOperationException">The last read <see cref="TokenKind"/> was not <see cref="HtmlTokenKind.Tag"/>, <see cref="HtmlTokenKind.EndTag"/> or <see cref="HtmlTokenKind.Doctype"/>.</exception>
+        public bool SelfClosingElement => tagToken == null ? throw new InvalidOperationException(SelfClosingElementTagTokenIsNullMessage) : tagToken.SelfClosing;
 
         /// <summary>
         /// Gets the last read attribute count.
         /// <returns>Number of attributes if last read token kind was <see cref="HtmlTokenKind.Text"/> or <see cref="HtmlTokenKind.Comment"/>, otherwise 0.</returns>
         /// </summary>
-        public int AttributeCount => tagToken?.Attributes.Count ?? 0;
+        /// <exception cref="InvalidOperationException">The last read <see cref="TokenKind"/> was not <see cref="HtmlTokenKind.Tag"/>, <see cref="HtmlTokenKind.EndTag"/> or <see cref="HtmlTokenKind.Doctype"/>.</exception>
+        public int AttributeCount => tagToken == null ? throw new InvalidOperationException(AttributeCountElementTagTokenIsNullMessage) : tagToken.Attributes.Count;
 
         /// <summary>
         /// Gets the current line number.
@@ -164,7 +160,7 @@ namespace HtmlPerformanceKit
         /// <summary>
         /// Read one token from the stream.
         /// </summary>
-        /// <returns>True if a token was read, False if end of stream is reached.</returns>
+        /// <returns><see langword="true"/> if a token was read, <see langword="false"/> if end of stream is reached.</returns>
         public bool Read()
         {
             textBuffer = null;
@@ -219,78 +215,9 @@ namespace HtmlPerformanceKit
             }
         }
 
-        /// <summary>
-        /// Get attribute value by attribute name.
-        /// </summary>
-        /// <param name="name">Name of attribute value to get.</param>
-        /// <returns>Attribute value of first specified attribute name if last read token kind was <see cref="HtmlTokenKind.Text"/> or <see cref="HtmlTokenKind.Comment"/>, otherwise Null.</returns>
-        public string GetAttribute(string name)
+        private void OnParserError(string message)
         {
-            if (name == null)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            if (name.Length == 0)
-            {
-                throw new ArgumentException("Invalid attribute name, \"\".", nameof(name));
-            }
-
-            return tagToken?.Attributes[name]?.ToString();
-        }
-
-        /// <summary>
-        /// Get attribute value by attribute index.
-        /// </summary>
-        /// <param name="index">Index of attribute value to get.</param>
-        /// <returns>Attribute value of specified index if last read token kind was <see cref="HtmlTokenKind.Text"/> or <see cref="HtmlTokenKind.Comment"/>, otherwise Null.</returns>
-        public string GetAttribute(int index)
-        {
-            if (index < 0 || index >= AttributeCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index));
-            }
-
-            return tagToken?.Attributes[index]?.Value.ToString();
-        }
-
-        /// <summary>
-        /// Get attribute name by attribute index.
-        /// </summary>
-        /// <param name="index">Index of attribute name to get.</param>
-        /// <returns>Attribute name of specified index if last read token kind was <see cref="HtmlTokenKind.Text"/> or <see cref="HtmlTokenKind.Comment"/>, otherwise Null.</returns>
-        public string GetAttributeName(int index)
-        {
-            if (index < 0 || index >= AttributeCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index));
-            }
-
-            return tagToken?.Attributes[index]?.Name.ToString();
-        }
-
-        /// <summary>
-        /// Disposes the instance and it's associated StreamReader.
-        /// </summary>
-        public void Dispose()
-        {
-            tagToken = null;
-            textBuffer = null;
-
-            if (options.CloseInput)
-            {
-                bufferReader.Dispose();
-            }
-        }
-
-        private void ParseErrorFromMessage(string message)
-        {
-            OnParseError(this, new HtmlParseErrorEventArgs(message, bufferReader.LineNumber, bufferReader.LinePosition));
-        }
-
-        private void OnParseError(object sender, HtmlParseErrorEventArgs args)
-        {
-            ParseError?.Invoke(sender, args);
+            ParseError?.Invoke(this, new HtmlParseErrorEventArgs(message, bufferReader.LineNumber, bufferReader.LinePosition));
         }
     }
 }

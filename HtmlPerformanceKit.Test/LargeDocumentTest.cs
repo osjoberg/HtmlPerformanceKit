@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -24,21 +25,21 @@ namespace HtmlPerformanceKit.Test
             var htmlReader = new HtmlReader(inputStream);
             htmlReader.ParseError += (_, args) => output.Add(args);
 
-            for (; ; )
+            for (;;)
             {
                 var read = htmlReader.Read();
 
                 output.Add(new
                 {
                     Read = read,
-                    htmlReader.AttributeCount,
                     htmlReader.LineNumber,
                     htmlReader.LinePosition,
-                    htmlReader.Name,
-                    htmlReader.SelfClosingElement,
-                    htmlReader.Text,
                     TokenKind = htmlReader.TokenKind.ToString(),
-                    Attributes = Enumerable.Range(0, htmlReader.AttributeCount).ToDictionary(index => htmlReader.GetAttributeName(index), index => htmlReader.GetAttribute(index)),
+                    AttributeCount = Evaluate(() => htmlReader.AttributeCount),
+                    Name = Evaluate(() => htmlReader.Name),
+                    SelfClosingElement = Evaluate(() => htmlReader.SelfClosingElement),
+                    Text = Evaluate(() => htmlReader.Text),
+                    Attributes = htmlReader.TokenKind == HtmlTokenKind.Tag || htmlReader.TokenKind == HtmlTokenKind.EndTag || htmlReader.TokenKind == HtmlTokenKind.Doctype ? Enumerable.Range(0, htmlReader.AttributeCount).ToDictionary(index => htmlReader.GetAttributeName(index), index => htmlReader.GetAttribute(index)) : null,
                 });
 
                 if (read == false)
@@ -50,13 +51,12 @@ namespace HtmlPerformanceKit.Test
             return Verify(output);
         }
 
-
         [TestMethod]
         public void ExtractLinksFromWikipediaListOfAustralianTreaties()
         {
             var benchmark = new BenchmarkLibraries();
             benchmark.IterationSetup();
-            var links = benchmark.ExtractLinks();
+            var links = benchmark.ExtractLinksHtmlPerformanceKit();
             benchmark.IterationSetup();
             var linksHtmlAgilityPack = benchmark.ExtractLinksHtmlAgilityPack();
             benchmark.IterationSetup();
@@ -76,9 +76,8 @@ namespace HtmlPerformanceKit.Test
         public void ExtractTextFromWikipediaListOfAustralianTreaties()
         {
             var benchmark = new BenchmarkLibraries();
-
             benchmark.IterationSetup();
-            var texts = benchmark.ExtractTexts();
+            var texts = benchmark.ExtractTextsHtmlPerformanceKit();
             benchmark.IterationSetup();
             var textsHtmlAgilityPack = benchmark.ExtractTextsHtmlAgilityPack();
             var textsAngleSharp = benchmark.ExtractTextsAngleSharp();
@@ -95,14 +94,26 @@ namespace HtmlPerformanceKit.Test
         public void ExtractLinksFromWikipediaListOfAustralianTreatiesHtmlPerformanceKit()
         {
             var benchmark = new BenchmarkLibraries();
-            var links = benchmark.ExtractLinks();
+            var links = benchmark.ExtractLinksHtmlPerformanceKit();
         }
 
         [TestMethod]
         public void ExtractTextFromWikipediaListOfAustralianTreatiesHtmlPerformanceKit()
         {
             var benchmark = new BenchmarkLibraries();
-            var texts = benchmark.ExtractTexts();
+            var texts = benchmark.ExtractTextsHtmlPerformanceKit();
+        }
+
+        private static string Evaluate<T>(Func<T> func)
+        {
+            try
+            {
+                return func().ToString();
+            }
+            catch (Exception e)
+            {
+                return $"<{e.GetType().Name}>";
+            }
         }
     }
 }

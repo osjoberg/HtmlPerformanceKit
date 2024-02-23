@@ -8,12 +8,11 @@ namespace HtmlPerformanceKit.Test
     public class CommentTest
     {
         private readonly List<HtmlParseErrorEventArgs> parseErrors = new List<HtmlParseErrorEventArgs>();
-        private HtmlReader reader;
 
         [TestMethod]
         public void EmptyBogusCommentState()
         {
-            reader = HtmlReaderFactory.FromString("<!>", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<!>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Comment, reader.TokenKind);
@@ -26,7 +25,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void EmptyBogusCommentState2()
         {
-            reader = HtmlReaderFactory.FromString("<!", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<!", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Comment, reader.TokenKind);
@@ -39,7 +38,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void BogusCommentState()
         {
-            reader = HtmlReaderFactory.FromString("<!div displayed>", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<!div displayed>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Comment, reader.TokenKind);
@@ -52,7 +51,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void BogusCommentState2()
         {
-            reader = HtmlReaderFactory.FromString("<!/div>", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<!/div>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Comment, reader.TokenKind);

@@ -8,12 +8,11 @@ namespace HtmlPerformanceKit.Test
     public class TagTest
     {
         private readonly List<HtmlParseErrorEventArgs> parseErrors = new List<HtmlParseErrorEventArgs>();
-        private HtmlReader reader;
 
         [TestMethod]
         public void Tag()
         {
-            reader = HtmlReaderFactory.FromString("<br/>", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<br/>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
@@ -27,7 +26,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void TagData()
         {
-            reader = HtmlReaderFactory.FromString("<br/>a", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<br/>a", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
@@ -45,7 +44,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void DataTag()
         {
-            reader = HtmlReaderFactory.FromString("a<br/>", parseErrors);
+            var reader = HtmlReaderFactory.FromString("a<br/>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
@@ -63,7 +62,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void DataTagDataTag()
         {
-            reader = HtmlReaderFactory.FromString("a<br/>b<p/>", parseErrors);
+            var reader = HtmlReaderFactory.FromString("a<br/>b<p/>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Text, reader.TokenKind);
@@ -90,7 +89,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void TagDataTagData()
         {
-            reader = HtmlReaderFactory.FromString("<br/>a<p/>b", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<br/>a<p/>b", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
@@ -117,7 +116,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void TagDoubleQuotedAttributeValue()
         {
-            reader = HtmlReaderFactory.FromString("<a href=\"javascript:;\">", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<a href=\"javascript:;\">", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
@@ -132,7 +131,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void TagSingleQuotedAttributeValue()
         {
-            reader = HtmlReaderFactory.FromString("<a href='javascript:;'>", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<a href='javascript:;'>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
@@ -147,7 +146,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void TagUnquotedAttributeValue()
         {
-            reader = HtmlReaderFactory.FromString("<a href=javascript:;>", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<a href=javascript:;>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
@@ -162,7 +161,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void TagNoAttributeValue()
         {
-            reader = HtmlReaderFactory.FromString("<a href>", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<a href>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
@@ -177,12 +176,12 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void TagMissingAttribute()
         {
-            reader = HtmlReaderFactory.FromString("<a>", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<a>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
             Assert.AreEqual("a", reader.Name);
-            Assert.IsNull(reader.GetAttribute("href"));
+            Assert.ThrowsException<KeyNotFoundException>(() => reader.GetAttribute("href"));
             Assert.IsFalse(reader.SelfClosingElement);
 
             Assert.IsFalse(reader.Read());
@@ -192,7 +191,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void AttributeValueDecimalCharacterReference()
         {
-            reader = HtmlReaderFactory.FromString("<a title=\"&#65;\">", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<a title=\"&#65;\">", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual("A", reader.GetAttribute("title"));
@@ -209,7 +208,7 @@ namespace HtmlPerformanceKit.Test
                 DecodeHtmlCharacters = false
             };
 
-            reader = HtmlReaderFactory.FromString("<a title=\"&#65;\">", parseErrors, options);
+            var reader = HtmlReaderFactory.FromString("<a title=\"&#65;\">", parseErrors, options);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual("&#65;", reader.GetAttribute("title"));
@@ -221,7 +220,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void AttributeValueHexCharacterReference()
         {
-            reader = HtmlReaderFactory.FromString("<a title=\"&#x41;\">", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<a title=\"&#x41;\">", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual("A", reader.GetAttribute("title"));
@@ -238,7 +237,7 @@ namespace HtmlPerformanceKit.Test
                 DecodeHtmlCharacters = false
             };
 
-            reader = HtmlReaderFactory.FromString("<a title=\"&#x41;\">", parseErrors, options);
+            var reader = HtmlReaderFactory.FromString("<a title=\"&#x41;\">", parseErrors, options);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual("&#x41;", reader.GetAttribute("title"));
@@ -250,7 +249,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void AttributeValueNamedCharacterReference()
         {
-            reader = HtmlReaderFactory.FromString("<a title=\"&lt;\">", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<a title=\"&lt;\">", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual("<", reader.GetAttribute("title"));
@@ -267,7 +266,7 @@ namespace HtmlPerformanceKit.Test
                 DecodeHtmlCharacters = false
             };
 
-            reader = HtmlReaderFactory.FromString("<a title=\"&lt;\">", parseErrors, options);
+            var reader = HtmlReaderFactory.FromString("<a title=\"&lt;\">", parseErrors, options);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual("&lt;", reader.GetAttribute("title"));
@@ -279,7 +278,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void AttributeValueNamedCharacterReferenceSingleQuoted()
         {
-            reader = HtmlReaderFactory.FromString("<a title='&lt;'>", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<a title='&lt;'>", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual("<", reader.GetAttribute("title"));
@@ -296,7 +295,7 @@ namespace HtmlPerformanceKit.Test
                 DecodeHtmlCharacters = false
             };
 
-            reader = HtmlReaderFactory.FromString("<a title='&lt;'>", parseErrors, options);
+            var reader = HtmlReaderFactory.FromString("<a title='&lt;'>", parseErrors, options);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual("&lt;", reader.GetAttribute("title"));
@@ -308,7 +307,7 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void GetAttributeReturnsFirstAttributeValue()
         {
-            reader = HtmlReaderFactory.FromString("<img src=\"a\" src=\"b\" />", parseErrors);
+            var reader = HtmlReaderFactory.FromString("<img src=\"a\" src=\"b\" />", parseErrors);
 
             Assert.IsTrue(reader.Read());
             Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);

@@ -28,6 +28,12 @@ namespace HtmlPerformanceKit.Infrastructure
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal ReadOnlyMemory<char> AsMemory()
+        {
+            return new ReadOnlyMemory<char>(buffer, 0, Length);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Clear()
         {
             Length = 0;
