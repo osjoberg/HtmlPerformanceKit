@@ -30,7 +30,7 @@ namespace HtmlPerformanceKit.Benchmark
         public BenchmarkLibraries()
         {
             
-            stream = Resource.GetResourceStream(1);
+            stream = Resource.GetResourceStream(10);
             streamReader = new StreamReader(stream);
         }
 
