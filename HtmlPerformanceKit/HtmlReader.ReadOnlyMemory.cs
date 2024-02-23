@@ -42,7 +42,7 @@ namespace HtmlPerformanceKit
             var attributeValue = tagToken.Attributes[name];
             if (attributeValue == null)
             {
-                value = null;
+                value = ReadOnlyMemory<char>.Empty;
                 return false;
             }
 

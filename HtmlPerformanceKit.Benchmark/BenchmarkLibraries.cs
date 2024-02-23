@@ -54,7 +54,7 @@ namespace HtmlPerformanceKit.Benchmark
                 {
                     if (htmlReader.TryGetAttribute("href", out var hrefAttributeValue))
                     {
-                        result.Add(hrefAttributeValue!);
+                        result.Add(hrefAttributeValue);
                     }
                 }
             }

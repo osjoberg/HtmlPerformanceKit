@@ -21,8 +21,8 @@ namespace HtmlPerformanceKit
         private readonly BufferReader bufferReader;
         private readonly HtmlStateMachine stateMachine;
 
-        private CharBuffer textBuffer;
-        private HtmlTagToken tagToken;
+        private CharBuffer? textBuffer;
+        private HtmlTagToken? tagToken;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HtmlReader" /> class.
@@ -77,7 +77,7 @@ namespace HtmlPerformanceKit
         /// </summary>
         /// <param name="streamReader">StreamReader instance to read from.</param>
         /// <param name="options">Options to configure <see cref="HtmlReader" /> behaviour.</param>
-        public HtmlReader(StreamReader streamReader, HtmlReaderOptions options)
+        public HtmlReader(StreamReader streamReader, HtmlReaderOptions? options)
         {
             if (streamReader == null)
             {
@@ -94,7 +94,7 @@ namespace HtmlPerformanceKit
         /// </summary>
         /// <param name="stream">Stream instance to read from.</param>
         /// <param name="options">Options to configure <see cref="HtmlReader" /> behaviour.</param>
-        public HtmlReader(Stream stream, HtmlReaderOptions options)
+        public HtmlReader(Stream stream, HtmlReaderOptions? options)
         {
             if (stream == null)
             {
@@ -111,7 +111,7 @@ namespace HtmlPerformanceKit
         /// </summary>
         /// <param name="textReader">Stream instance to read from.</param>
         /// <param name="options">Options to configure <see cref="HtmlReader" /> behaviour.</param>
-        public HtmlReader(TextReader textReader, HtmlReaderOptions options)
+        public HtmlReader(TextReader textReader, HtmlReaderOptions? options)
         {
             if (textReader == null)
             {
@@ -126,7 +126,7 @@ namespace HtmlPerformanceKit
         /// <summary>
         /// Event that occurs whenever there is a parse error while parsing the Html.
         /// </summary>
-        public event EventHandler<HtmlParseErrorEventArgs> ParseError;
+        public event EventHandler<HtmlParseErrorEventArgs>? ParseError;
 
         /// <summary>
         /// Gets last read token kind.
@@ -176,11 +176,11 @@ namespace HtmlPerformanceKit
                 {
                     TokenKind = stateMachine.EmitTagToken.EndTag ? HtmlTokenKind.EndTag : HtmlTokenKind.Tag;
 
-                    stateMachine.SetNextStateFromTagName();
+                    stateMachine.SetNextStateFromTagName(stateMachine.EmitTagToken);
 
                     if (stateMachine.EmitTagToken.EndTag == false)
                     {
-                        stateMachine.RememberLastStartTagName();
+                        stateMachine.RememberLastStartTagName(stateMachine.EmitTagToken);
                     }
 
                     tagToken = stateMachine.EmitTagToken;

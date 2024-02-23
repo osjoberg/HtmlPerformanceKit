@@ -96,6 +96,7 @@ namespace HtmlPerformanceKit.StateMachine
             tagOpenState = TagOpenStateImplementation;
 
             State = dataState;
+            returnToState = () => { };
         }
 
         internal Action State
@@ -116,7 +117,7 @@ namespace HtmlPerformanceKit.StateMachine
             private set;
         }
 
-        internal HtmlTagToken EmitTagToken
+        internal HtmlTagToken? EmitTagToken
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get;
@@ -125,7 +126,7 @@ namespace HtmlPerformanceKit.StateMachine
             private set;
         }
 
-        internal CharBuffer EmitDataBuffer
+        internal CharBuffer? EmitDataBuffer
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get;
@@ -134,7 +135,7 @@ namespace HtmlPerformanceKit.StateMachine
             private set;
         }
 
-        internal HtmlTagToken EmitDoctypeToken
+        internal HtmlTagToken? EmitDoctypeToken
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get;
@@ -143,7 +144,7 @@ namespace HtmlPerformanceKit.StateMachine
             private set;
         }
 
-        internal CharBuffer EmitCommentBuffer
+        internal CharBuffer? EmitCommentBuffer
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get;
@@ -169,10 +170,10 @@ namespace HtmlPerformanceKit.StateMachine
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void RememberLastStartTagName()
+        internal void RememberLastStartTagName(HtmlTagToken emitTagToken)
         {
             appropriateTagName.Clear();
-            appropriateTagName.AddRange(EmitTagToken.Name);
+            appropriateTagName.AddRange(emitTagToken.Name);
         }
     }
 }

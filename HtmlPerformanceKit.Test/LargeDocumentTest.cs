@@ -54,6 +54,8 @@ namespace HtmlPerformanceKit.Test
         [TestMethod]
         public void ExtractLinksFromWikipediaListOfAustralianTreaties()
         {
+            var benchmark2 = new BenchmarkHtmlPerformanceKit();
+
             var benchmark = new BenchmarkLibraries();
             benchmark.IterationSetup();
             var links = benchmark.ExtractLinksHtmlPerformanceKit();
@@ -108,7 +110,7 @@ namespace HtmlPerformanceKit.Test
         {
             try
             {
-                return func().ToString();
+                return func()!.ToString()!;
             }
             catch (Exception e)
             {

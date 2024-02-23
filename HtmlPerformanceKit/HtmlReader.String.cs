@@ -23,7 +23,7 @@ namespace HtmlPerformanceKit
         /// Gets the attribute value associated with the specified attribute name.
         /// </summary>
         /// <param name="name">The name of the attribute to get.</param>
-        /// <param name="value">When this method returns, contains the value of the specified attribute name, if the attribute is found; otherwise <see langword="null"/>.</param>
+        /// <param name="value">When this method returns, contains the value of the specified attribute name, if the attribute is found; otherwise <see cref="string.Empty"/>.</param>
         /// <returns><see langword="true"/> if an attribute exists with the specified name; otherwise, <see langword="false"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="name">name</paramref> is null.</exception>
         /// <exception cref="InvalidOperationException">The last read <see cref="TokenKind"/> was not <see cref="HtmlTokenKind.Tag"/>, <see cref="HtmlTokenKind.EndTag"/> or <see cref="HtmlTokenKind.Doctype"/>.</exception>
@@ -42,7 +42,7 @@ namespace HtmlPerformanceKit
             var attributeValue = tagToken.Attributes[name];
             if (attributeValue == null)
             {
-                value = null;
+                value = "";
                 return false;
             }
 

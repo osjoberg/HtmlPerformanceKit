@@ -1,5 +1,7 @@
 ﻿namespace HtmlPerformanceKit.StateMachine
 {
+    using HtmlPerformanceKit.Infrastructure;
+
     internal partial class HtmlStateMachine
     {
         /// <summary>
@@ -23,14 +25,14 @@
         /// Otherwise
         /// Leave the tokenizer in the data state.
         /// </summary>
-        internal void SetNextStateFromTagName()
+        internal void SetNextStateFromTagName(HtmlTagToken emitTagToken)
         {
-            if (EmitTagToken.EndTag)
+            if (emitTagToken.EndTag)
             {
                 return;
             }
                 
-            var name = EmitTagToken.Name;
+            var name = emitTagToken.Name;
 
             switch (name.Length)
             {
