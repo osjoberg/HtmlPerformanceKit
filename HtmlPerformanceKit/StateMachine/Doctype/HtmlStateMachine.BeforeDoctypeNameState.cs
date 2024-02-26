@@ -74,6 +74,7 @@ namespace HtmlPerformanceKit.StateMachine
                 case 'Z':
                     currentDoctypeToken.Clear();
                     currentDoctypeToken.Name.Add((char)(currentInputCharacter + 0x20));
+                    State = doctypeNameState;
                     return;
 
                 case HtmlChar.Null:
