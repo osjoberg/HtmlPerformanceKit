@@ -17,7 +17,7 @@ namespace HtmlPerformanceKit.Benchmark
 
         public BenchmarkHtmlPerformanceKit()
         {
-            stream = Resource.GetResourceStream(1);
+            stream = Resource.GetResourceStream(10);
             streamReader = new StreamReader(stream);
         }
 
