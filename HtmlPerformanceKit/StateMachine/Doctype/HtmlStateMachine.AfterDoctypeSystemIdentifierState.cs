@@ -2,61 +2,60 @@ using System;
 
 using HtmlPerformanceKit.Infrastructure;
 
-namespace HtmlPerformanceKit.StateMachine
+namespace HtmlPerformanceKit.StateMachine;
+
+internal partial class HtmlStateMachine
 {
-    internal partial class HtmlStateMachine
+    private readonly Action afterDoctypeSystemIdentifierState;
+
+    /// <summary>
+    /// 8.2.4.66 After DOCTYPE system identifier state
+    /// <br/>
+    /// Consume the next input character:
+    /// <br/>
+    /// "tab" (U+0009)
+    /// "LF" (U+000A)
+    /// "FF" (U+000C)
+    /// U+0020 SPACE
+    /// Ignore the character.
+    /// <br/>
+    /// "&gt;" (U+003E)
+    /// Switch to the data state. Emit the current DOCTYPE token.
+    /// <br/>
+    /// EOF
+    /// Parse error. Switch to the data state. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Reconsume the EOF character.
+    /// <br/>
+    /// Anything else
+    /// Parse error. Switch to the bogus DOCTYPE state. (This does not set the DOCTYPE token's force-quirks flag to on.)
+    /// </summary>
+    private void AfterDoctypeSystemIdentifierStateImplementation()
     {
-        private readonly Action afterDoctypeSystemIdentifierState;
+        var currentInputCharacter = bufferReader.Consume();
 
-        /// <summary>
-        /// 8.2.4.66 After DOCTYPE system identifier state
-        /// <br/>
-        /// Consume the next input character:
-        /// <br/>
-        /// "tab" (U+0009)
-        /// "LF" (U+000A)
-        /// "FF" (U+000C)
-        /// U+0020 SPACE
-        /// Ignore the character.
-        /// <br/>
-        /// "&gt;" (U+003E)
-        /// Switch to the data state. Emit the current DOCTYPE token.
-        /// <br/>
-        /// EOF
-        /// Parse error. Switch to the data state. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Reconsume the EOF character.
-        /// <br/>
-        /// Anything else
-        /// Parse error. Switch to the bogus DOCTYPE state. (This does not set the DOCTYPE token's force-quirks flag to on.)
-        /// </summary>
-        private void AfterDoctypeSystemIdentifierStateImplementation()
+        switch (currentInputCharacter)
         {
-            var currentInputCharacter = bufferReader.Consume();
+            case '\t':
+            case '\n':
+            case '\r':
+            case ' ':
+                return;
 
-            switch (currentInputCharacter)
-            {
-                case '\t':
-                case '\n':
-                case '\r':
-                case ' ':
-                    return;
+            case '>':
+                State = dataState;
+                EmitDoctypeToken = currentDoctypeToken;
+                return;
 
-                case '>':
-                    State = dataState;
-                    EmitDoctypeToken = currentDoctypeToken;
-                    return;
+            case EofMarker:
+                ParseError(ParseErrorMessage.UnexpectedEndOfFile);
+                State = dataState;
+                EmitDoctypeToken = currentDoctypeToken;
+                bufferReader.Reconsume(EofMarker);
+                return;
 
-                case EofMarker:
-                    ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                    State = dataState;
-                    EmitDoctypeToken = currentDoctypeToken;
-                    bufferReader.Reconsume(EofMarker);
-                    return;
-
-                default:
-                    ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    State = bogusDoctypeState;
-                    return;
-            }
+            default:
+                ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
+                State = bogusDoctypeState;
+                return;
         }
     }
 }

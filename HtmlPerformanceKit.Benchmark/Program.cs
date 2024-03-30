@@ -1,30 +1,29 @@
-﻿using BenchmarkDotNet.Running;
+using BenchmarkDotNet.Running;
 
-namespace HtmlPerformanceKit.Benchmark
+namespace HtmlPerformanceKit.Benchmark;
+
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        if (args.Length == 1 && args[0] == "profile")
         {
-            if (args.Length == 1 && args[0] == "profile")
+            var benchmark = new BenchmarkHtmlPerformanceKit();
+            for (var i = 0; i < 10_000; i++)
             {
-                var benchmark = new BenchmarkHtmlPerformanceKit();
-                for (var i = 0; i < 10_000; i++)
-                {
-                    benchmark.IterationSetup();
-                    benchmark.ExtractTexts();
-                }
-
-                return;
+                benchmark.IterationSetup();
+                benchmark.ExtractTexts();
             }
 
-            var switcher = new BenchmarkSwitcher(
-            [
-                typeof(BenchmarkLibraries),
-                typeof(BenchmarkHtmlPerformanceKit)
-            ]);
-
-            switcher.Run(args);
+            return;
         }
+
+        var switcher = new BenchmarkSwitcher(
+        [
+            typeof(BenchmarkLibraries),
+            typeof(BenchmarkHtmlPerformanceKit)
+        ]);
+
+        switcher.Run(args);
     }
 }

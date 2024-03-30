@@ -1,129 +1,128 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 
-namespace HtmlPerformanceKit.Infrastructure
+namespace HtmlPerformanceKit.Infrastructure;
+
+internal class CharBuffer
 {
-    internal class CharBuffer
+    private char[] buffer;
+
+    internal CharBuffer(int initialSize)
     {
-        private char[] buffer;
+        buffer = new char[initialSize];
+    }
 
-        internal CharBuffer(int initialSize)
-        {
-            buffer = new char[initialSize];
-        }
-
-        internal int Length
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get;
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private set;
-        }
+    internal int Length
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        private set;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public override string ToString()
+    {
+        return new string(buffer, 0, Length);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal ReadOnlyMemory<char> AsMemory()
+    {
+        return new ReadOnlyMemory<char>(buffer, 0, Length);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal void Clear()
+    {
+        Length = 0;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal void Add(char @char)
+    {
+        if (Length == buffer.Length)
         {
-            return new string(buffer, 0, Length);
+            Array.Resize(ref buffer, buffer.Length * 2);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal ReadOnlyMemory<char> AsMemory()
+        buffer[Length++] = @char;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal void AddRange(string @string)
+    {
+        while (Length + @string.Length > buffer.Length)
         {
-            return new ReadOnlyMemory<char>(buffer, 0, Length);
+            Array.Resize(ref buffer, buffer.Length * 2);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void Clear()
+        @string.CopyTo(0, buffer, Length, @string.Length);
+        Length += @string.Length;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal void AddRange(HtmlChar htmlChar)
+    {
+        var length = htmlChar.Length;
+
+        while (Length + length > buffer.Length)
         {
-            Length = 0;
+            Array.Resize(ref buffer, buffer.Length * 2);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void Add(char @char)
-        {
-            if (Length == buffer.Length)
-            {
-                Array.Resize(ref buffer, buffer.Length * 2);
-            }
+        htmlChar.CopyTo(buffer, Length);
+        Length += length;
+    }
 
-            buffer[Length++] = @char;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal void AddRange(CharBuffer charBuffer)
+    {
+        while (Length + charBuffer.Length > buffer.Length)
+        {
+            Array.Resize(ref buffer, buffer.Length * 2);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void AddRange(string @string)
-        {
-            while (Length + @string.Length > buffer.Length)
-            {
-                Array.Resize(ref buffer, buffer.Length * 2);
-            }
+        Array.Copy(charBuffer.buffer, 0, buffer, Length, charBuffer.Length);
+        Length += charBuffer.Length;
+    }
 
-            @string.CopyTo(0, buffer, Length, @string.Length);
-            Length += @string.Length;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal bool Equals(string @string)
+    {
+        if (Length != @string.Length)
+        {
+            return false;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void AddRange(HtmlChar htmlChar)
+        for (var index = 0; index < Length; index++)
         {
-            var length = htmlChar.Length;
-
-            while (Length + length > buffer.Length)
-            {
-                Array.Resize(ref buffer, buffer.Length * 2);
-            }
-
-            htmlChar.CopyTo(buffer, Length);
-            Length += length;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void AddRange(CharBuffer charBuffer)
-        {
-            while (Length + charBuffer.Length > buffer.Length)
-            {
-                Array.Resize(ref buffer, buffer.Length * 2);
-            }
-
-            Array.Copy(charBuffer.buffer, 0, buffer, Length, charBuffer.Length);
-            Length += charBuffer.Length;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool Equals(string @string)
-        {
-            if (Length != @string.Length)
-            {
-                return false;
-            }
-
-            for (var index = 0; index < Length; index++)
-            {
-                if (@string[index] != buffer[index])
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool Equals(CharBuffer charBuffer)
-        {
-            if (Length != charBuffer.Length)
+            if (@string[index] != buffer[index])
             {
                 return false;
             }
-
-            for (var index = 0; index < Length; index++)
-            {
-                if (charBuffer.buffer[index] != buffer[index])
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
+
+        return true;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal bool Equals(CharBuffer charBuffer)
+    {
+        if (Length != charBuffer.Length)
+        {
+            return false;
+        }
+
+        for (var index = 0; index < Length; index++)
+        {
+            if (charBuffer.buffer[index] != buffer[index])
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

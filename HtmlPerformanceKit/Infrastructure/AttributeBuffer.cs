@@ -1,21 +1,20 @@
-﻿namespace HtmlPerformanceKit.Infrastructure
+namespace HtmlPerformanceKit.Infrastructure;
+
+internal class AttributeBuffer
 {
-    internal class AttributeBuffer
+    public AttributeBuffer()
     {
-        public AttributeBuffer()
-        {
-            Name = new CharBuffer(32);
-            Value = new CharBuffer(1024);
-        }
+        Name = new CharBuffer(32);
+        Value = new CharBuffer(1024);
+    }
 
-        internal CharBuffer Name { get; }
+    internal CharBuffer Name { get; }
 
-        internal CharBuffer Value { get; }
+    internal CharBuffer Value { get; }
 
-        public void Clear()
-        {
-            Name.Clear();
-            Value.Clear();
-        }
+    public void Clear()
+    {
+        Name.Clear();
+        Value.Clear();
     }
 }

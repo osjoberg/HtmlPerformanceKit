@@ -1,39 +1,38 @@
 using System;
 
-namespace HtmlPerformanceKit.StateMachine
+namespace HtmlPerformanceKit.StateMachine;
+
+internal partial class HtmlStateMachine
 {
-    internal partial class HtmlStateMachine
+    private readonly Action rawTextLessThanSignState;
+
+    /// <summary>
+    /// 8.2.4.14 RAWTEXT less-than sign state
+    /// <br/>
+    /// Consume the next input character:
+    /// <br/>
+    /// "/" (U+002F)
+    /// Set the temporary buffer to the empty string. Switch to the RAWTEXT end tag open state.
+    /// <br/>
+    /// Anything else
+    /// Switch to the RAWTEXT state. Emit a U+003C LESS-THAN SIGN character token. Reconsume the current input character.
+    /// </summary>
+    private void RawTextLessThanSignStateImplementation()
     {
-        private readonly Action rawTextLessThanSignState;
+        var currentInputCharacter = bufferReader.Consume();
 
-        /// <summary>
-        /// 8.2.4.14 RAWTEXT less-than sign state
-        /// <br/>
-        /// Consume the next input character:
-        /// <br/>
-        /// "/" (U+002F)
-        /// Set the temporary buffer to the empty string. Switch to the RAWTEXT end tag open state.
-        /// <br/>
-        /// Anything else
-        /// Switch to the RAWTEXT state. Emit a U+003C LESS-THAN SIGN character token. Reconsume the current input character.
-        /// </summary>
-        private void RawTextLessThanSignStateImplementation()
+        switch (currentInputCharacter)
         {
-            var currentInputCharacter = bufferReader.Consume();
+            case '/':
+                temporaryBuffer.Clear();
+                State = rawTextEndTagOpenState;
+                return;
 
-            switch (currentInputCharacter)
-            {
-                case '/':
-                    temporaryBuffer.Clear();
-                    State = rawTextEndTagOpenState;
-                    return;
-
-                default:
-                    State = rawTextState;
-                    currentDataBuffer.Add('<');
-                    bufferReader.Reconsume(currentInputCharacter);
-                    return;
-            }
+            default:
+                State = rawTextState;
+                currentDataBuffer.Add('<');
+                bufferReader.Reconsume(currentInputCharacter);
+                return;
         }
     }
 }

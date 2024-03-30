@@ -2,109 +2,108 @@ using System;
 
 using HtmlPerformanceKit.Infrastructure;
 
-namespace HtmlPerformanceKit.StateMachine
+namespace HtmlPerformanceKit.StateMachine;
+
+internal partial class HtmlStateMachine
 {
-    internal partial class HtmlStateMachine
+    private readonly Action tagNameState;
+
+    /// <summary>
+    /// 8.2.4.10 Tag name state
+    /// <br/>
+    /// Consume the next input character:
+    /// <br/>
+    /// "tab" (U+0009)
+    /// "LF" (U+000A)
+    /// "FF" (U+000C)
+    /// U+0020 SPACE
+    /// Switch to the before attribute name state.
+    /// <br/>
+    /// "/" (U+002F)
+    /// Switch to the self-closing start tag state.
+    /// <br/>
+    /// "&gt;" (U+003E)
+    /// Switch to the data state. Emit the current tag token.
+    /// <br/>
+    /// Uppercase ASCII letter
+    /// Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the current tag token's tag name.
+    /// <br/>
+    /// U+0000 NULL
+    /// Parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current tag token's tag name.
+    /// <br/>
+    /// EOF
+    /// Parse error. Switch to the data state. Reconsume the EOF character.
+    /// <br/>
+    /// Anything else
+    /// Append the current input character to the current tag token's tag name.
+    /// </summary>
+    private void TagNameStateImplementation()
     {
-        private readonly Action tagNameState;
-
-        /// <summary>
-        /// 8.2.4.10 Tag name state
-        /// <br/>
-        /// Consume the next input character:
-        /// <br/>
-        /// "tab" (U+0009)
-        /// "LF" (U+000A)
-        /// "FF" (U+000C)
-        /// U+0020 SPACE
-        /// Switch to the before attribute name state.
-        /// <br/>
-        /// "/" (U+002F)
-        /// Switch to the self-closing start tag state.
-        /// <br/>
-        /// "&gt;" (U+003E)
-        /// Switch to the data state. Emit the current tag token.
-        /// <br/>
-        /// Uppercase ASCII letter
-        /// Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the current tag token's tag name.
-        /// <br/>
-        /// U+0000 NULL
-        /// Parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current tag token's tag name.
-        /// <br/>
-        /// EOF
-        /// Parse error. Switch to the data state. Reconsume the EOF character.
-        /// <br/>
-        /// Anything else
-        /// Append the current input character to the current tag token's tag name.
-        /// </summary>
-        private void TagNameStateImplementation()
+        while (true)
         {
-            while (true)
+            var currentInputCharacter = bufferReader.Consume();
+
+            switch (currentInputCharacter)
             {
-                var currentInputCharacter = bufferReader.Consume();
+                case '\t':
+                case '\n':
+                case '\r':
+                case ' ':
+                    State = beforeAttributeNameState;
+                    return;
 
-                switch (currentInputCharacter)
-                {
-                    case '\t':
-                    case '\n':
-                    case '\r':
-                    case ' ':
-                        State = beforeAttributeNameState;
-                        return;
+                case '/':
+                    State = selfClosingStartTagState;
+                    return;
 
-                    case '/':
-                        State = selfClosingStartTagState;
-                        return;
+                case '>':
+                    State = dataState;
+                    EmitTagToken = currentTagToken;
+                    return;
 
-                    case '>':
-                        State = dataState;
-                        EmitTagToken = currentTagToken;
-                        return;
+                case 'A':
+                case 'B':
+                case 'C':
+                case 'D':
+                case 'E':
+                case 'F':
+                case 'G':
+                case 'H':
+                case 'I':
+                case 'J':
+                case 'K':
+                case 'L':
+                case 'M':
+                case 'N':
+                case 'O':
+                case 'P':
+                case 'Q':
+                case 'R':
+                case 'S':
+                case 'T':
+                case 'U':
+                case 'V':
+                case 'W':
+                case 'X':
+                case 'Y':
+                case 'Z':
+                    currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
+                    break;
 
-                    case 'A':
-                    case 'B':
-                    case 'C':
-                    case 'D':
-                    case 'E':
-                    case 'F':
-                    case 'G':
-                    case 'H':
-                    case 'I':
-                    case 'J':
-                    case 'K':
-                    case 'L':
-                    case 'M':
-                    case 'N':
-                    case 'O':
-                    case 'P':
-                    case 'Q':
-                    case 'R':
-                    case 'S':
-                    case 'T':
-                    case 'U':
-                    case 'V':
-                    case 'W':
-                    case 'X':
-                    case 'Y':
-                    case 'Z':
-                        currentTagToken.Name.Add((char)(currentInputCharacter + 0x20));
-                        break;
+                case HtmlChar.Null:
+                    ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
+                    currentTagToken.Name.Add(HtmlChar.ReplacementCharacter);
+                    break;
 
-                    case HtmlChar.Null:
-                        ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-                        currentTagToken.Name.Add(HtmlChar.ReplacementCharacter);
-                        break;
+                case EofMarker:
+                    ParseError(ParseErrorMessage.UnexpectedEndOfFile);
+                    State = dataState;
+                    bufferReader.Reconsume(EofMarker);
+                    return;
 
-                    case EofMarker:
-                        ParseError(ParseErrorMessage.UnexpectedEndOfFile);
-                        State = dataState;
-                        bufferReader.Reconsume(EofMarker);
-                        return;
-
-                    default:
-                        currentTagToken.Name.Add((char)currentInputCharacter);
-                        break;
-                }
+                default:
+                    currentTagToken.Name.Add((char)currentInputCharacter);
+                    break;
             }
         }
     }

@@ -1,27 +1,26 @@
-﻿namespace HtmlPerformanceKit.Infrastructure
+namespace HtmlPerformanceKit.Infrastructure;
+
+internal class HtmlTagToken
 {
-    internal class HtmlTagToken
+    public HtmlTagToken()
     {
-        public HtmlTagToken()
-        {
-            Name = new CharBuffer(32);
-            Attributes = new AttributeBufferList();
-        }
+        Name = new CharBuffer(32);
+        Attributes = new AttributeBufferList();
+    }
 
-        internal bool SelfClosing { get; set; }
+    internal bool SelfClosing { get; set; }
 
-        internal CharBuffer Name { get; set; }
+    internal CharBuffer Name { get; set; }
 
-        internal AttributeBufferList Attributes { get; set; }
+    internal AttributeBufferList Attributes { get; set; }
 
-        internal bool EndTag { get; set; }
+    internal bool EndTag { get; set; }
 
-        internal void Clear()
-        {
-            SelfClosing = false;
-            EndTag = false;
-            Name.Clear();
-            Attributes.Clear();
-        }
+    internal void Clear()
+    {
+        SelfClosing = false;
+        EndTag = false;
+        Name.Clear();
+        Attributes.Clear();
     }
 }

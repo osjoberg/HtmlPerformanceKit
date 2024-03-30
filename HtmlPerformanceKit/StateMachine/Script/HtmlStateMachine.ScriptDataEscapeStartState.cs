@@ -1,38 +1,37 @@
 using System;
 
-namespace HtmlPerformanceKit.StateMachine
+namespace HtmlPerformanceKit.StateMachine;
+
+internal partial class HtmlStateMachine
 {
-    internal partial class HtmlStateMachine
+    private readonly Action scriptDataEscapeStartState;
+
+    /// <summary>
+    /// 8.2.4.20 Script data escape start state
+    /// <br/>
+    /// Consume the next input character:
+    /// <br/>
+    /// "-" (U+002D)
+    /// Switch to the script data escape start dash state. Emit a U+002D HYPHEN-MINUS character token.
+    /// <br/>
+    /// Anything else
+    /// Switch to the script data state. Reconsume the current input character.
+    /// </summary>
+    private void ScriptDataEscapeStartStateImplementation()
     {
-        private readonly Action scriptDataEscapeStartState;
+        var currentInputCharacter = bufferReader.Consume();
 
-        /// <summary>
-        /// 8.2.4.20 Script data escape start state
-        /// <br/>
-        /// Consume the next input character:
-        /// <br/>
-        /// "-" (U+002D)
-        /// Switch to the script data escape start dash state. Emit a U+002D HYPHEN-MINUS character token.
-        /// <br/>
-        /// Anything else
-        /// Switch to the script data state. Reconsume the current input character.
-        /// </summary>
-        private void ScriptDataEscapeStartStateImplementation()
+        switch (currentInputCharacter)
         {
-            var currentInputCharacter = bufferReader.Consume();
+            case '-':
+                State = scriptDataEscapeStartDashState;
+                currentDataBuffer.Add('-');
+                return;
 
-            switch (currentInputCharacter)
-            {
-                case '-':
-                    State = scriptDataEscapeStartDashState;
-                    currentDataBuffer.Add('-');
-                    return;
-
-                default:
-                    State = scriptDataState;
-                    bufferReader.Reconsume(currentInputCharacter);
-                    return;
-            }
+            default:
+                State = scriptDataState;
+                bufferReader.Reconsume(currentInputCharacter);
+                return;
         }
     }
 }

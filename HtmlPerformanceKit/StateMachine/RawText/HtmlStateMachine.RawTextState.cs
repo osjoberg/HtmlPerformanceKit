@@ -2,55 +2,54 @@ using System;
 
 using HtmlPerformanceKit.Infrastructure;
 
-namespace HtmlPerformanceKit.StateMachine
+namespace HtmlPerformanceKit.StateMachine;
+
+internal partial class HtmlStateMachine
 {
-    internal partial class HtmlStateMachine
+    private readonly Action rawTextState;
+
+    /// <summary>
+    /// 8.2.4.5 RAWTEXT state
+    /// <br/>
+    /// Consume the next input character:
+    /// <br/>
+    /// "&lt;" (U+003C)
+    /// Switch to the RAWTEXT less-than sign state.
+    /// <br/>
+    /// U+0000 NULL
+    /// Parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
+    /// <br/>
+    /// EOF
+    /// Emit an end-of-file token.
+    /// <br/>
+    /// Anything else
+    /// Emit the current input character as a character token.
+    /// </summary>
+    private void RawTextStateImplementation()
     {
-        private readonly Action rawTextState;
-
-        /// <summary>
-        /// 8.2.4.5 RAWTEXT state
-        /// <br/>
-        /// Consume the next input character:
-        /// <br/>
-        /// "&lt;" (U+003C)
-        /// Switch to the RAWTEXT less-than sign state.
-        /// <br/>
-        /// U+0000 NULL
-        /// Parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
-        /// <br/>
-        /// EOF
-        /// Emit an end-of-file token.
-        /// <br/>
-        /// Anything else
-        /// Emit the current input character as a character token.
-        /// </summary>
-        private void RawTextStateImplementation()
+        while (true)
         {
-            while (true)
+            var currentInputCharacter = bufferReader.Consume();
+
+            switch (currentInputCharacter)
             {
-                var currentInputCharacter = bufferReader.Consume();
+                case '<':
+                    State = rawTextLessThanSignState;
+                    return;
 
-                switch (currentInputCharacter)
-                {
-                    case '<':
-                        State = rawTextLessThanSignState;
-                        return;
+                case HtmlChar.Null:
+                    ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
+                    currentDataBuffer.Add(HtmlChar.ReplacementCharacter);
+                    continue;
 
-                    case HtmlChar.Null:
-                        ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                        currentDataBuffer.Add(HtmlChar.ReplacementCharacter);
-                        continue;
+                case EofMarker:
+                    State = dataState;
+                    bufferReader.Reconsume(EofMarker);
+                    return;
 
-                    case EofMarker:
-                        State = dataState;
-                        bufferReader.Reconsume(EofMarker);
-                        return;
-
-                    default:
-                        currentDataBuffer.Add((char)currentInputCharacter);
-                        continue;
-                }
+                default:
+                    currentDataBuffer.Add((char)currentInputCharacter);
+                    continue;
             }
         }
     }

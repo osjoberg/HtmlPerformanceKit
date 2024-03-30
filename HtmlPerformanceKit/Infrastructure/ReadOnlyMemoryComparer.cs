@@ -1,32 +1,31 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace HtmlPerformanceKit.Infrastructure
+namespace HtmlPerformanceKit.Infrastructure;
+
+internal class ReadOnlyMemoryComparer : IEqualityComparer<ReadOnlyMemory<char>>
 {
-    internal class ReadOnlyMemoryComparer : IEqualityComparer<ReadOnlyMemory<char>>
+    internal static readonly ReadOnlyMemoryComparer Instance = new ReadOnlyMemoryComparer();
+
+    public bool Equals(ReadOnlyMemory<char> x, ReadOnlyMemory<char> y)
     {
-        internal static readonly ReadOnlyMemoryComparer Instance = new ReadOnlyMemoryComparer();
+        return x.Span.Equals(y.Span, StringComparison.Ordinal);
+    }
 
-        public bool Equals(ReadOnlyMemory<char> x, ReadOnlyMemory<char> y)
+    public int GetHashCode(ReadOnlyMemory<char> obj)
+    {
+        var span = obj.Span;
+
+        unchecked
         {
-            return x.Span.Equals(y.Span, StringComparison.Ordinal);
-        }
+            var hash = 19;
 
-        public int GetHashCode(ReadOnlyMemory<char> obj)
-        {
-            var span = obj.Span;
-
-            unchecked
+            for (var i = 0; i < span.Length; i++)
             {
-                var hash = 19;
-
-                for (var i = 0; i < span.Length; i++)
-                {
-                    hash = (hash * 31) + span[i].GetHashCode();
-                }
-
-                return hash;
+                hash = (hash * 31) + span[i].GetHashCode();
             }
+
+            return hash;
         }
     }
 }
