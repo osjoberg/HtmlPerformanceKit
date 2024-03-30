@@ -2249,8 +2249,6 @@ namespace HtmlPerformanceKit.Infrastructure
 
         internal HtmlChar(char char1) : this(char1, '\0')
         {
-            this.char1 = char1;
-            this.char2 = '\0';
         }
 
         internal HtmlChar(char char1, char char2)

@@ -10,34 +10,34 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.40 Attribute value (unquoted) state
-        ///
+        /// <br/>
         /// Consume the next input character:
-        /// 
+        /// <br/>
         /// "tab" (U+0009)
         /// "LF" (U+000A)
         /// "FF" (U+000C)
         /// U+0020 SPACE
         /// Switch to the before attribute name state.
-        /// 
+        /// <br/>
         /// U+0026 AMPERSAND (&amp;)
         /// Switch to the character reference in attribute value state, with the additional allowed character being "&gt;" (U+003E).
-        /// 
+        /// <br/>
         /// "&gt;" (U+003E)
         /// Switch to the data state. Emit the current tag token.
-        /// 
+        /// <br/>
         /// U+0000 NULL
         /// Parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current attribute's value.
-        /// 
+        /// <br/>
         /// U+0022 QUOTATION MARK (")
         /// "'" (U+0027)
         /// "&lt;" (U+003C)
         /// "=" (U+003D)
         /// "`" (U+0060)
         /// Parse error. Treat it as per the "anything else" entry below.
-        /// 
+        /// <br/>
         /// EOF
         /// Parse error. Switch to the data state. Reconsume the EOF character.
-        /// 
+        /// <br/>
         /// Anything else
         /// Append the current input character to the current attribute's value.
         /// </summary>

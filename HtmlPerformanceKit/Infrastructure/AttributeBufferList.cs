@@ -52,6 +52,6 @@ namespace HtmlPerformanceKit.Infrastructure
             }
 
             return null;
-        }        
+        }
     }
 }

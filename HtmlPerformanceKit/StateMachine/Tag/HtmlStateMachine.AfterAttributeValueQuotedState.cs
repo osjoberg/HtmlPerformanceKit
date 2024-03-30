@@ -10,24 +10,24 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.42 After attribute value (quoted) state
-        ///
+        /// <br/>
         /// Consume the next input character:
-        /// 
+        /// <br/>
         /// "tab" (U+0009)
         /// "LF" (U+000A)
         /// "FF" (U+000C)
         /// U+0020 SPACE
         /// Switch to the before attribute name state.
-        /// 
+        /// <br/>
         /// "/" (U+002F)
         /// Switch to the self-closing start tag state.
-        /// 
+        /// <br/>
         /// "&gt;" (U+003E)
         /// Switch to the data state. Emit the current tag token.
-        /// 
+        /// <br/>
         /// EOF
         /// Parse error. Switch to the data state. Reconsume the EOF character.
-        /// 
+        /// <br/>
         /// Anything else
         /// Parse error. Switch to the before attribute name state. Reconsume the character.
         /// </summary>
@@ -45,7 +45,7 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case '/':
-                    State = selfClosingStartTagState;               
+                    State = selfClosingStartTagState;
                     return;
 
                 case '>':

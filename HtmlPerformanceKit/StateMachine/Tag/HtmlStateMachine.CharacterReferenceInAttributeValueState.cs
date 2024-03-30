@@ -8,14 +8,14 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.41 Character reference in attribute value state
-        /// 
+        /// <br/>
         /// Attempt to consume a character reference.
-        /// 
-        /// If nothing is returned, append a U+0026 AMPERSAND character(&) to the current attribute's value.
-        /// 
+        /// <br/>
+        /// If nothing is returned, append a U+0026 AMPERSAND character(&amp;) to the current attribute's value.
+        /// <br/>
         /// Otherwise, append the returned character tokens to the current attribute's value.
-        /// 
-        /// Finally, switch back to the attribute value state that switched into this state.    
+        /// <br/>
+        /// Finally, switch back to the attribute value state that switched into this state.
         /// </summary>
         private void CharacterReferenceInAttributeValueStateImplementation()
         {

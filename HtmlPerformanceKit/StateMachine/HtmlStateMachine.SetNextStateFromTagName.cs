@@ -1,37 +1,40 @@
-﻿namespace HtmlPerformanceKit.StateMachine
-{
-    using HtmlPerformanceKit.Infrastructure;
+﻿using System.Diagnostics.CodeAnalysis;
 
+using HtmlPerformanceKit.Infrastructure;
+
+namespace HtmlPerformanceKit.StateMachine
+{
     internal partial class HtmlStateMachine
     {
         /// <summary>
         ///  Set the state of the HTML parser's tokenization stage as follows:
-        /// 
+        /// <br/>
         /// If it is a title or textarea element
         /// Switch the tokenizer to the RCDATA state.
-        /// 
+        /// <br/>
         /// If it is a style, xmp, iframe, noembed, or noframes element
         /// Switch the tokenizer to the RAWTEXT state.
-        /// 
+        /// <br/>
         /// If it is a script element
         /// Switch the tokenizer to the script data state.
-        /// 
+        /// <br/>
         /// If it is a noscript element
         /// If the scripting flag is enabled, switch the tokenizer to the RAWTEXT state.Otherwise, leave the tokenizer in the data state.
-        ///
+        /// <br/>
         /// If it is a plaintext element
         /// Switch the tokenizer to the PLAINTEXT state.
-        /// 
+        /// <br/>
         /// Otherwise
         /// Leave the tokenizer in the data state.
         /// </summary>
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1611:ElementParametersMustBeDocumented", Justification = "Reviewed.")]
         internal void SetNextStateFromTagName(HtmlTagToken emitTagToken)
         {
             if (emitTagToken.EndTag)
             {
                 return;
             }
-                
+
             var name = emitTagToken.Name;
 
             switch (name.Length)

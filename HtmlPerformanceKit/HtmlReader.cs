@@ -134,7 +134,7 @@ namespace HtmlPerformanceKit
         public HtmlTokenKind TokenKind { get; private set; }
 
         /// <summary>
-        /// Gets if last read tag is a self-closing element.
+        /// Gets a value indicating whether the last read tag is a self-closing element.
         /// <returns>True if last read token kind was a self-closing element, otherwise False.</returns>
         /// </summary>
         /// <exception cref="InvalidOperationException">The last read <see cref="TokenKind"/> was not <see cref="HtmlTokenKind.Tag"/>, <see cref="HtmlTokenKind.EndTag"/> or <see cref="HtmlTokenKind.Doctype"/>.</exception>

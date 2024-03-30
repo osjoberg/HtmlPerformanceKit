@@ -10,18 +10,18 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.5 RAWTEXT state
-        ///
+        /// <br/>
         /// Consume the next input character:
-        /// 
+        /// <br/>
         /// "&lt;" (U+003C)
         /// Switch to the RAWTEXT less-than sign state.
-        /// 
+        /// <br/>
         /// U+0000 NULL
         /// Parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
-        /// 
+        /// <br/>
         /// EOF
         /// Emit an end-of-file token.
-        /// 
+        /// <br/>
         /// Anything else
         /// Emit the current input character as a character token.
         /// </summary>

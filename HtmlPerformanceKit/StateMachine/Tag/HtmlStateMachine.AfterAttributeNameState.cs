@@ -10,38 +10,38 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.36 After attribute name state
-        ///
+        /// <br/>
         /// Consume the next input character:
-        /// 
+        /// <br/>
         /// "tab" (U+0009)
         /// "LF" (U+000A)
         /// "FF" (U+000C)
         /// U+0020 SPACE
         /// Ignore the character.
-        /// 
+        /// <br/>
         /// "/" (U+002F)
         /// Switch to the self-closing start tag state.
-        /// 
+        /// <br/>
         /// "=" (U+003D)
         /// Switch to the before attribute value state.
-        /// 
+        /// <br/>
         /// "&gt;" (U+003E)
         /// Switch to the data state. Emit the current tag token.
-        /// 
+        /// <br/>
         /// Uppercase ASCII letter
         /// Start a new attribute in the current tag token. Set that attribute's name to the lowercase version of the current input character (add 0x0020 to the character's code point), and its value to the empty string. Switch to the attribute name state.
-        /// 
+        /// <br/>
         /// U+0000 NULL
         /// Parse error. Start a new attribute in the current tag token. Set that attribute's name to a U+FFFD REPLACEMENT CHARACTER character, and its value to the empty string. Switch to the attribute name state.
-        /// 
+        /// <br/>
         /// U+0022 QUOTATION MARK (")
         /// "'" (U+0027)
         /// "&lt;" (U+003C)
         /// Parse error. Treat it as per the "anything else" entry below.
-        /// 
+        /// <br/>
         /// EOF
         /// Parse error. Switch to the data state. Reconsume the EOF character.
-        /// 
+        /// <br/>
         /// Anything else
         /// Start a new attribute in the current tag token. Set that attribute's name to the current input character, and its value to the empty string. Switch to the attribute name state.
         /// </summary>
@@ -58,7 +58,7 @@ namespace HtmlPerformanceKit.StateMachine
                     return;
 
                 case '/':
-                    State = selfClosingStartTagState;               
+                    State = selfClosingStartTagState;
                     return;
 
                 case '=':

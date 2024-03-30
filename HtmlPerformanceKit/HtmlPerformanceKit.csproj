@@ -12,6 +12,8 @@
     <PackageProjectUrl>https://github.com/osjoberg/HtmlPerformanceKit</PackageProjectUrl>
     <RepositoryUrl>https://github.com/osjoberg/HtmlPerformanceKit</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <CodeAnalysisRuleSet>stylecop.ruleset</CodeAnalysisRuleSet>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +21,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.Memory" Version="4.5.5" />
   </ItemGroup>
 
+	<ItemGroup>
+		<AdditionalFiles Include="stylecop.json" />
+	</ItemGroup>
 </Project>

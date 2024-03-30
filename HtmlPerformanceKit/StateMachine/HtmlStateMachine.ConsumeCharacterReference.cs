@@ -134,7 +134,7 @@ namespace HtmlPerformanceKit.StateMachine
                         {
                             return HtmlChar.Nothing;
                         }
-                            
+
                         if (i > 0)
                         {
                             ParseError(ParseErrorMessage.UnexpectedCharacterInStream);

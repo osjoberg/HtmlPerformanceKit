@@ -10,21 +10,21 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.59 DOCTYPE public identifier (single-quoted) state
-        ///
+        /// <br/>
         /// Consume the next input character:
-        /// 
+        /// <br/>
         /// "'" (U+0027)
         /// Switch to the after DOCTYPE public identifier state.
-        /// 
+        /// <br/>
         /// U+0000 NULL
         /// Parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE token's public identifier.
-        /// 
+        /// <br/>
         /// "&gt;" (U+003E)
         /// Parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
-        /// 
+        /// <br/>
         /// EOF
         /// Parse error. Switch to the data state. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Reconsume the EOF character.
-        /// 
+        /// <br/>
         /// Anything else
         /// Append the current input character to the current DOCTYPE token's public identifier.
         /// </summary>

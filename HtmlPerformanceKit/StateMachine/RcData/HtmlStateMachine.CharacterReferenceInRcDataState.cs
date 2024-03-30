@@ -8,13 +8,13 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.4 Character reference in RCDATA state
-        ///
+        /// <br/>
         /// Switch to the RCDATA state.
-        /// 
+        /// <br/>
         /// Attempt to consume a character reference, with no additional allowed character.
-        /// 
+        /// <br/>
         /// If nothing is returned, emit a U+0026 AMPERSAND character (&amp;) token.
-        /// 
+        /// <br/>
         /// Otherwise, emit the character tokens that were returned.
         /// </summary>
         private void CharacterReferenceInRcDataStateImplementation()

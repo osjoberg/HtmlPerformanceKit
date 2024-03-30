@@ -10,18 +10,18 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.52 DOCTYPE state
-        ///
+        /// <br/>
         /// Consume the next input character:
-        /// 
+        /// <br/>
         /// "tab" (U+0009)
         /// "LF" (U+000A)
         /// "FF" (U+000C)
         /// U+0020 SPACE
         /// Switch to the before DOCTYPE name state.
-        /// 
+        /// <br/>
         /// EOF
         /// Parse error. Switch to the data state. Create a new DOCTYPE token. Set its force-quirks flag to on. Emit the token. Reconsume the EOF character.
-        /// 
+        /// <br/>
         /// Anything else
         /// Parse error. Switch to the before DOCTYPE name state. Reconsume the character.
         /// </summary>

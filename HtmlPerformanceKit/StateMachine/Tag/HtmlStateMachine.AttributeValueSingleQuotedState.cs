@@ -10,21 +10,21 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.39 Attribute value (single-quoted) state
-        ///
+        /// <br/>
         /// Consume the next input character:
-        /// 
+        /// <br/>
         /// "'" (U+0027)
         /// Switch to the after attribute value (quoted) state.
-        /// 
+        /// <br/>
         /// U+0026 AMPERSAND (&amp;)
         /// Switch to the character reference in attribute value state, with the additional allowed character being "'" (U+0027).
-        /// 
+        /// <br/>
         /// U+0000 NULL
         /// Parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current attribute's value.
-        /// 
+        /// <br/>
         /// EOF
         /// Parse error. Switch to the data state. Reconsume the EOF character.
-        /// 
+        /// <br/>
         /// Anything else
         /// Append the current input character to the current attribute's value.
         /// </summary>

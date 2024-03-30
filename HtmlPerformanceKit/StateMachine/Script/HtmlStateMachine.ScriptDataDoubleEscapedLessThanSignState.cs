@@ -8,12 +8,12 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.32 Script data double escaped less-than sign state
-        ///
+        /// <br/>
         /// Consume the next input character:
-        /// 
+        /// <br/>
         /// "/" (U+002F)
         /// Set the temporary buffer to the empty string. Switch to the script data double escape end state. Emit a U+002F SOLIDUS character token.
-        /// 
+        /// <br/>
         /// Anything else
         /// Switch to the script data double escaped state. Reconsume the current input character.
         /// </summary>

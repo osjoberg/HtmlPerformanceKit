@@ -10,18 +10,18 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.48 Comment state
-        ///
+        /// <br/>
         /// Consume the next input character:
-        /// 
+        /// <br/>
         /// "-" (U+002D)
         /// Switch to the comment end dash state
-        /// 
+        /// <br/>
         /// U+0000 NULL
         /// Parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the comment token's data.
-        /// 
+        /// <br/>
         /// EOF
         /// Parse error. Switch to the data state. Emit the comment token. Reconsume the EOF character.
-        /// 
+        /// <br/>
         /// Anything else
         /// Append the current input character to the comment token's data.
         /// </summary>

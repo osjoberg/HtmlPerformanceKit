@@ -8,12 +8,12 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.20 Script data escape start state
-        ///
+        /// <br/>
         /// Consume the next input character:
-        /// 
+        /// <br/>
         /// "-" (U+002D)
         /// Switch to the script data escape start dash state. Emit a U+002D HYPHEN-MINUS character token.
-        /// 
+        /// <br/>
         /// Anything else
         /// Switch to the script data state. Reconsume the current input character.
         /// </summary>

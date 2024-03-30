@@ -10,21 +10,21 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.51 Comment end bang state
-        /// 
+        /// <br/>
         /// Consume the next input character:
-        /// 
+        /// <br/>
         /// "-" (U+002D)
         /// Append two "-" (U+002D) characters and a "!" (U+0021) character to the comment token's data. Switch to the comment end dash state.
-        /// 
+        /// <br/>
         /// ">" (U+003E)
         /// Switch to the data state. Emit the comment token.
-        /// 
+        /// <br/>
         /// U+0000 NULL
         /// Parse error. Append two "-" (U+002D) characters, a "!" (U+0021) character, and a U+FFFD REPLACEMENT CHARACTER character to the comment token's data. Switch to the comment state.
-        /// 
+        /// <br/>
         /// EOF
         /// Parse error. Switch to the data state. Emit the comment token. Reconsume the EOF character.
-        /// 
+        /// <br/>
         /// Anything else
         /// Append two "-" (U+002D) characters, a "!" (U+0021) character, and the current input character to the comment token's data. Switch to the comment state.
         /// </summary>

@@ -10,21 +10,21 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.9 End tag open state
-        ///
+        /// <br/>
         /// Consume the next input character:
-        /// 
+        /// <br/>
         /// Uppercase ASCII letter
         /// Create a new end tag token, set its tag name to the lowercase version of the current input character (add 0x0020 to the character's code point), then switch to the tag name state. (Don't emit the token yet; further details will be filled in before it is emitted.)
-        /// 
+        /// <br/>
         /// Lowercase ASCII letter
         /// Create a new end tag token, set its tag name to the current input character, then switch to the tag name state. (Don't emit the token yet; further details will be filled in before it is emitted.)
-        /// 
+        /// <br/>
         /// "&gt;" (U+003E)
         /// Parse error. Switch to the data state.
-        /// 
+        /// <br/>
         /// EOF
         /// Parse error. Switch to the data state. Emit a U+003C LESS-THAN SIGN character token and a U+002F SOLIDUS character token. Reconsume the EOF character.
-        /// 
+        /// <br/>
         /// Anything else
         /// Parse error. Switch to the bogus comment state.
         /// </summary>

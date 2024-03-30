@@ -10,27 +10,27 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.53 Before DOCTYPE name state
-        ///
+        /// <br/>
         /// Consume the next input character:
-        /// 
+        /// <br/>
         /// "tab" (U+0009)
         /// "LF" (U+000A)
         /// "FF" (U+000C)
         /// U+0020 SPACE
         /// Ignore the character.
-        /// 
+        /// <br/>
         /// Uppercase ASCII letter
         /// Create a new DOCTYPE token. Set the token's name to the lowercase version of the current input character (add 0x0020 to the character's code point). Switch to the DOCTYPE name state.
-        /// 
+        /// <br/>
         /// U+0000 NULL
         /// Parse error. Create a new DOCTYPE token. Set the token's name to a U+FFFD REPLACEMENT CHARACTER character. Switch to the DOCTYPE name state.
-        /// 
+        /// <br/>
         /// "&gt;" (U+003E)
         /// Parse error. Create a new DOCTYPE token. Set its force-quirks flag to on. Switch to the data state. Emit the token.
-        /// 
+        /// <br/>
         /// EOF
         /// Parse error. Switch to the data state. Create a new DOCTYPE token. Set its force-quirks flag to on. Emit the token. Reconsume the EOF character.
-        /// 
+        /// <br/>
         /// Anything else
         /// Create a new DOCTYPE token. Set the token's name to the current input character. Switch to the DOCTYPE name state.
         /// </summary>

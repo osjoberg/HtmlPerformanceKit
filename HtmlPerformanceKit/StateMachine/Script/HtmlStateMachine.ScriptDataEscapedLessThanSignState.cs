@@ -8,18 +8,18 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.25 Script data escaped less-than sign state
-        ///
+        /// <br/>
         /// Consume the next input character:
-        /// 
+        /// <br/>
         /// "/" (U+002F)
         /// Set the temporary buffer to the empty string. Switch to the script data escaped end tag open state.
-        /// 
+        /// <br/>
         /// Uppercase ASCII letter
         /// Set the temporary buffer to the empty string. Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the temporary buffer. Switch to the script data double escape start state. Emit a U+003C LESS-THAN SIGN character token and the current input character as a character token.
-        /// 
+        /// <br/>
         /// Lowercase ASCII letter
         /// Set the temporary buffer to the empty string. Append the current input character to the temporary buffer. Switch to the script data double escape start state. Emit a U+003C LESS-THAN SIGN character token and the current input character as a character token.
-        /// 
+        /// <br/>
         /// Anything else
         /// Switch to the script data escaped state. Emit a U+003C LESS-THAN SIGN character token. Reconsume the current input character.
         /// </summary>

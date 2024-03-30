@@ -10,21 +10,21 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.1 Data state
-        /// 
+        /// <br/>
         /// Consume the next input character:
-        /// 
-        /// U+0026 AMPERSAND(&)
+        /// <br/>
+        /// U+0026 AMPERSAND(&amp;)
         /// Switch to the character reference in data state.
-        /// 
+        /// <br/>
         /// "&lt;" (U+003C)
         /// Switch to the tag open state.
-        /// 
+        /// <br/>
         /// U+0000 NULL
         /// Parse error.Emit the current input character as a character token.
-        /// 
+        /// <br/>
         /// EOF
         /// Emit an end-of-file token.
-        /// 
+        /// <br/>
         /// Anything else
         /// Emit the current input character as a character token.
         /// </summary>
@@ -46,7 +46,7 @@ namespace HtmlPerformanceKit.StateMachine
                         {
                             EmitDataBuffer = currentDataBuffer;
                         }
-                        
+
                         return;
 
                     case HtmlChar.Null:

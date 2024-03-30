@@ -20,12 +20,12 @@ namespace HtmlPerformanceKit.Test
 
             var executingAssembly = Assembly.GetExecutingAssembly();
 
-            var inputStream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Test.en.wikipedia.org_wiki_List_of_Australian_treaties.html")!;
+            var inputStream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Test.en.wikipedia.org_wiki_List_of_Australian_treaties.html") !;
 
             var htmlReader = new HtmlReader(inputStream);
             htmlReader.ParseError += (_, args) => output.Add(args);
 
-            for (;;)
+            for (; ;)
             {
                 var read = htmlReader.Read();
 
@@ -87,9 +87,10 @@ namespace HtmlPerformanceKit.Test
             var textsHtmlKit = benchmark.ExtractTextsHtmlKit();
 
             CollectionAssert.AreEqual(texts, textsHtmlAgilityPack);
-            //CollectionAssert.AreEqual(texts, textsAngleSharp);
-            //CollectionAssert.AreEqual(texts, textsHtmlParserSharp);
-            //CollectionAssert.AreEqual(texts, textsHtmlKit);
+
+            // CollectionAssert.AreEqual(texts, textsAngleSharp);
+            // CollectionAssert.AreEqual(texts, textsHtmlParserSharp);
+            // CollectionAssert.AreEqual(texts, textsHtmlKit);
         }
 
         [TestMethod]
@@ -110,7 +111,7 @@ namespace HtmlPerformanceKit.Test
         {
             try
             {
-                return func()!.ToString()!;
+                return func() !.ToString() !;
             }
             catch (Exception e)
             {

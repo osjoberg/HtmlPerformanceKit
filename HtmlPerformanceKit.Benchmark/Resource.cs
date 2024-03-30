@@ -1,6 +1,6 @@
-﻿using System.Text;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace HtmlPerformanceKit.Benchmark
@@ -10,7 +10,7 @@ namespace HtmlPerformanceKit.Benchmark
         internal static Stream GetResourceStream(int bodyCount = 1)
         {
             var executingAssembly = Assembly.GetExecutingAssembly();
-            var inputStream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Benchmark.en.wikipedia.org_wiki_List_of_Australian_treaties.html")!;
+            var inputStream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Benchmark.en.wikipedia.org_wiki_List_of_Australian_treaties.html") !;
             if (bodyCount == 1)
             {
                 return inputStream;
@@ -24,7 +24,6 @@ namespace HtmlPerformanceKit.Benchmark
             var beforeBody = inputHtml.Substring(bodyStart.Index + bodyStart.Length);
             var body = inputHtml.Substring(bodyStart.Index + bodyStart.Length, bodyEnd.Index - bodyStart.Index - bodyStart.Length);
             var afterBody = inputHtml.Substring(bodyEnd.Index);
-
 
             var stream = new MemoryStream();
             stream.Write(Encoding.UTF8.GetBytes(beforeBody), 0, beforeBody.Length);

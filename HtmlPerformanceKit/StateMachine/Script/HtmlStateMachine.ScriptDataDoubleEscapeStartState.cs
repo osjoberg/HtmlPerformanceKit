@@ -8,9 +8,9 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.28 Script data double escape start state
-        ///
+        /// <br/>
         /// Consume the next input character:
-        /// 
+        /// <br/>
         /// "tab" (U+0009)
         /// "LF" (U+000A)
         /// "FF" (U+000C)
@@ -18,13 +18,13 @@ namespace HtmlPerformanceKit.StateMachine
         /// "/" (U+002F)
         /// "&gt;" (U+003E)
         /// If the temporary buffer is the string "script", then switch to the script data double escaped state. Otherwise, switch to the script data escaped state. Emit the current input character as a character token.
-        /// 
+        /// <br/>
         /// Uppercase ASCII letter
         /// Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the temporary buffer. Emit the current input character as a character token.
-        /// 
+        /// <br/>
         /// Lowercase ASCII letter
         /// Append the current input character to the temporary buffer. Emit the current input character as a character token.
-        /// 
+        /// <br/>
         /// Anything else
         /// Switch to the script data escaped state. Reconsume the current input character.
         /// </summary>

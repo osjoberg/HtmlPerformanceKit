@@ -10,24 +10,24 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.8 Tag open state
-        ///
+        /// <br/>
         /// Consume the next input character:
-        /// 
+        /// <br/>
         /// "!" (U+0021)
         /// Switch to the markup declaration open state.
-        /// 
+        /// <br/>
         /// "/" (U+002F)
         /// Switch to the end tag open state.
-        /// 
+        /// <br/>
         /// Uppercase ASCII letter
         /// Create a new start tag token, set its tag name to the lowercase version of the current input character (add 0x0020 to the character's code point), then switch to the tag name state. (Don't emit the token yet; further details will be filled in before it is emitted.)
-        /// 
+        /// <br/>
         /// Lowercase ASCII letter
         /// Create a new start tag token, set its tag name to the current input character, then switch to the tag name state. (Don't emit the token yet; further details will be filled in before it is emitted.)
-        /// 
+        /// <br/>
         /// "?" (U+003F)
         /// Parse error. Switch to the bogus comment state.
-        /// 
+        /// <br/>
         /// Anything else
         /// Parse error. Switch to the data state. Emit a U+003C LESS-THAN SIGN character token. Reconsume the current input character.
         /// </summary>

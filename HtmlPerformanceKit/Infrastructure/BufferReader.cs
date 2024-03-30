@@ -36,7 +36,7 @@ namespace HtmlPerformanceKit.Infrastructure
                     break;
                 }
             }
-            
+
             return peekBuffer.AsMemory();
         }
 
@@ -107,7 +107,7 @@ namespace HtmlPerformanceKit.Infrastructure
                             number *= 10;
                             number += thisNumber;
                         }
-                      
+
                         break;
 
                     default:

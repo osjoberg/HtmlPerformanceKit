@@ -10,15 +10,15 @@ namespace HtmlPerformanceKit.StateMachine
 
         /// <summary>
         /// 8.2.4.7 PLAINTEXT state
-        ///
+        /// <br/>
         /// Consume the next input character:
-        /// 
+        /// <br/>
         /// U+0000 NULL
         /// Parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
-        /// 
+        /// <br/>
         /// EOF
         /// Emit an end-of-file token.
-        /// 
+        /// <br/>
         /// Anything else
         /// Emit the current input character as a character token.
         /// </summary>
@@ -30,8 +30,8 @@ namespace HtmlPerformanceKit.StateMachine
             {
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
-					currentDataBuffer.Add(HtmlChar.ReplacementCharacter);
-					break;
+                    currentDataBuffer.Add(HtmlChar.ReplacementCharacter);
+                    break;
 
                 case EofMarker:
                     State = dataState;
@@ -40,7 +40,7 @@ namespace HtmlPerformanceKit.StateMachine
                     break;
 
                 default:
-					currentDataBuffer.Add((char)currentInputCharacter);
+                    currentDataBuffer.Add((char)currentInputCharacter);
                     break;
             }
         }
