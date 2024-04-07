@@ -35,10 +35,6 @@
 		<ProjectReference Include="..\HtmlPerformanceKit\HtmlPerformanceKit.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Folder Include="Properties\" />
-	</ItemGroup>
-
 
 	<ItemGroup>
 		<Reference Include="HtmlParser">
