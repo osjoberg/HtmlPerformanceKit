@@ -8,6 +8,7 @@ namespace HtmlPerformanceKit.StateMachine;
 internal partial class HtmlStateMachine
 {
     private const int EofMarker = -1;
+    private static readonly Action NoReturnState = () => { };
     private readonly HtmlTagToken currentTagToken = new HtmlTagToken();
     private readonly HtmlTagToken currentDoctypeToken = new HtmlTagToken();
     private readonly CharBuffer currentDataBuffer = new CharBuffer(1024 * 10);
@@ -96,7 +97,7 @@ internal partial class HtmlStateMachine
         tagOpenState = TagOpenStateImplementation;
 
         State = dataState;
-        returnToState = () => { };
+        returnToState = NoReturnState;
     }
 
     internal Action State
@@ -156,6 +157,23 @@ internal partial class HtmlStateMachine
     internal void ParseError(string message)
     {
         parseError(message);
+    }
+
+    internal void Reset()
+    {
+        // Start again in the initial state, but keep the buffers and the state delegates, so that they can be reused.
+        State = dataState;
+        Eof = false;
+        returnToState = NoReturnState;
+        additionalAllowedCharacter = default;
+
+        ResetEmit();
+
+        currentTagToken.Clear();
+        currentDoctypeToken.Clear();
+        currentCommentBuffer.Clear();
+        temporaryBuffer.Clear();
+        appropriateTagName.Clear();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

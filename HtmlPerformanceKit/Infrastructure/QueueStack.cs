@@ -23,6 +23,14 @@ internal class QueueStack
 
     internal int Capacity { get; private set; }
 
+    internal void Clear()
+    {
+        // Keep the arrays, so that they can be reused.
+        firstIndex = 0;
+        lastIndex = 0;
+        Count = 0;
+    }
+
     internal void Push(int item)
     {
         if (firstIndex == 0)

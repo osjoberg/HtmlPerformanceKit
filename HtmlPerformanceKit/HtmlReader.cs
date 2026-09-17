@@ -158,6 +158,41 @@ public sealed partial class HtmlReader
     public int LinePosition => bufferReader.LinePosition;
 
     /// <summary>
+    /// Resets the reader to read a new document from the stream. The internal buffers are reused, which avoids the allocations of a new <see cref="HtmlReader" />.
+    /// </summary>
+    /// <remarks>The previous stream is not disposed. The <see cref="ParseError"/> handlers and the options are kept.</remarks>
+    /// <param name="stream">Stream instance to read from.</param>
+    public void Reset(Stream stream)
+    {
+        if (stream == null)
+        {
+            throw new ArgumentNullException(nameof(stream));
+        }
+
+        Reset(new StreamReader(stream));
+    }
+
+    /// <summary>
+    /// Resets the reader to read a new document from the text reader. The internal buffers are reused, which avoids the allocations of a new <see cref="HtmlReader" />.
+    /// </summary>
+    /// <remarks>The previous text reader is not disposed. The <see cref="ParseError"/> handlers and the options are kept.</remarks>
+    /// <param name="textReader">TextReader instance to read from.</param>
+    public void Reset(TextReader textReader)
+    {
+        if (textReader == null)
+        {
+            throw new ArgumentNullException(nameof(textReader));
+        }
+
+        textBuffer = null;
+        tagToken = null;
+        TokenKind = HtmlTokenKind.None;
+
+        bufferReader.Reset(textReader);
+        stateMachine.Reset();
+    }
+
+    /// <summary>
     /// Read one token from the stream.
     /// </summary>
     /// <returns><see langword="true"/> if a token was read, <see langword="false"/> if end of stream is reached.</returns>

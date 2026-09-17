@@ -6,8 +6,8 @@ namespace HtmlPerformanceKit.Infrastructure;
 
 internal class BufferReader : IDisposable
 {
-    private readonly TextReader textReader;
     private readonly QueueStack peekBuffer = new QueueStack(64);
+    private TextReader textReader;
 
     internal BufferReader(TextReader textReader)
     {
@@ -21,6 +21,14 @@ internal class BufferReader : IDisposable
     public void Dispose()
     {
         textReader?.Dispose();
+    }
+
+    internal void Reset(TextReader newTextReader)
+    {
+        textReader = newTextReader;
+        peekBuffer.Clear();
+        LineNumber = 0;
+        LinePosition = 0;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
