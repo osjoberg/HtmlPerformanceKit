@@ -29,7 +29,7 @@ public class BenchmarkLibraries
 
     public BenchmarkLibraries()
     {
-        stream = Resource.GetResourceStream(10);
+        stream = Resource.GetResourceStream(15);
         streamReader = new StreamReader(stream);
     }
 
@@ -93,7 +93,7 @@ public class BenchmarkLibraries
                 var hrefAttributeValue = node.Attributes["href"];
                 if (hrefAttributeValue != null)
                 {
-                    result.Add(HttpUtility.HtmlDecode(hrefAttributeValue.Value));
+                    result.Add(HttpUtility.HtmlDecode(hrefAttributeValue.Value) ?? "");
                 }
             }
         }
@@ -181,7 +181,7 @@ public class BenchmarkLibraries
                     continue;
                 }
 
-                result.Add(attribute.Value);
+                result.Add(attribute.Value ?? "");
                 break;
             }
         }

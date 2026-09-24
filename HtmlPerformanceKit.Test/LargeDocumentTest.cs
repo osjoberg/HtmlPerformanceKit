@@ -20,7 +20,7 @@ public class LargeDocumentTest : VerifyBase
 
         var executingAssembly = Assembly.GetExecutingAssembly();
 
-        var inputStream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Test.en.wikipedia.org_wiki_List_of_Australian_treaties.html") !;
+        var inputStream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Test.en.wikipedia.org_wiki_List_of_Australian_treaties.html")!;
 
         var htmlReader = new HtmlReader(inputStream);
         htmlReader.ParseError += (_, args) => output.Add(args);
@@ -111,7 +111,7 @@ public class LargeDocumentTest : VerifyBase
     {
         try
         {
-            return func() !.ToString() !;
+            return func()!.ToString()!;
         }
         catch (Exception e)
         {

@@ -10,7 +10,7 @@ internal class Resource
     internal static Stream GetResourceStream(int bodyCount = 1)
     {
         var executingAssembly = Assembly.GetExecutingAssembly();
-        var inputStream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Benchmark.en.wikipedia.org_wiki_List_of_Australian_treaties.html") !;
+        var inputStream = executingAssembly.GetManifestResourceStream("HtmlPerformanceKit.Benchmark.en.wikipedia.org_wiki_List_of_Australian_treaties.html")!;
         if (bodyCount == 1)
         {
             return inputStream;

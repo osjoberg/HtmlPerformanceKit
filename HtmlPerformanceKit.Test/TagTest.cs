@@ -181,7 +181,7 @@ public class TagTest
         Assert.IsTrue(reader.Read());
         Assert.AreEqual(HtmlTokenKind.Tag, reader.TokenKind);
         Assert.AreEqual("a", reader.Name);
-        Assert.ThrowsException<KeyNotFoundException>(() => reader.GetAttribute("href"));
+        Assert.Throws<KeyNotFoundException>(() => reader.GetAttribute("href"));
         Assert.IsFalse(reader.SelfClosingElement);
 
         Assert.IsFalse(reader.Read());
