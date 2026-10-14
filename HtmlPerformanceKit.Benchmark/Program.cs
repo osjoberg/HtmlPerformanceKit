@@ -9,11 +9,8 @@ public class Program
         if (args.Length == 1 && args[0] == "profile")
         {
             var benchmark = new BenchmarkHtmlPerformanceKit();
-            for (var i = 0; i < 10_000; i++)
-            {
-                benchmark.IterationSetup();
-                benchmark.ExtractTexts();
-            }
+            benchmark.IterationSetup();
+            benchmark.ExtractTexts();
 
             return;
         }

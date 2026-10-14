@@ -51,6 +51,18 @@ internal class CharBuffer
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal void AddRange(Span<char> characters)
+    {
+        while (Length + characters.Length > buffer.Length)
+        {
+            Array.Resize(ref buffer, buffer.Length * 2);
+        }
+
+        characters.CopyTo(new Span<char>(buffer, Length, buffer.Length - Length));
+        Length += characters.Length;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal void AddRange(string @string)
     {
         while (Length + @string.Length > buffer.Length)

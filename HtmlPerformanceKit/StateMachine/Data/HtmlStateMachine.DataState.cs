@@ -6,6 +6,8 @@ namespace HtmlPerformanceKit.StateMachine;
 
 internal partial class HtmlStateMachine
 {
+    private static readonly char[] DataStateChars = ['&', '<', HtmlChar.Null];
+
     private readonly Action dataState;
 
     /// <summary>
@@ -32,15 +34,17 @@ internal partial class HtmlStateMachine
     {
         while (true)
         {
-            var currentInputCharacter = bufferReader.Consume();
+            var currentInputCharacter = bufferReader.ConsumeUntil(DataStateChars, out var consumed);
 
             switch (currentInputCharacter)
             {
                 case '&' when decodeHtmlCharacters:
+                    currentDataBuffer.AddRange(consumed.Slice(0, consumed.Length - 1));
                     State = characterReferenceInDataState;
                     return;
 
                 case '<':
+                    currentDataBuffer.AddRange(consumed.Slice(0, consumed.Length - 1));
                     State = tagOpenState;
                     if (currentDataBuffer.Length > 0)
                     {
@@ -51,7 +55,7 @@ internal partial class HtmlStateMachine
 
                 case HtmlChar.Null:
                     ParseError(ParseErrorMessage.UnexpectedCharacterInStream);
-                    currentDataBuffer.Add(HtmlChar.Null);
+                    currentDataBuffer.AddRange(consumed);
                     break;
 
                 case EofMarker:
@@ -64,7 +68,7 @@ internal partial class HtmlStateMachine
                     return;
 
                 default:
-                    currentDataBuffer.Add((char)currentInputCharacter);
+                    currentDataBuffer.AddRange(consumed);
                     break;
             }
         }

@@ -6,6 +6,8 @@ namespace HtmlPerformanceKit.StateMachine;
 
 internal partial class HtmlStateMachine
 {
+    private static readonly char[] AttributeValueDoubleQuotedStateChars = ['"', '&', '<', HtmlChar.Null];
+
     private readonly Action attributeValueDoubleQuotedState;
 
     /// <summary>
@@ -32,33 +34,37 @@ internal partial class HtmlStateMachine
     {
         while (true)
         {
-            var currentInputCharacter = bufferReader.Consume();
+            var currentInputCharacter = bufferReader.ConsumeUntil(AttributeValueDoubleQuotedStateChars, out var consumed);
 
             switch (currentInputCharacter)
             {
                 case '"':
+                    currentTagToken.Attributes.Current.Value.AddRange(consumed.Slice(0, consumed.Length - 1));
                     State = afterAttributeValueQuotedState;
                     return;
 
                 case '&' when decodeHtmlCharacters:
+                    currentTagToken.Attributes.Current.Value.AddRange(consumed.Slice(0, consumed.Length - 1));
                     State = characterReferenceInAttributeValueState;
                     additionalAllowedCharacter = '"';
                     returnToState = attributeValueDoubleQuotedState;
                     return;
 
                 case HtmlChar.Null:
+                    currentTagToken.Attributes.Current.Value.AddRange(consumed.Slice(0, consumed.Length - 1));
                     ParseError(ParseErrorMessage.UnexpectedNullCharacterInStream);
                     currentTagToken.Attributes.Current.Value.Add(HtmlChar.ReplacementCharacter);
                     break;
 
                 case EofMarker:
+                    currentTagToken.Attributes.Current.Value.AddRange(consumed.Slice(0, consumed.Length - 1));
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = dataState;
                     bufferReader.Reconsume(EofMarker);
                     return;
 
                 default:
-                    currentTagToken.Attributes.Current.Value.Add((char)currentInputCharacter);
+                    currentTagToken.Attributes.Current.Value.AddRange(consumed);
                     break;
             }
         }

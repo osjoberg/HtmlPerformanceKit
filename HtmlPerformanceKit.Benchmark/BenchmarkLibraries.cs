@@ -24,12 +24,12 @@ public class BenchmarkLibraries
 {
     private readonly Stream stream;
     private readonly StreamReader streamReader;
-    private readonly List<string> result = new List<string>(100_000);
-    private readonly StringBuilder memoryResult = new StringBuilder(2_000_000);
+    private readonly List<string> result = new(100_000);
+    private readonly StringBuilder memoryResult = new(2_000_000);
 
     public BenchmarkLibraries()
     {
-        stream = Resource.GetResourceStream(15);
+        stream = Resource.GetResourceStream(30);
         streamReader = new StreamReader(stream);
     }
 

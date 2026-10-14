@@ -136,7 +136,7 @@ public class DataTest
         Assert.IsFalse(reader.Read());
         Assert.AreEqual(1, parseErrors.Count);
         Assert.AreEqual(1, parseErrors[0].LineNumber);
-        Assert.AreEqual(6, parseErrors[0].LinePosition);
+        Assert.AreEqual(8, parseErrors[0].LinePosition);
     }
 
     [TestMethod]

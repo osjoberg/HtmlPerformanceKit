@@ -4,10 +4,18 @@ using System.Runtime.CompilerServices;
 
 namespace HtmlPerformanceKit.Infrastructure;
 
-internal class BufferReader : IDisposable
+internal class BufferReader
 {
+    private const int ReconsumeBufferSize = 10;
+    private const int ReadBufferSize = 4096;
+    private const int BufferSize = ReconsumeBufferSize + ReadBufferSize;
+
     private readonly TextReader textReader;
-    private readonly QueueStack peekBuffer = new QueueStack(64);
+    private readonly char[] buffer = new char[BufferSize];
+
+    private int startIndex;
+    private int endIndex;
+    private int reconsumeCount;
 
     internal BufferReader(TextReader textReader)
     {
@@ -18,57 +26,74 @@ internal class BufferReader : IDisposable
 
     internal int LinePosition { get; private set; }
 
-    public void Dispose()
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal int Peek()
     {
-        textReader?.Dispose();
+        if (startIndex == endIndex)
+        {
+            startIndex = ReconsumeBufferSize;
+            var read = textReader.Read(buffer, ReconsumeBufferSize, ReadBufferSize);
+            endIndex = ReconsumeBufferSize + read;
+
+            if (read == 0)
+            {
+                return -1;
+            }
+        }
+
+        return buffer[startIndex];
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal ReadOnlyMemory<char> Peek(int length)
     {
-        while (peekBuffer.Count < length)
+        if (startIndex + length <= endIndex)
         {
-            var currentInputCharacter = textReader.Read();
-
-            peekBuffer.Enqueue(currentInputCharacter);
-            if (currentInputCharacter == -1)
-            {
-                break;
-            }
+            return buffer.AsMemory(startIndex, length);
         }
 
-        return peekBuffer.AsMemory();
-    }
+        var saveLength = endIndex - startIndex;
+        Array.Copy(buffer, startIndex, buffer, ReconsumeBufferSize, saveLength);
+        startIndex = ReconsumeBufferSize;
+        var read = textReader.Read(buffer, startIndex + saveLength, BufferSize - startIndex - saveLength);
+        endIndex = startIndex + saveLength + read;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal void Consume(int length)
-    {
-        while (length > 0)
-        {
-            Consume();
-            length--;
-        }
+        return buffer.AsMemory(startIndex, Math.Min(length, saveLength + read));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal int Consume()
     {
-        if (peekBuffer.Count != 0)
+        if (startIndex == endIndex)
         {
-            return peekBuffer.Dequeue();
+            startIndex = ReconsumeBufferSize;
+            var read = textReader.Read(buffer, ReconsumeBufferSize, ReadBufferSize);
+            endIndex = ReconsumeBufferSize + read;
+
+            if (read == 0)
+            {
+                return -1;
+            }
         }
+
+        var result = buffer[startIndex];
+        startIndex++;
 
         if (LineNumber == 0)
         {
             LineNumber = 1;
-            LinePosition = 1;
         }
 
-        var result = textReader.Read();
+        if (reconsumeCount > 0)
+        {
+            reconsumeCount--;
+            return result;
+        }
+
         if (result == '\n')
         {
             LineNumber++;
-            LinePosition = 1;
+            LinePosition = 0;
         }
         else
         {
@@ -76,6 +101,70 @@ internal class BufferReader : IDisposable
         }
 
         return result;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal void Consume(int length)
+    {
+        var positonSpan = buffer.AsSpan(startIndex, length);
+
+        for (var newLineIndex = positonSpan.IndexOf('\n'); newLineIndex != -1; newLineIndex = positonSpan.IndexOf('\n'))
+        {
+            LineNumber++;
+            LinePosition = 0;
+            positonSpan = positonSpan.Slice(newLineIndex + 1);
+        }
+
+        LinePosition += positonSpan.Length;
+
+        startIndex += length;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal int ConsumeUntil(char[] characters, out Span<char> consumed)
+    {
+        if (startIndex == endIndex)
+        {
+            startIndex = ReconsumeBufferSize;
+            var read = textReader.Read(buffer, ReconsumeBufferSize, ReadBufferSize);
+            endIndex = ReconsumeBufferSize + read;
+
+            if (read == 0)
+            {
+                consumed = Span<char>.Empty;
+                return -1;
+            }
+        }
+
+        consumed = buffer.AsSpan(startIndex, endIndex - startIndex);
+        var foundIndex = consumed.IndexOfAny(characters);
+        if (foundIndex != -1)
+        {
+            consumed = consumed.Slice(0, foundIndex + 1);
+        }
+
+        startIndex += consumed.Length;
+
+        if (LineNumber == 0)
+        {
+            LineNumber = 1;
+            LinePosition = 0;
+        }
+
+        var positonSpan = consumed.Slice(reconsumeCount);
+
+        for (var newLineIndex = positonSpan.IndexOf('\n'); newLineIndex != -1; newLineIndex = positonSpan.IndexOf('\n'))
+        {
+            LineNumber++;
+            LinePosition = 0;
+            positonSpan = positonSpan.Slice(newLineIndex + 1);
+        }
+
+        LinePosition += positonSpan.Length;
+
+        reconsumeCount -= Math.Min(reconsumeCount, consumed.Length);
+
+        return consumed[^1];
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -196,20 +285,16 @@ internal class BufferReader : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal void Reconsume(int data)
     {
-        peekBuffer.Push(data);
-    }
+        startIndex--;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal int Peek()
-    {
-        if (peekBuffer.Count != 0)
+        if (data == -1)
         {
-            return peekBuffer.Peek();
+            endIndex = startIndex;
         }
-
-        var currentInputCharacter = textReader.Read();
-        peekBuffer.Enqueue(currentInputCharacter);
-
-        return currentInputCharacter;
+        else
+        {
+            buffer[startIndex] = (char)data;
+            reconsumeCount++;
+        }
     }
 }

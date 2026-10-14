@@ -17,11 +17,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.0.556">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="System.Memory" Version="4.5.5" />
+	  <PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.0.556">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+    <PackageReference Include="System.Memory" Version="4.6.3" />
   </ItemGroup>
 
 	<ItemGroup>

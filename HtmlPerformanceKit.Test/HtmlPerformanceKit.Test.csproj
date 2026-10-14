@@ -16,13 +16,12 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
-		<PackageReference Include="MSTest.TestAdapter" Version="4.4.1" />
-		<PackageReference Include="MSTest.TestFramework" Version="4.4.1" />
+		<PackageReference Include="MSTest.TestAdapter" Version="4.5.1" />
+		<PackageReference Include="MSTest.TestFramework" Version="4.5.1" />
 		<PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.0.556">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Verify.MSTest" Version="23.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>

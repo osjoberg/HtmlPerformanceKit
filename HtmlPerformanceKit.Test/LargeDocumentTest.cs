@@ -2,19 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using HtmlPerformanceKit.Benchmark;
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VerifyMSTest;
 
 namespace HtmlPerformanceKit.Test;
 
 [TestClass]
-public class LargeDocumentTest : VerifyBase
+public class LargeDocumentTest
 {
     [TestMethod]
-    public Task WikipediaListOfAustralianTreatiesApiTest()
+    public void WikipediaListOfAustralianTreatiesApiTest()
     {
         var output = new List<object>();
 
@@ -48,7 +45,7 @@ public class LargeDocumentTest : VerifyBase
             }
         }
 
-        return Verify(output);
+        Snapshot.AreEqual(output);
     }
 
     [TestMethod]
