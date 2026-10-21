@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Runtime.CompilerServices;
 
 using HtmlPerformanceKit.Infrastructure;
@@ -8,21 +9,21 @@ namespace HtmlPerformanceKit.StateMachine;
 internal partial class HtmlStateMachine
 {
     private const int EofMarker = -1;
+    private static readonly Action NoReturnState = () => { };
     private readonly HtmlTagToken currentTagToken = new HtmlTagToken();
     private readonly HtmlTagToken currentDoctypeToken = new HtmlTagToken();
     private readonly CharBuffer currentDataBuffer = new CharBuffer(1024 * 10);
     private readonly CharBuffer currentCommentBuffer = new CharBuffer(1024 * 10);
     private readonly CharBuffer temporaryBuffer = new CharBuffer(1024);
     private readonly CharBuffer appropriateTagName = new CharBuffer(100);
-    private readonly BufferReader bufferReader;
+    private readonly BufferReader bufferReader = new BufferReader();
     private readonly Action<string> parseError;
-    private readonly bool decodeHtmlCharacters;
+    private bool decodeHtmlCharacters;
     private Action returnToState;
     private char additionalAllowedCharacter;
 
-    internal HtmlStateMachine(BufferReader bufferReader, Action<string> parseError, bool decodeHtmlCharacters)
+    internal HtmlStateMachine(Action<string> parseError, bool decodeHtmlCharacters)
     {
-        this.bufferReader = bufferReader;
         this.parseError = parseError;
         this.decodeHtmlCharacters = decodeHtmlCharacters;
 
@@ -153,6 +154,10 @@ internal partial class HtmlStateMachine
         private set;
     }
 
+    internal int LineNumber => bufferReader.LineNumber;
+
+    internal int LinePosition => bufferReader.LinePosition;
+
     internal void ParseError(string message)
     {
         parseError(message);
@@ -174,5 +179,27 @@ internal partial class HtmlStateMachine
     {
         appropriateTagName.Clear();
         appropriateTagName.AddRange(emitTagToken.Name);
+    }
+
+    internal void Initialize(TextReader textReader)
+    {
+        State = dataState;
+        Eof = false;
+        returnToState = NoReturnState;
+        additionalAllowedCharacter = '\0';
+
+        currentTagToken.Clear();
+        currentDoctypeToken.Clear();
+        currentCommentBuffer.Clear();
+        temporaryBuffer.Clear();
+        appropriateTagName.Clear();
+
+        bufferReader.Initialize(textReader);
+        ResetEmit();
+    }
+
+    internal void Reset()
+    {
+        bufferReader.Reset();
     }
 }
