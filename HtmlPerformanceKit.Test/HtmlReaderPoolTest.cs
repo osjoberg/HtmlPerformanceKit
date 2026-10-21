@@ -25,7 +25,7 @@ public class HtmlReaderPoolTest
         for (var iteration = 1; iteration < 60000; iteration += 1000)
         {
             stream.Position = 0;
-            var htmlReader = htmlReaderPool.Get(stream);
+            var htmlReader = htmlReaderPool.Rent(stream);
 
             var actual = ReadDocument(htmlReader, iteration);
 
