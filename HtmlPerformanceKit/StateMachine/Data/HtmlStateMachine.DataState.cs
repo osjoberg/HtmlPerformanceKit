@@ -59,6 +59,7 @@ internal partial class HtmlStateMachine
                     break;
 
                 case EofMarker:
+                    currentDataBuffer.AddRange(consumed);
                     if (currentDataBuffer.Length > 0)
                     {
                         EmitDataBuffer = currentDataBuffer;

@@ -57,7 +57,7 @@ internal partial class HtmlStateMachine
                     break;
 
                 case EofMarker:
-                    currentTagToken.Attributes.Current.Value.AddRange(consumed.Slice(0, consumed.Length - 1));
+                    currentTagToken.Attributes.Current.Value.AddRange(consumed);
                     ParseError(ParseErrorMessage.UnexpectedEndOfFile);
                     State = dataState;
                     bufferReader.Reconsume(EofMarker);
