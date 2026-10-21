@@ -1,19 +1,6 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-/.vs/HtmlSpeedPack/v14
-/HtmlSpeedPack/.vs/HtmlParser/v14
-/HtmlSpeedPack/bin
-/HtmlSpeedPack.Benchmark/bin
-/HtmlSpeedPack.Benchmark/obj
-/HtmlSpeedPack.Test/bin
-/HtmlSpeedPack.Test/obj
-/packages
+﻿/packages
 /nuget
 *.user
-/HtmlSpeedPack/obj/Release
-/HtmlSpeedPack/obj/Debug
 /.vs/HtmlPerformanceKit/v14
 /HtmlPerformanceKit/.vs/HtmlParser/v14
 /HtmlPerformanceKit/bin
@@ -27,3 +14,4 @@
 *.log
 /.vs/HtmlPerformanceKit
 /.vs/ProjectEvaluation
+/HtmlPerformanceKit.Test/*.actual.txt

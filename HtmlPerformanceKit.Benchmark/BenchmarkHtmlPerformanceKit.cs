@@ -17,7 +17,7 @@ public class BenchmarkHtmlPerformanceKit
 
     public BenchmarkHtmlPerformanceKit()
     {
-        stream = Resource.GetResourceStream(15);
+        stream = Resource.GetResourceStream(30);
         streamReader = new StreamReader(stream);
     }
 

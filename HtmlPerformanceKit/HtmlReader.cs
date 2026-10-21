@@ -18,92 +18,25 @@ public sealed partial class HtmlReader
     private const string TextBufferIsNullMessage = "Text property can only be accessed when TokenKind is HtmlTokenKind.Text or HtmlTokenKind.Comment.";
     private const string AttributeNotFoundMessage = "An attribute with the given name does not exist.";
 
-    private readonly BufferReader bufferReader;
     private readonly HtmlStateMachine stateMachine;
-
     private CharBuffer? textBuffer;
     private HtmlTagToken? tagToken;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HtmlReader" /> class.
     /// </summary>
-    /// <param name="streamReader">StreamReader instance to read from.</param>
-    public HtmlReader(StreamReader streamReader)
-    {
-        if (streamReader == null)
-        {
-            throw new ArgumentNullException(nameof(streamReader));
-        }
-
-        var options = HtmlReaderOptions.Default;
-        bufferReader = new BufferReader(streamReader);
-        stateMachine = new HtmlStateMachine(bufferReader, OnParserError, options.DecodeHtmlCharacters);
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HtmlReader" /> class.
-    /// </summary>
     /// <param name="stream">Stream instance to read from.</param>
-    public HtmlReader(Stream stream)
+    /// <param name="options">Options to configure <see cref="HtmlReader" /> behaviour.</param>
+    public HtmlReader(Stream stream, HtmlReaderOptions? options = null)
     {
         if (stream == null)
         {
             throw new ArgumentNullException(nameof(stream));
         }
 
-        var options = HtmlReaderOptions.Default;
-        bufferReader = new BufferReader(new StreamReader(stream));
-        stateMachine = new HtmlStateMachine(bufferReader, OnParserError, options.DecodeHtmlCharacters);
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HtmlReader" /> class.
-    /// </summary>
-    /// <param name="textReader">Stream instance to read from.</param>
-    public HtmlReader(TextReader textReader)
-    {
-        if (textReader == null)
-        {
-            throw new ArgumentNullException(nameof(textReader));
-        }
-
-        var options = HtmlReaderOptions.Default;
-        bufferReader = new BufferReader(textReader);
-        stateMachine = new HtmlStateMachine(bufferReader, OnParserError, options.DecodeHtmlCharacters);
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HtmlReader" /> class.
-    /// </summary>
-    /// <param name="streamReader">StreamReader instance to read from.</param>
-    /// <param name="options">Options to configure <see cref="HtmlReader" /> behaviour.</param>
-    public HtmlReader(StreamReader streamReader, HtmlReaderOptions? options)
-    {
-        if (streamReader == null)
-        {
-            throw new ArgumentNullException(nameof(streamReader));
-        }
-
-        options = options ?? HtmlReaderOptions.Default;
-        bufferReader = new BufferReader(streamReader);
-        stateMachine = new HtmlStateMachine(bufferReader, OnParserError, options.DecodeHtmlCharacters);
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HtmlReader" /> class.
-    /// </summary>
-    /// <param name="stream">Stream instance to read from.</param>
-    /// <param name="options">Options to configure <see cref="HtmlReader" /> behaviour.</param>
-    public HtmlReader(Stream stream, HtmlReaderOptions? options)
-    {
-        if (stream == null)
-        {
-            throw new ArgumentNullException(nameof(stream));
-        }
-
-        options = options ?? HtmlReaderOptions.Default;
-        bufferReader = new BufferReader(new StreamReader(stream));
-        stateMachine = new HtmlStateMachine(bufferReader, OnParserError, options.DecodeHtmlCharacters);
+        options ??= HtmlReaderOptions.Default;
+        stateMachine = new HtmlStateMachine(OnParserError, options.DecodeHtmlCharacters);
+        Initialize(new StreamReader(stream));
     }
 
     /// <summary>
@@ -111,16 +44,16 @@ public sealed partial class HtmlReader
     /// </summary>
     /// <param name="textReader">Stream instance to read from.</param>
     /// <param name="options">Options to configure <see cref="HtmlReader" /> behaviour.</param>
-    public HtmlReader(TextReader textReader, HtmlReaderOptions? options)
+    public HtmlReader(TextReader textReader, HtmlReaderOptions? options = null)
     {
         if (textReader == null)
         {
             throw new ArgumentNullException(nameof(textReader));
         }
 
-        options = options ?? HtmlReaderOptions.Default;
-        bufferReader = new BufferReader(textReader);
-        stateMachine = new HtmlStateMachine(bufferReader, OnParserError, options.DecodeHtmlCharacters);
+        options ??= HtmlReaderOptions.Default;
+        stateMachine = new HtmlStateMachine(OnParserError, options.DecodeHtmlCharacters);
+        Initialize(textReader);
     }
 
     /// <summary>
@@ -150,12 +83,12 @@ public sealed partial class HtmlReader
     /// <summary>
     /// Gets the current line number.
     /// </summary>
-    public int LineNumber => bufferReader.LineNumber;
+    public int LineNumber => stateMachine.LineNumber;
 
     /// <summary>
     /// Gets the current line position.
     /// </summary>
-    public int LinePosition => bufferReader.LinePosition;
+    public int LinePosition => stateMachine.LinePosition;
 
     /// <summary>
     /// Read one token from the stream.
@@ -217,6 +150,6 @@ public sealed partial class HtmlReader
 
     private void OnParserError(string message)
     {
-        ParseError?.Invoke(this, new HtmlParseErrorEventArgs(message, bufferReader.LineNumber, bufferReader.LinePosition));
+        ParseError?.Invoke(this, new HtmlParseErrorEventArgs(message, stateMachine.LineNumber, stateMachine.LinePosition));
     }
 }

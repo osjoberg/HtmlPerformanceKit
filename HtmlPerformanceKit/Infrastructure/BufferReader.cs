@@ -10,21 +10,29 @@ internal class BufferReader
     private const int ReadBufferSize = 4096;
     private const int BufferSize = ReconsumeBufferSize + ReadBufferSize;
 
-    private readonly TextReader textReader;
+    private static readonly StreamReader Empty = new(new MemoryStream());
+
     private readonly char[] buffer = new char[BufferSize];
+
+    private TextReader textReader = Empty;
 
     private int startIndex;
     private int endIndex;
     private int reconsumeCount;
 
-    internal BufferReader(TextReader textReader)
-    {
-        this.textReader = textReader;
-    }
-
     internal int LineNumber { get; private set; }
 
     internal int LinePosition { get; private set; }
+
+    internal void Initialize(TextReader textReader)
+    {
+        this.textReader = textReader;
+        startIndex = 0;
+        endIndex = 0;
+        reconsumeCount = 0;
+        LineNumber = 0;
+        LinePosition = 0;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal int Peek()
@@ -296,5 +304,10 @@ internal class BufferReader
             buffer[startIndex] = (char)data;
             reconsumeCount++;
         }
+    }
+
+    internal void Reset()
+    {
+        textReader = Empty;
     }
 }
