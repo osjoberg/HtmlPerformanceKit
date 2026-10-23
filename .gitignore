@@ -15,3 +15,4 @@
 /.vs/HtmlPerformanceKit
 /.vs/ProjectEvaluation
 /HtmlPerformanceKit.Test/*.actual.txt
+*.nupkg
