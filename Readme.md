@@ -11,13 +11,13 @@ PM> Install-Package HtmlPerformanceKit
 You can also view the package page on [Nuget](https://www.nuget.org/packages/HtmlPerformanceKit/).
 
 ## Performance
-HtmlPerformanceKit is currently about 6x-15x faster than AngleSharp and HtmlAgilityPack in my benchmarks. 
+HtmlPerformanceKit can currently decode HTML documents in faster than 500 MB/s on a normal laptop CPU which is currently about 12x-40x faster than AngleSharp and HtmlAgilityPack in my benchmarks. 
 This is probably because theese libraries construct a full DOM for the entire document in memory while HtmlPerformanceKit streams tokens as they are read and decoded. 
 Theese libraries features a much more user-friendly API and are more battle-tested. If you are not concerned about performance, you should probably use one of those instead. 
 
-HtmlPerformanceKit is currently about 0.5x faster than HtmlKit and 5x faster than HtmlParserSharp while using 5x less memory, which are the closest competitors both in performance and in features.
+HtmlPerformanceKit is currently about 1.6x faster than HtmlKit and 8x faster than HtmlParserSharp while using 5x less memory, which are the closest competitors both in performance and in features.
 
-With the `AsMemory` suffixed properties and methods you can process large documents while only using a few kilobytes of memory for internal buffers.
+With the `AsMemory` suffixed properties and methods you can process large documents while only using a few kilobytes of memory for internal buffers further improving performance. If many HTML documents are to be parsed in one go, you can use `HtmlReaderPool` to reduce allocations even further by reusing internal buffers.
 
 ## Example usage
 ```csharp
@@ -40,29 +40,29 @@ public IEnumerable<string> ExtractLinks(string filename)
 ```
 
 ## Benchmarks
-Benchmarks are extracting links and texts from a large Wikipedia article, List of Australian treaties, https://en.wikipedia.org/wiki/List_of_Australian_treaties (1.7MB). The HTML body is duplicated 10 times to get longer and more consistent benchmarks.
+Benchmarks are extracting links and texts from a large Wikipedia article, List of Australian treaties, https://en.wikipedia.org/wiki/List_of_Australian_treaties (1.75MB). The HTML body is duplicated 30 times to get longer and more consistent benchmarks.
 
 ``` ini
 
-BenchmarkDotNet v0.13.12, Windows 10 (10.0.19045.4046/22H2/2022Update)
-AMD Ryzen 7 PRO 4750U with Radeon Graphics, 1 CPU, 16 logical and 8 physical cores
-.NET SDK 8.0.101
-  [Host]     : .NET 8.0.1 (8.0.123.58001), X64 RyuJIT AVX2
-  Job-DPXRAR : .NET 8.0.1 (8.0.123.58001), X64 RyuJIT AVX2
+BenchmarkDotNet v0.15.8, Windows 11 (10.0.26200.9711/25H2/2025Update/HudsonValley2)
+AMD Ryzen 7 PRO 7840U w/ Radeon 780M Graphics 3.30GHz, 1 CPU, 16 logical and 8 physical cores
+.NET SDK 10.0.401
+  [Host]     : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v4
+  Job-CNUJVU : .NET 10.0.12 (10.0.12, 10.0.1226.42308), X64 RyuJIT x86-64-v4
 
 ```
 
-| Method                                 | Mean       | Median     | Allocated    |
-|--------------------------------------- |-----------:|-----------:|-------------:|
-| ExtractLinksHtmlPerformanceKit         |   130.7 ms |   130.6 ms |  13353.07 KB |
-| ExtractLinksHtmlPerformanceKitAsMemory |   105.3 ms |   105.3 ms |     62.23 KB |
-| ExtractLinksHtmlAgilityPack            | 1,848.7 ms | 1,895.6 ms | 576739.72 KB |
-| ExtractLinksAngleSharp                 |   959.9 ms |   984.2 ms | 294108.93 KB |
-| ExtractLinksHtmlParserSharp            |   713.2 ms |   707.2 ms | 222542.52 KB |
-| ExtractLinksHtmlKit                    |   184.3 ms |   184.5 ms | 154834.69 KB |
-| ExtractTextsHtmlPerformanceKit         |   150.4 ms |   150.2 ms |  25265.70 KB |
-| ExtractTextsHtmlPerformanceKitAsMemory |   112.7 ms |   112.2 ms |     62.23 KB |
-| ExtractTextsHtmlAgilityPack            | 1,770.6 ms | 1,770.1 ms | 850558.30 KB |
-| ExtractTextsAngleSharp                 | 1,201.6 ms | 1,216.6 ms | 344377.57 KB |
-| ExtractTextsHtmlParserSharp            |   721.4 ms |   721.2 ms | 240448.28 KB |
-| ExtractTextsHtmlKit                    |   232.7 ms |   233.1 ms | 148503.51 KB |
+| Method                                 | Mean       | Median     | Allocated     |
+|--------------------------------------- |-----------:|-----------:|--------------:|
+| ExtractLinksHtmlPerformanceKit         |   141.1 ms |   139.5 ms |   37525.42 KB |
+| ExtractLinksHtmlPerformanceKitAsMemory |   101.2 ms |   101.1 ms |      69.43 KB |
+| ExtractLinksHtmlAgilityPack            | 4,219.7 ms | 4,172.2 ms | 1258305.61 KB |
+| ExtractLinksAngleSharp                 | 1,933.5 ms | 1,925.8 ms |  740862.41 KB |
+| ExtractLinksHtmlParserSharp            | 1,691.4 ms | 1,693.8 ms |  573443.72 KB |
+| ExtractLinksHtmlKit                    |   247.2 ms |   248.2 ms |  436337.41 KB |
+| ExtractTextsHtmlPerformanceKit         |   212.4 ms |   207.5 ms |   71097.55 KB |
+| ExtractTextsHtmlPerformanceKitAsMemory |   103.0 ms |   103.3 ms |      69.43 KB |
+| ExtractTextsHtmlAgilityPack            | 3,597.3 ms | 3,535.8 ms | 2029971.43 KB |
+| ExtractTextsAngleSharp                 | 2,523.3 ms | 2,538.5 ms |   882017.4 KB |
+| ExtractTextsHtmlParserSharp            | 1,733.9 ms | 1,725.2 ms |  623894.48 KB |
+| ExtractTextsHtmlKit                    |   342.5 ms |   340.0 ms |  418494.22 KB |

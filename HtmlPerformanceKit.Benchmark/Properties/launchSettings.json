@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "HtmlPerformanceKit.Benchmark": {
+      "commandName": "Project",
+      "commandLineArgs": "profile"
+    }
+  }
+}
